@@ -1,0 +1,148 @@
+// 清除浮动
+clearfix()
+  &:after
+    clear: both
+  &:before, &:after
+    content: " "
+    display: table
+
+// 单行文本溢出
+single-text-ellipsis()
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+// palcehoder样式封装
+placeholder()
+  &::-webkit-input-placeholder // Chrome/Opera/Safari
+      {block}
+  &::-moz-placeholder // Firefox 19+
+      {block}
+  &:-moz-placeholder // Firefox 18-
+      {block}
+  &:-ms-input-placeholder // IE 10+
+      {block}
+
+/**
+ * 三角形
+ * @param  {string} $direction 方向
+ * @param  {string} $size      尺寸
+ * @param  {color} $color     颜色
+ * @return {mixin}
+ */
+triangle($direction = bottom, $size = 40px, $color = @color)
+  width: 0
+  height: 0
+  background: 0
+  border-style: solid
+  if $direction == 'top'
+    border-width: 0 $size $size $size
+    border-color: transparent transparent $color transparent
+  if $direction == 'right'
+    border-width: $size 0 $size $size
+    border-color: transparent transparent transparent $color
+  if $direction == 'bottom'
+    border-width: $size $size 0 $size
+    border-color: $color transparent transparent transparent
+  if $direction == 'left'
+    border-width: $size $size $size 0
+    border-color: transparent $color transparent transparent
+
+/**
+ * 带边框的三角形
+ * @param  {string} $direction        方向
+ * @param  {string} $size             尺寸
+ * @param  {color} $color             颜色
+ * @param  {boolean} $center          居中，是否三边都显示
+ * @param  {float} $border-scale      边框粗细
+ * @param  {color} $before-color      前面三角形的颜色，配合背景
+ * @param  {color} $bafter-color      后面面三角形的颜色，配合背景
+ * @return {mixin}
+ */
+triangle-with-border($direction = bottom, $size = 30px, $center = false, $border-scale = .9, $before-color = @color, $after-color = @color)
+  display: inline-block
+  // position: @position
+  if $direction == 'top' || $direction == 'bottom'
+    width $size * 2
+    height $size
+  if $direction == 'right' || $direction == 'left'
+    width $size
+    height $size * 2
+  &:before
+    content: ''
+    position: absolute
+    z-index: 10
+    // margin-left: -(@width*$border-scale/2)
+    if $center == true
+      left 50%
+      top: 50%
+      transform: translateX(-50%, -50%)
+    else
+
+      if $direction == 'top'
+        left 50%
+        bottom 0
+        transform: translateX(-50%)
+      if $direction == 'right'
+        top 50%
+        left 0
+        transform: translateY(-50%)
+      if $direction == 'bottom'
+        left 50%
+        top 0
+        transform: translate(-50%)
+      if $direction == 'left'
+        top 50%
+        right 0
+        transform: translateY(-50%)
+
+    triangle($direction, $size*$border-scale, $before-color)
+  &:after
+    content: ''
+    position: absolute
+    left: 0
+    triangle($direction, $size, $after-color)
+
+gradient-btn($width, $height)
+  display: inline-block
+  outline: none
+  cursor: pointer
+  text-align: center
+  border-radius: 4px
+  height: $height
+  width: $width
+  line-height: $height
+  color: #ffffff
+  background: #24b9ff
+
+
+default-btn($width, $height, $color)
+  display: inline-block
+  height: $height
+  width: $width
+  line-height: $height
+  color: $color
+  border: 1px solid $color
+  text-align: center
+  font-size: 16px
+  border-radius: 4px
+  cursor: pointer
+
+company-icon($width, $height, $color, $bgColor=#ffffff)
+  display: inline-block
+  line-height: $height - 2px
+  height: $height
+  width: $width
+  color: $color
+  text-align: center
+  font-size: 12px
+  border: 1px solid $color
+  border-radius: 8px
+  background: $bgColor
+
+mix-block-with-img-center(height)
+  height: height
+  line-height: @height
+  > img
+    vertical-align: middle
+

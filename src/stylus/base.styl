@@ -1,0 +1,74 @@
+// 非标准盒模式：width 与 height 包括 padding 与 border，不包括 margin
+*
+  box-sizing: border-box
+
+:after,
+:before
+  box-sizing: border-box
+
+body
+  // 跨平台适应的字体族
+  font-family: Hiragino Sans GB, Hiragino Sans GB W3, Arial, Microsoft Yahei, STHeiti, sans-serif
+  // 字体清晰度设置，只作用于 OSX 下高分屏
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  color: #333333
+  // height: 100%
+a
+  text-decoration: none
+
+ul,
+ol,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  margin: 0
+  padding: 0
+
+li
+  list-style: none
+
+// 禁止图片拖动
+img
+  user-select: none
+  -webkit-user-drag: none
+
+// 去除输入框的外部高亮
+input,
+button,
+textarea
+  outline: 0
+
+button:-moz-focusring,
+input:-moz-focusring
+  outline: 0
+
+// 解决 Font Boosting 问题
+p
+  max-height: 100%
+
+.container
+  width: 1170px
+  margin: 0 auto
+.inner
+  width: 900px
+  margin: 0 auto
+.pull-right
+  float: right
+.pull-left
+  float: left
+
+.clearfix
+  &:after
+    clear: both
+  &:before, &:after
+    content: " "
+    display: table
+
+.line-break
+  word-wrap break-word
+  white-space pre-wrap
