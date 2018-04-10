@@ -1,7 +1,7 @@
 {
-  "name": "yj-index",
+  "name": "vue-base",
   "version": "1.0.0",
-  "description": "艺笺卡片",
+  "description": "VUE-BASE",
   "author": "CodeBear <249900679@qq.com>",
   "private": true,
   "scripts": {
