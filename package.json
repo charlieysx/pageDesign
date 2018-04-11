@@ -1,7 +1,7 @@
 {
-  "name": "vue-base",
+  "name": "yj-admin",
   "version": "1.0.0",
-  "description": "VUE-BASE",
+  "description": "艺笺卡片-后台管理",
   "author": "CodeBear <249900679@qq.com>",
   "private": true,
   "scripts": {
