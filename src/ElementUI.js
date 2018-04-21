@@ -1,7 +1,7 @@
 // 按需引入element-ui组件
 import Vue from 'vue'
 import {
-  Pagination,
+  // Pagination,
   // Dialog,
   // Autocomplete,
   // Dropdown,
@@ -11,12 +11,12 @@ import {
   // Submenu,
   // MenuItem,
   // MenuItemGroup,
-  Input,
-  InputNumber,
+  // Input,
+  // InputNumber,
   // Radio,
   // RadioGroup,
   // RadioButton,
-  Checkbox,
+  // Checkbox,
   // CheckboxGroup,
   // Switch,
   // Select,
@@ -29,12 +29,12 @@ import {
   // DatePicker,
   // TimeSelect,
   // TimePicker,
-  Popover,
-  Tooltip,
+  // Popover,
+  // Tooltip,
   // Breadcrumb,
   // BreadcrumbItem,
-  Form,
-  FormItem,
+  // Form,
+  // FormItem,
   // Tabs,
   // TabPane,
   // Tag,
@@ -48,24 +48,24 @@ import {
   // Progress,
   // Spinner,
   // Badge,
-  Card,
+  // Card,
   // Rate,
   // Steps,
   // Step,
-  Carousel,
+  // Carousel,
   // Scrollbar,
-  CarouselItem,
+  // CarouselItem
   // Collapse,
   // CollapseItem,
   // Cascader,
   // ColorPicker,
-  Loading,
-  MessageBox,
+  // Loading,
+  // MessageBox,
   Message
   // Notification
 } from 'element-ui'
 
-Vue.use(Pagination)
+// Vue.use(Pagination)
 // Vue.use(Dialog)
 // Vue.use(Autocomplete)
 // Vue.use(Dropdown)
@@ -75,12 +75,12 @@ Vue.use(Pagination)
 // Vue.use(Submenu)
 // Vue.use(MenuItem)
 // Vue.use(MenuItemGroup)
-Vue.use(Input)
-Vue.use(InputNumber)
+// Vue.use(Input)
+// Vue.use(InputNumber)
 // Vue.use(Radio)
 // Vue.use(RadioGroup)
 // Vue.use(RadioButton)
-Vue.use(Checkbox)
+// Vue.use(Checkbox)
 // Vue.use(CheckboxGroup)
 // Vue.use(Switch)
 // Vue.use(Select)
@@ -93,12 +93,12 @@ Vue.use(Button)
 // Vue.use(DatePicker)
 // Vue.use(TimeSelect)
 // Vue.use(TimePicker)
-Vue.use(Popover)
-Vue.use(Tooltip)
+// Vue.use(Popover)
+// Vue.use(Tooltip)
 // Vue.use(Breadcrumb)
 // Vue.use(BreadcrumbItem)
-Vue.use(Form)
-Vue.use(FormItem)
+// Vue.use(Form)
+// Vue.use(FormItem)
 // Vue.use(Tabs)
 // Vue.use(TabPane)
 // Vue.use(Tag)
@@ -112,25 +112,25 @@ Vue.use(FormItem)
 // Vue.use(Progress)
 // Vue.use(Spinner)
 // Vue.use(Badge)
-Vue.use(Card)
+// Vue.use(Card)
 // Vue.use(Rate)
 // Vue.use(Steps)
 // Vue.use(Step)
-Vue.use(Carousel)
+// Vue.use(Carousel)
 // Vue.use(Scrollbar)
-Vue.use(CarouselItem)
+// Vue.use(CarouselItem)
 // Vue.use(Collapse)
 // Vue.use(CollapseItem)
 // Vue.use(Cascader)
 // Vue.use(ColorPicker)
 
-Vue.use(Loading.directive)
+// Vue.use(Loading.directive)
 
 // Vue.prototype.$loading = Loading.service
 // Vue.prototype.$msgbox = MessageBox
 // Vue.prototype.$alert = MessageBox.alert
-Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$prompt = MessageBox.prompt
+// Vue.prototype.$confirm = MessageBox.confirm
+// Vue.prototype.$prompt = MessageBox.prompt
 // Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 export default Vue

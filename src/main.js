@@ -11,6 +11,7 @@ import { sync } from 'vuex-router-sync'
 import validator from 'UTIL/validator'
 import 'UTIL/filters'
 import toast from 'COMMON/toast/toast.js'
+import 'COMMON/index'
 
 Vue.config.productionTip = false
 

@@ -11,7 +11,8 @@ const KEYS = {
   userInfo: 'userInfo'
 }
 
-const nameSpace = 'YIJIANWEBINDEX'
+// 这里改为自己的nameSpace，比如项目名称
+const nameSpace = 'VUEBASE'
 
 for (let i in KEYS) {
   if (KEYS.hasOwnProperty(i)) {

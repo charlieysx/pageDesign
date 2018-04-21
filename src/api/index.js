@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Qs from 'qs'
 import store from 'STORE/index'
+
 import {
   getAccessToken,
   removeAccessToken,
@@ -13,11 +14,8 @@ import {
 //   SHOW_TOKEN_ERROR
 // } from 'STORE/mutation-types'
 
-/* eslint-disable */
 const API_ROOT = 'http://bearcarapi.codebear.cn/index.php'
 
-
-/* eslint-enable */
 axios.defaults.baseURL = API_ROOT
 axios.defaults.headers.Accept = 'application/json'
 

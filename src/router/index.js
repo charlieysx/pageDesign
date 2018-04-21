@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import store from 'STORE/index'
 
-import hello from './modules/hello'
+import home from './modules/home'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -17,7 +17,7 @@ NProgress.configure({ easing: 'ease', speed: 500, showSpinner: false })
 Vue.use(VueRouter)
 
 const routes = [
-  ...hello
+  ...home
 ]
 
 const router = new VueRouter({
