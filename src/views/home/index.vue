@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <img src="~IMAGES/avatar.jpg">
-    <el-button type="primary" @click="good">点我试试<i class="iconfont icon-eye"></i></el-button>
+    <el-button type="primary" @click="good">点我试试test<i class="iconfont icon-eye"></i></el-button>
   </div>
 </template>
 
