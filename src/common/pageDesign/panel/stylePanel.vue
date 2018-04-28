@@ -1,6 +1,6 @@
 <template>
   <div id="style-panel">
-
+    样式|图层
   </div>
 </template>
 
@@ -14,7 +14,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+#style-panel
+  width: 300px
+  height: 100%
+  background-color: #ffffff
+  text-align: center
+  padding: 10px
+  border-left: 1px solid #d7d7d7
 
 </style>
-
-

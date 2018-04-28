@@ -1,19 +1,89 @@
-
 const state = {
+  dTop: 0, // 添加组件的初始纵坐标
+  dZoom: 64, // 画布缩放百分比
+  dType: 'page', // 选中元素类型
+  dIndex: -1, // 选中元素索引
+  dUuid: null, // 选中元素uuid
+
+  dActiveWidgetXY: {
+    x: 0, // 选中组件的横向初始值
+    y: 0 // 选中组件的纵向初始值
+  },
+  dMouseXY: {
+    x: 0, // 鼠标按下时的横坐标
+    y: 0 // 鼠标按下时的纵坐标
+  },
+  dMoving: false, // 是否正在移动组件
+
+  dActiveElement: {}, // 选中对象，组件或页面
+  dPage: {
+    page: true,
+    title: '', // 页面 title
+    width: 750, // 画布宽度
+    height: 1334, // 画布高度
+    backgroundColor: '#fff', // 画布背景颜色
+    backgroundImage: '' // 画布背景图片
+  },
+  dWidgets: [], // 已使用的组件
+  history: [] // 记录历史操作（直接保存整个画布的json数据）
 }
 
 const getters = {
-}
-
-const mutations = {
+  dTop (state) {
+    return state.dTop
+  },
+  dZoom (state) {
+    return state.dZoom
+  },
+  dType (state) {
+    return state.dType
+  },
+  dIndex (state) {
+    return state.dIndex
+  },
+  dUuid (state) {
+    return state.dUuid
+  },
+  zoom (state) {
+    return state.zoom
+  },
+  dActiveWidgetXY (state) {
+    return state.dActiveWidgetXY
+  },
+  dMouseXY (state) {
+    return state.dMouseXY
+  },
+  dMoving (state) {
+    return state.dMoving
+  },
+  dActiveElement (state) {
+    return state.dActiveElement
+  },
+  dPage (state) {
+    return state.dPage
+  },
+  dWidgets (state) {
+    return state.dWidgets
+  }
 }
 
 const actions = {
+  updateTop (store, top) {
+    store.state.dTop = top
+  },
+  updateZoom (store, zoom) {
+    store.state.dZoom = Math.max(200, Math.min(10, zoom))
+  },
+  updateWidgetData (store, {dUuid, key, value}) {
+    let widget = store.state.dWidgets.find(item => item.dUuid === dUuid)
+    if (widget) {
+      widget[key] = value
+    }
+  }
 }
 
 export default {
   state,
-  mutations,
   actions,
   getters
 }
