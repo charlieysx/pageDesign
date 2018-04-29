@@ -1,0 +1,34 @@
+/**
+ * 三角形
+ * @param  {string} $direction 方向
+ * @param  {string} $size      尺寸
+ * @param  {color} $color     颜色
+ * @return {mixin}
+ */
+triangle($direction = bottom, $size = 40px, $color = @color)
+  width: 0
+  height: 0
+  background: 0
+  border-style: solid
+  if $direction == 'top'
+    border-width: 0 $size $size $size
+    border-color: transparent transparent $color transparent
+  if $direction == 'right'
+    border-width: $size 0 $size $size
+    border-color: transparent transparent transparent $color
+  if $direction == 'bottom'
+    border-width: $size $size 0 $size
+    border-color: $color transparent transparent transparent
+  if $direction == 'left'
+    border-width: $size $size $size 0
+    border-color: transparent $color transparent transparent
+// 单行文本溢出
+single-text-ellipsis()
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+
+$color-main = #3B74F1
+$color-white = #ffffff
+$color-light-gray = #3e4651
+$color-dark-gray = #262c33

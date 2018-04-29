@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import '~STYLUS/color.styl'
+@import '~STYLUS/page-design.styl'
 #page-design-index
   width: 100%
   min-width: 1180px
@@ -111,7 +111,7 @@ export default {
         width: 60px
         height: 45px
         cursor: pointer
-        color: #ffffff
+        color: $color-white
         display: flex
         justify-content: center
         align-items: center
@@ -121,14 +121,14 @@ export default {
       .top-title
         flex: 1
         text-align: center
-        color: #ffffff
+        color: $color-white
         font-weight: bold
         cursor: pointer
       .top-icon-wrap
         height: 45px
         display: flex
         .top-icon
-          color: #ffffff
+          color: $color-white
           margin: 8px
           border-radius: 5px
           padding: 5px 8px
@@ -160,9 +160,9 @@ export default {
     .operation-item-margin
       margin-top: 10px
     .operation-item
-      border-bottom: 1px solid #262c33
-      background-color: #3e4651
-      color: #fff
+      border-bottom: 1px solid $color-dark-gray
+      background-color: $color-light-gray
+      color: $color-white
       width: 100%
       height: 45px
       font-size: 10px
@@ -175,7 +175,7 @@ export default {
         margin-top: 5px
       &:hover
         color: $color-main
-        background-color: #262c33
+        background-color: $color-dark-gray
       &:last-child
         border-bottom: 0px
 

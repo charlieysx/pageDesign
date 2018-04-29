@@ -61,19 +61,19 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@import '~STYLUS/color.styl'
+@import '~STYLUS/page-design.styl'
 #widget-panel
   width: 360px
   height: 100%
   display: flex
   flex-direction: row
   font-weight: bold
-  color: #ffffff
+  color: $color-white
   .widget-classify
     width: 60px
     height: 100%
     text-align: center
-    background-color: #262c33
+    background-color: $color-dark-gray
     .classify-wrap
       width: 100%
       .classify-item
@@ -90,12 +90,12 @@ export default {
         &:hover
           color: $color-main
       .active-classify-item
-        background-color: #3e4651
+        background-color: $color-light-gray
         color: $color-main
   .widget-wrap
     flex: 1
     height: 100%
     padding: 10px
-    background-color: #3e4651
+    background-color: $color-light-gray
 
 </style>

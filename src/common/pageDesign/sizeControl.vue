@@ -33,6 +33,11 @@
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
 // 组件大小控制器
 const NAME = 'size-control'
 
@@ -71,13 +76,8 @@ export default {
           value: 200
         },
         {
-          text: '满屏显示',
-          value: -1,
-          icon: 'icon-full-size'
-        },
-        {
           text: '最佳尺寸',
-          value: -2,
+          value: -1,
           icon: 'icon-best-size'
         }
       ],
@@ -112,15 +112,22 @@ export default {
           value: 500
         }
       ],
-      otherIndex: -1
+      otherIndex: -1,
+      bestZoom: 0
     }
   },
   mounted () {
     window.addEventListener('click', this.close)
-    this.activeSizeIndex = 3
+    this.activeSizeIndex = this.sizeList.length - 1
   },
   beforeDestroy () {
     window.removeEventListener('click', this.close)
+  },
+  computed: {
+    ...mapGetters([
+      'dPage',
+      'dScreen'
+    ])
   },
   watch: {
     activeSizeIndex (value) {
@@ -136,10 +143,17 @@ export default {
       this.zoom = this.otherList[value]
     },
     zoom (value) {
-      console.log(value)
+      let realValue = value.value
+      if (realValue === -1) {
+        realValue = this.calcZoom()
+      }
+      this.updateZoom(realValue)
     }
   },
   methods: {
+    ...mapActions([
+      'updateZoom'
+    ]),
     selectItem (index) {
       this.activeSizeIndex = index
       this.otherIndex = -1
@@ -150,8 +164,7 @@ export default {
     },
     add () {
       this.show = false
-      if (this.activeSizeIndex === this.sizeList.length - 3 ||
-        this.activeSizeIndex === this.sizeList.length - 2 ||
+      if (this.activeSizeIndex === this.sizeList.length - 2 ||
         this.activeSizeIndex === this.sizeList.length - 1) {
         this.activeSizeIndex = this.sizeList.length
         this.otherIndex += 1
@@ -169,24 +182,36 @@ export default {
       this.show = false
       if (this.otherIndex === 0) {
         this.otherIndex = -1
-        this.activeSizeIndex = this.sizeList.length - 3
+        this.activeSizeIndex = this.sizeList.length - 2
         return
       }
       if (this.otherIndex != -1) {
         this.otherIndex--
         return
       }
+      if (this.activeSizeIndex === this.sizeList.length - 1) {
+        this.activeSizeIndex = this.sizeList.length - 2
+        return
+      }
       if (this.activeSizeIndex != 0) {
         this.activeSizeIndex--
       }
+    },
+    calcZoom () {
+      if (this.bestZoom == 0) {
+        let widthZoom = (this.dScreen.width - 94) * 100 / this.dPage.width
+        let heightZoom = (this.dScreen.height - 94) * 100 / this.dPage.height
+
+        this.bestZoom = Math.round(Math.min(widthZoom, heightZoom))
+      }
+      return this.bestZoom
     }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-@import '~STYLUS/mixin.styl'
-@import '~STYLUS/color.styl'
+@import '~STYLUS/page-design.styl'
 #size-control
   position: fixed
   bottom: 50px
@@ -204,8 +229,8 @@ export default {
       border-top-right-radius: 50%
       border-bottom-right-radius: 50%
     .size-icon
-      background-color: #3e4651
-      color: #fff
+      background-color: $color-light-gray
+      color: $color-white
       width: 40px
       cursor: pointer
       display: flex
@@ -213,16 +238,16 @@ export default {
       align-items: center
       &:hover
         color: $color-main
-        background-color: #262c33
+        background-color: $color-dark-gray
     .disable
       color: #808080
       &:hover
         color: #808080
-        background-color: #3e4651
+        background-color: $color-light-gray
         cursor: not-allowed
     .size-text
-      background-color: #3e4651
-      color: #fff
+      background-color: $color-light-gray
+      color: $color-white
       width: 60px
       cursor: pointer
       display: flex
@@ -230,24 +255,24 @@ export default {
       align-items: center
       &:hover
         color: $color-main
-        background-color: #262c33
+        background-color: $color-dark-gray
     .size-text-active
       color: $color-main
-      background-color: #262c33
+      background-color: $color-dark-gray
   .size-selecter
     position: absolute
     width: 100%
     top: -10px
     transform: translateY(-100%)
-    background-color: #262c33
-    color: #ffffff
+    background-color: $color-dark-gray
+    color: $color-white
     &:after
       content: ''
       position: absolute
       bottom: -8px
       left: 50%
       transform: translateX(-50%)
-      triangle(bottom, 8px, #262c33)
+      triangle(bottom, 8px, $color-dark-gray)
     .size-item
       width: 100%
       height: 34px

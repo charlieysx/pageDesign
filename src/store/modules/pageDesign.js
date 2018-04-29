@@ -1,9 +1,13 @@
 const state = {
   dTop: 0, // 添加组件的初始纵坐标
-  dZoom: 64, // 画布缩放百分比
+  dZoom: 100, // 画布缩放百分比
   dType: 'page', // 选中元素类型
   dIndex: -1, // 选中元素索引
   dUuid: null, // 选中元素uuid
+  dScreen: {
+    width: 0, // 记录编辑界面的宽度
+    height: 0 // 记录编辑界面的高度
+  },
 
   dActiveWidgetXY: {
     x: 0, // 选中组件的横向初始值
@@ -19,8 +23,8 @@ const state = {
   dPage: {
     page: true,
     title: '', // 页面 title
-    width: 750, // 画布宽度
-    height: 1334, // 画布高度
+    width: 360, // 画布宽度
+    height: 640, // 画布高度
     backgroundColor: '#fff', // 画布背景颜色
     backgroundImage: '' // 画布背景图片
   },
@@ -44,8 +48,8 @@ const getters = {
   dUuid (state) {
     return state.dUuid
   },
-  zoom (state) {
-    return state.zoom
+  dScreen (state) {
+    return state.dScreen
   },
   dActiveWidgetXY (state) {
     return state.dActiveWidgetXY
@@ -72,7 +76,11 @@ const actions = {
     store.state.dTop = top
   },
   updateZoom (store, zoom) {
-    store.state.dZoom = Math.max(200, Math.min(10, zoom))
+    store.state.dZoom = zoom
+  },
+  updateScreen (store, {width, height}) {
+    store.state.dScreen.width = width
+    store.state.dScreen.height = height
   },
   updateWidgetData (store, {dUuid, key, value}) {
     let widget = store.state.dWidgets.find(item => item.dUuid === dUuid)
