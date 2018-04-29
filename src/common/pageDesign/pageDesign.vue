@@ -8,11 +8,14 @@
         transform: 'scale(' + dZoom / 100 + ')'
       }">
 
+    <grid-size />
     </div>
   </div>
 </template>
 
 <script>
+import gridSize from 'COMMON/pageDesign/gridSize'
+
 import {
   mapGetters,
   mapActions
@@ -23,6 +26,9 @@ const NAME = 'page-design'
 
 export default {
   name: NAME,
+  components: {
+    gridSize
+  },
   computed: {
     ...mapGetters([
       'dPage',

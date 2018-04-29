@@ -8,6 +8,10 @@ const state = {
     width: 0, // 记录编辑界面的宽度
     height: 0 // 记录编辑界面的高度
   },
+  gridSize: {
+    width: 0, // 网格小格子的宽度
+    height: 0 // 网格小格子的高度
+  },
 
   dActiveWidgetXY: {
     x: 0, // 选中组件的横向初始值
@@ -51,6 +55,9 @@ const getters = {
   dScreen (state) {
     return state.dScreen
   },
+  gridSize (state) {
+    return state.gridSize
+  },
   dActiveWidgetXY (state) {
     return state.dActiveWidgetXY
   },
@@ -81,6 +88,10 @@ const actions = {
   updateScreen (store, {width, height}) {
     store.state.dScreen.width = width
     store.state.dScreen.height = height
+  },
+  updateGridSize (store, {width, height}) {
+    store.state.gridSize.width = width
+    store.state.gridSize.height = height
   },
   updateWidgetData (store, {dUuid, key, value}) {
     let widget = store.state.dWidgets.find(item => item.dUuid === dUuid)

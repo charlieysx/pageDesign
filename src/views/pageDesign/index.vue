@@ -37,13 +37,27 @@
         </li>
       </ul>
       <ul class="operation-wrap">
-        <li class="operation-item">
+        <li 
+          class="operation-item" 
+          @click.stop="showGridSizeList = !showGridSizeList"
+          :class="{'operation-item-active' : showGridSizeList}">
           <i class="iconfont icon-ref-grid"></i>
           <p>网格</p>
+          <ul class="grid-selecter" v-show="showGridSizeList">
+            <li
+              v-for="(item, index) in gridSizeList"
+              :key="index"
+              class="grid-item"
+              :class="{'grid-item-active' : gridSizeIndex === index}"
+              @click="gridSizeIndex = index">
+              <span>{{ item.value }}</span>
+              <i class="iconfont icon-selected" v-if="gridSizeIndex === index"></i>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
-    <size-control/>
+    <zoom-control/>
   </div>
 </template>
 
@@ -51,7 +65,12 @@
 import pageDesign from 'COMMON/pageDesign/pageDesign'
 import widgetPanel from 'COMMON/pageDesign/panel/widgetPanel'
 import stylePanel from 'COMMON/pageDesign/panel/stylePanel'
-import sizeControl from 'COMMON/pageDesign/sizeControl'
+import zoomControl from 'COMMON/pageDesign/zoomControl'
+
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
 export default {
   name: 'page-design-index',
@@ -59,25 +78,75 @@ export default {
     pageDesign,
     widgetPanel,
     stylePanel,
-    sizeControl
+    zoomControl
   },
   data () {
     return {
       style: {
         left: '0px'
-      }
+      },
+      gridSizeList: [
+        {
+          width: 0,
+          height: 0,
+          value: '无'
+        },
+        {
+          width: 10,
+          height: 10,
+          value: '10x10'
+        },
+        {
+          width: 20,
+          height: 20,
+          value: '20x20'
+        },
+        {
+          width: 50,
+          height: 50,
+          value: '50x50'
+        },
+        {
+          width: 75,
+          height: 75,
+          value: '75x75'
+        },
+        {
+          width: 100,
+          height: 100,
+          value: '100x100'
+        }
+      ],
+      gridSizeIndex: 0,
+      showGridSizeList: false
     }
   },
   mounted () {
     window.addEventListener('scroll', this.fixTopBarScroll)
+    window.addEventListener('click', this.clickListener)
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.fixTopBarScroll)
+    window.removeEventListener('click', this.clickListener)
+  },
+  watch: {
+    gridSizeIndex (index) {
+      this.updateGridSize({
+        width: this.gridSizeList[index].width,
+        height: this.gridSizeList[index].height
+      })
+    }
   },
   methods: {
+    ...mapActions([
+      'updateGridSize'
+    ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
       this.style.left = `-${scrollLeft}px`
+    },
+    clickListener (e) {
+      this.showGridSizeList = false
     }
   }
 }
@@ -147,7 +216,7 @@ export default {
     .page-design-wrap
       flex: 1
 .operation
-  z-index: 10
+  z-index: 1000
   width: 45px
   position: fixed
   top: 200px
@@ -157,8 +226,6 @@ export default {
     margin-bottom: 20px
     &:last-child
       margin-bottom: 0px
-    .operation-item-margin
-      margin-top: 10px
     .operation-item
       border-bottom: 1px solid $color-dark-gray
       background-color: $color-light-gray
@@ -178,5 +245,39 @@ export default {
         background-color: $color-dark-gray
       &:last-child
         border-bottom: 0px
+      .grid-selecter
+        position: absolute
+        width: 120px
+        left: -8px
+        transform: translateX(-100%)
+        background-color: $color-dark-gray
+        color: $color-white
+        z-index: 1000
+        &:after
+          content: ''
+          position: absolute
+          top: 50%
+          right: -8px
+          transform: translateY(-50%)
+          triangle(right, 8px, $color-dark-gray)
+        .grid-item
+          width: 100%
+          height: 34px
+          font-size: 14px
+          padding: 10px
+          display: flex
+          align-items: center
+          cursor: pointer
+          span
+            flex: 1
+          &:hover
+            color: $color-main
+            background-color: #50555b
+        .grid-item-active
+          color: $color-main
+          background-color: #50555b
+    .operation-item-active
+      color: $color-main
+      background-color: $color-dark-gray
 
 </style>

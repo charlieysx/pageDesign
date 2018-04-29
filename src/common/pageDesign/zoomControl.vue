@@ -1,29 +1,29 @@
 <template>
-  <div id="size-control">
-    <ul class="size-selecter" v-show="show">
+  <div id="zoom-control">
+    <ul class="zoom-selecter" v-show="show">
       <li 
-        class="size-item" 
-        :class="{'size-item-active' : activeSizeIndex === index}" 
-        v-for="(item, index) in sizeList" 
+        class="zoom-item" 
+        :class="{'zoom-item-active' : activezoomIndex === index}" 
+        v-for="(item, index) in zoomList" 
         :key="index"
         @click.stop="selectItem(index)">
         <i class="iconfont" v-if="item.icon" :class="item.icon"></i>
         <span>{{ item.text }}</span>
-        <i class="iconfont icon-selected" v-if="activeSizeIndex === index"></i>
+        <i class="iconfont icon-selected" v-if="activezoomIndex === index"></i>
       </li>
     </ul>
-    <div class="size-control-wrap">
+    <div class="zoom-control-wrap">
       <div 
-        class="size-icon radius-left" 
-        @click.stop="activeSizeIndex > 0 ? sub() : ''"
-        :class="{'disable' : activeSizeIndex === 0}">
+        class="zoom-icon radius-left" 
+        @click.stop="activezoomIndex > 0 ? sub() : ''"
+        :class="{'disable' : activezoomIndex === 0}">
         <i class="iconfont icon-sub"></i>
       </div>
-      <div class="size-text" :class="{'size-text-active' : show}" @click.stop="show = !show">
+      <div class="zoom-text" :class="{'zoom-text-active' : show}" @click.stop="show = !show">
         {{ zoom.text }}
       </div>
       <div 
-        class="size-icon radius-right" 
+        class="zoom-icon radius-right" 
         @click.stop="otherIndex < otherList.length - 1 ? add() : ''"
         :class="{'disable' : otherIndex === otherList.length - 1}">
         <i class="iconfont icon-add"></i>
@@ -39,14 +39,14 @@ import {
 } from 'vuex'
 
 // 组件大小控制器
-const NAME = 'size-control'
+const NAME = 'zoom-control'
 
 export default {
   name: NAME,
   data () {
     return {
-      activeSizeIndex: 0,
-      sizeList: [
+      activezoomIndex: 0,
+      zoomList: [
         {
           text: '25%',
           value: 25
@@ -78,7 +78,7 @@ export default {
         {
           text: '最佳尺寸',
           value: -1,
-          icon: 'icon-best-size'
+          icon: 'icon-best-zoom'
         }
       ],
       show: false,
@@ -118,7 +118,7 @@ export default {
   },
   mounted () {
     window.addEventListener('click', this.close)
-    this.activeSizeIndex = this.sizeList.length - 1
+    this.activezoomIndex = this.zoomList.length - 1
   },
   beforeDestroy () {
     window.removeEventListener('click', this.close)
@@ -130,11 +130,11 @@ export default {
     ])
   },
   watch: {
-    activeSizeIndex (value) {
-      if (value < 0 || value > this.sizeList.length - 1) {
+    activezoomIndex (value) {
+      if (value < 0 || value > this.zoomList.length - 1) {
         return
       }
-      this.zoom = this.sizeList[value]
+      this.zoom = this.zoomList[value]
     },
     otherIndex (value) {
       if (value < 0 || value > this.otherList.length - 1) {
@@ -155,7 +155,7 @@ export default {
       'updateZoom'
     ]),
     selectItem (index) {
-      this.activeSizeIndex = index
+      this.activezoomIndex = index
       this.otherIndex = -1
       this.show = false
     },
@@ -164,14 +164,14 @@ export default {
     },
     add () {
       this.show = false
-      if (this.activeSizeIndex === this.sizeList.length - 2 ||
-        this.activeSizeIndex === this.sizeList.length - 1) {
-        this.activeSizeIndex = this.sizeList.length
+      if (this.activezoomIndex === this.zoomList.length - 2 ||
+        this.activezoomIndex === this.zoomList.length - 1) {
+        this.activezoomIndex = this.zoomList.length
         this.otherIndex += 1
         return
       }
-      if (this.activeSizeIndex != this.sizeList.length) {
-        this.activeSizeIndex++
+      if (this.activezoomIndex != this.zoomList.length) {
+        this.activezoomIndex++
         return
       }
       if (this.otherIndex < this.otherList.length - 1) {
@@ -182,19 +182,19 @@ export default {
       this.show = false
       if (this.otherIndex === 0) {
         this.otherIndex = -1
-        this.activeSizeIndex = this.sizeList.length - 2
+        this.activezoomIndex = this.zoomList.length - 2
         return
       }
       if (this.otherIndex != -1) {
         this.otherIndex--
         return
       }
-      if (this.activeSizeIndex === this.sizeList.length - 1) {
-        this.activeSizeIndex = this.sizeList.length - 2
+      if (this.activezoomIndex === this.zoomList.length - 1) {
+        this.activezoomIndex = this.zoomList.length - 2
         return
       }
-      if (this.activeSizeIndex != 0) {
-        this.activeSizeIndex--
+      if (this.activezoomIndex != 0) {
+        this.activezoomIndex--
       }
     },
     calcZoom () {
@@ -212,12 +212,12 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#size-control
+#zoom-control
   position: fixed
   bottom: 50px
   right: 320px
-  z-index: 10
-  .size-control-wrap
+  z-index: 1000
+  .zoom-control-wrap
     height: 40px
     display: flex
     flex-direction: row
@@ -228,7 +228,7 @@ export default {
     .radius-right
       border-top-right-radius: 50%
       border-bottom-right-radius: 50%
-    .size-icon
+    .zoom-icon
       background-color: $color-light-gray
       color: $color-white
       width: 40px
@@ -245,7 +245,7 @@ export default {
         color: #808080
         background-color: $color-light-gray
         cursor: not-allowed
-    .size-text
+    .zoom-text
       background-color: $color-light-gray
       color: $color-white
       width: 60px
@@ -256,14 +256,15 @@ export default {
       &:hover
         color: $color-main
         background-color: $color-dark-gray
-    .size-text-active
+    .zoom-text-active
       color: $color-main
       background-color: $color-dark-gray
-  .size-selecter
+  .zoom-selecter
     position: absolute
     width: 100%
     top: -10px
     transform: translateY(-100%)
+    z-index: 1000
     background-color: $color-dark-gray
     color: $color-white
     &:after
@@ -273,7 +274,7 @@ export default {
       left: 50%
       transform: translateX(-50%)
       triangle(bottom, 8px, $color-dark-gray)
-    .size-item
+    .zoom-item
       width: 100%
       height: 34px
       font-size: 14px
@@ -290,7 +291,7 @@ export default {
       &:hover
         color: $color-main
         background-color: #50555b
-    .size-item-active
+    .zoom-item-active
       color: $color-main
       background-color: #50555b
 </style>
