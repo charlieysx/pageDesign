@@ -56,8 +56,8 @@ export default {
       }
       let width = this.dPage.width - 2
       let height = this.dPage.height - 2
-      this.verticalLineCount = (this.dPage.width - (this.dPage.width % this.gridSize.width)) / this.gridSize.width
-      this.horizontalLineCount = (this.dPage.height - (this.dPage.height % this.gridSize.height)) / this.gridSize.height
+      this.verticalLineCount = (width - (width % this.gridSize.width)) / this.gridSize.width
+      this.horizontalLineCount = (height - (height % this.gridSize.height)) / this.gridSize.height
     }
   }
 }
