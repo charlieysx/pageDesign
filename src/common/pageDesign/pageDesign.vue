@@ -3,10 +3,9 @@
     ref="page-design">
     <div
       class="out-page"
-      ref="out-page"
       :style="{
-        width: dPage.width * 5 + 'px',
-        height: dPage.height * 5 + 'px'
+        width: dPage.width * dZoom / 100 + 80 + 'px',
+        height: dPage.height * dZoom / 100 + 80 + 'px'
       }">
       <div 
         class="design-canvas"
@@ -14,7 +13,8 @@
           width: dPage.width + 'px',
           height: dPage.height + 'px',
           transform: 'scale(' + dZoom / 100 + ')',
-          'background-color': dPage.backgroundColor
+          transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
+          backgroundColor: dPage.backgroundColor
         }">
         <w-text />
 
@@ -51,15 +51,10 @@ export default {
   },
   mounted () {
     this.getScreen()
-    window.addEventListener('resize', this.resize)
+    // window.addEventListener('resize', this.resize)
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.resize)
-  },
-  watch: {
-    dZoom (value) {
-      this.updatePosition()
-    }
+    // window.removeEventListener('resize', this.resize)
   },
   methods: {
     ...mapActions([
@@ -71,14 +66,6 @@ export default {
         width: screen.offsetWidth,
         height: screen.offsetHeight
       })
-    },
-    updatePosition () {
-      let x = (this.dPage.width * 5 - this.dScreen.width + 80) / 2
-      this.$refs['page-design'].scrollTo(x, 0)
-    },
-    resize () {
-      this.getScreen()
-      this.updatePosition()
     }
   }
 }
@@ -92,12 +79,12 @@ export default {
   height: 100%
   overflow: auto
   .out-page
-    display: flex
-    justify-content: center
-    margin: 40px
+    position: relative
+    margin: 0 auto
+    padding: 40px
     .design-canvas
       position: relative
-      transform-origin: center top
+      margin: 0 auto
       box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, .1)
 </style>
 
