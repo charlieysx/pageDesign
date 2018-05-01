@@ -14,7 +14,7 @@
       </ul>
     </div>
     <div class="widget-wrap">
-      分类对应列表
+      <text-list-wrap v-if="activeWidgetClassify === 0" />
     </div>
   </div>
 </template>
@@ -23,8 +23,13 @@
 // 组件面板
 const NAME = 'widget-panel'
 
+import textListWrap from 'COMMON/pageDesign/panel/textListWrap'
+
 export default {
   name: NAME,
+  components: {
+    textListWrap
+  },
   data () {
     return {
       widgetClassifyList: [
@@ -63,6 +68,7 @@ export default {
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
 #widget-panel
+  position: relative
   width: 360px
   height: 100%
   display: flex
@@ -95,7 +101,6 @@ export default {
   .widget-wrap
     flex: 1
     height: 100%
-    padding: 10px
     background-color: $color-light-gray
 
 </style>

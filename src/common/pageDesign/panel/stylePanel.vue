@@ -15,6 +15,7 @@ export default {
 
 <style lang="stylus" scoped>
 #style-panel
+  position: relative
   width: 300px
   height: 100%
   background-color: #ffffff

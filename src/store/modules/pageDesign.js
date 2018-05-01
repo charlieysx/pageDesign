@@ -25,10 +25,8 @@ const state = {
 
   dActiveElement: {}, // 选中对象，组件或页面
   dPage: {
-    page: true,
-    title: '', // 页面 title
-    width: 360, // 画布宽度
-    height: 640, // 画布高度
+    width: 750, // 画布宽度
+    height: 1334, // 画布高度
     backgroundColor: '#fff', // 画布背景颜色
     backgroundImage: '' // 画布背景图片
   },

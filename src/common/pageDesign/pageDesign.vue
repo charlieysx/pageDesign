@@ -1,20 +1,32 @@
 <template>
-  <div id="page-design" ref="page-design">
-    <div 
-      class="design-canvas"
+  <div id="page-design" 
+    ref="page-design">
+    <div
+      class="out-page"
+      ref="out-page"
       :style="{
-        width: dPage.width + 'px',
-        height: dPage.height + 'px',
-        transform: 'scale(' + dZoom / 100 + ')'
+        width: dPage.width * 5 + 'px',
+        height: dPage.height * 5 + 'px'
       }">
+      <div 
+        class="design-canvas"
+        :style="{
+          width: dPage.width + 'px',
+          height: dPage.height + 'px',
+          transform: 'scale(' + dZoom / 100 + ')',
+          'background-color': dPage.backgroundColor
+        }">
+        <w-text />
 
-    <grid-size />
+        <grid-size />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import gridSize from 'COMMON/pageDesign/gridSize'
+import wText from 'COMMON/pageDesign/widgets/wText'
 
 import {
   mapGetters,
@@ -27,16 +39,27 @@ const NAME = 'page-design'
 export default {
   name: NAME,
   components: {
-    gridSize
+    gridSize,
+    wText
   },
   computed: {
     ...mapGetters([
       'dPage',
-      'dZoom'
+      'dZoom',
+      'dScreen'
     ])
   },
   mounted () {
     this.getScreen()
+    window.addEventListener('resize', this.resize)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.resize)
+  },
+  watch: {
+    dZoom (value) {
+      this.updatePosition()
+    }
   },
   methods: {
     ...mapActions([
@@ -48,6 +71,14 @@ export default {
         width: screen.offsetWidth,
         height: screen.offsetHeight
       })
+    },
+    updatePosition () {
+      let x = (this.dPage.width * 5 - this.dScreen.width + 80) / 2
+      this.$refs['page-design'].scrollTo(x, 0)
+    },
+    resize () {
+      this.getScreen()
+      this.updatePosition()
     }
   }
 }
@@ -56,18 +87,18 @@ export default {
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
 #page-design
+  position: relative
   width: 100%
   height: 100%
-  display: flex
-  justify-content: center
   overflow: auto
-  .design-canvas
-    width: 360px
-    height: 640px
+  .out-page
+    display: flex
+    justify-content: center
     margin: 40px
-    transform-origin: center top
-    background-color: $color-white
-    box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, .1)
+    .design-canvas
+      position: relative
+      transform-origin: center top
+      box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, .1)
 </style>
 
 

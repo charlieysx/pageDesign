@@ -5,7 +5,7 @@
       class="horizontal" 
       :key="item + 'h'" 
       v-for="item in horizontalLineCount"
-      :style="{top: gridSize.height * item + 'px'}">
+      :style="{top: gridSize.height * (item - 1) + 'px'}">
     </div>
 
     <!-- 竖线 -->
@@ -13,7 +13,7 @@
       class="vertical" 
       :key="item + 'v'" 
       v-for="item in verticalLineCount"
-      :style="{left: gridSize.width * item + 'px'}">
+      :style="{left: gridSize.width * (item - 1) + 'px'}">
     </div>
   </div>
 </template>
@@ -56,8 +56,8 @@ export default {
       }
       let width = this.dPage.width - 2
       let height = this.dPage.height - 2
-      this.verticalLineCount = (width - (width % this.gridSize.width)) / this.gridSize.width
-      this.horizontalLineCount = (height - (height % this.gridSize.height)) / this.gridSize.height
+      this.verticalLineCount = (width - (width % this.gridSize.width)) / this.gridSize.width + 1
+      this.horizontalLineCount = (height - (height % this.gridSize.height)) / this.gridSize.height + 1
     }
   }
 }
@@ -71,15 +71,14 @@ export default {
   z-index: 999
   top: 0
   left: 0
-  border: 1px solid #eee
   .vertical
     position: absolute
     width: 1px
     height: 100%
-    background-color: #eee
+    border-right: 1px dotted #d6d6d6
   .horizontal
     position: absolute
     height: 1px
     width: 100%
-    background-color: #eee
+    border-bottom: 1px dotted #d6d6d6
 </style>
