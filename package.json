@@ -15,6 +15,7 @@
     "element-ui": "^2.3.4",
     "flex.css": "^1.1.7",
     "moment": "^2.22.1",
+    "nanoid": "^1.0.2",
     "normalize.css": "^8.0.0",
     "nprogress": "^0.2.0",
     "qs": "^6.5.1",

@@ -16,7 +16,14 @@
           transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
           backgroundColor: dPage.backgroundColor
         }">
-        <w-text />
+        <component
+          :is="widget.type"
+          :data-title="widget.type"
+          v-for="widget in dWidgets"
+          :key="widget.uuid"
+          :params="widget"
+          :data-type="widget.type"
+          :data-uuid="widget.uuid" />
 
         <grid-size />
       </div>
@@ -46,15 +53,14 @@ export default {
     ...mapGetters([
       'dPage',
       'dZoom',
-      'dScreen'
+      'dScreen',
+      'dWidgets'
     ])
   },
   mounted () {
     this.getScreen()
-    // window.addEventListener('resize', this.resize)
   },
   beforeDestroy () {
-    // window.removeEventListener('resize', this.resize)
   },
   methods: {
     ...mapActions([

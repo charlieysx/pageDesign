@@ -27,11 +27,17 @@
     </div>
     <div class="operation">
       <ul class="operation-wrap">
-        <li class="operation-item">
+        <li 
+          class="operation-item" 
+          :class="{'disable' : !undoable}"
+          @click="undoable ? handle('undo') : ''">
           <i class="iconfont icon-undo"></i>
           <p>撤销</p>
         </li>
-        <li class="operation-item">
+        <li 
+          class="operation-item" 
+          :class="{'disable' : !redoable}"
+          @click="redoable ? handle('redo') : ''">
           <i class="iconfont icon-redo"></i>
           <p>重做</p>
         </li>
@@ -121,6 +127,17 @@ export default {
       showGridSizeList: false
     }
   },
+  computed: {
+    ...mapGetters([
+      'dHistoryParams'
+    ]),
+    undoable() {
+      return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
+    },
+    redoable() {
+      return !(this.dHistoryParams.index === this.dHistoryParams.length - 1)
+    }
+  },
   mounted () {
     window.addEventListener('scroll', this.fixTopBarScroll)
     window.addEventListener('click', this.clickListener)
@@ -139,7 +156,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateGridSize'
+      'updateGridSize',
+      'handleHistory'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -147,6 +165,14 @@ export default {
     },
     clickListener (e) {
       this.showGridSizeList = false
+    },
+    handle (action) {
+      switch (action) {
+        case 'undo':
+        case 'redo':
+          this.handleHistory(action)
+          break
+      }
     }
   }
 }
@@ -279,5 +305,11 @@ export default {
     .operation-item-active
       color: $color-main
       background-color: $color-dark-gray
+    .disable
+      color: #808080
+      &:hover
+        color: #808080
+        background-color: $color-light-gray
+        cursor: not-allowed
 
 </style>

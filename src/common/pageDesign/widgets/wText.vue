@@ -1,23 +1,27 @@
 <template>
   <div 
     id="w-text"
-    v-html="text"
+    v-html="params.text"
     :contenteditable="editable"
     @dblclick="(e) => dblclickText(e)"
     @blur="(e) => updateText(e)"
-    :class="{'edit-text': editable}"
+    :class="[{'edit-text': editable}, params.uuid]"
     :style="{
       position: 'absolute',
-      left: '0',
-      top: '0',
-      width: '750px',
-      minHeight: 96 * lineHeight + 'px',
-      lineHeight: 96 * lineHeight + 'px',
-      letterSpacing: 96 * 0 / 100 + 'px',
-      fontSize: '96px',
-      color: '#000000',
-      textAlign: 'center',
-      fontWeight: 'bold'
+      left: params.left + 'px',
+      top: params.top + 'px',
+      width: params.width === 0 ? '100%' : (params.width + 2 + 'px'),
+      minWidth: params.fontSize + 'px',
+      minHeight: params.fontSize * params.lineHeight + 'px',
+      lineHeight: params.fontSize * params.lineHeight + 'px',
+      letterSpacing: params.fontSize * params.letterSpacing / 100 + 'px',
+      fontSize: params.fontSize + 'px',
+      color: params.color,
+      textAlign: params.textAlign,
+      fontWeight: params.fontWeight,
+      fontStyle: params.fontStyle,
+      textDecoration: params.textDecoration,
+      zIndex: params.zIndex
     }">
   </div>
 </template>
@@ -26,23 +30,55 @@
 // 文本组件
 const NAME = 'w-text'
 
+import {
+  mapActions
+} from 'vuex'
+
 export default {
   name: NAME,
+  setting: {
+    type: NAME,
+    uuid: -1,
+    editable: true,
+    width: 0,
+    left: 0,
+    top: 0,
+    zIndex: 0,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+    fontSize: 24,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    textDecoration: 'none',
+    color: '#000000',
+    textAlign: 'left',
+    text: '文本',
+    parent: 'page'
+  },
+  props: ['params'],
   data () {
     return {
-      editable: false,
-      text: '大标题',
-      lineHeight: 1
+      editable: false
     }
   },
   methods: {
+    ...mapActions([
+      'updateWidgetData'
+    ]),
     updateText (e) {
-      console.log(e.target.innerText)
       this.editable = false
+      this.updateWidgetData({
+        dUuid: this.params.uuid,
+        key: 'text',
+        value: e.target.innerText
+      })
     },
     dblclickText (e) {
       this.editable = true
-      let text = document.getElementById('w-text')
+      let text = document.getElementsByClassName(this.params.uuid)
+      if (text.length > 0) {
+        text = text[0]
+      }
       if (document.body.createTextRange) {
         var range = document.body.createTextRange()
         range.moveToElementText(text)
@@ -60,10 +96,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~STYLUS/page-design.styl'
 #w-text
   outline: none
   cursor: pointer
+  word-break: break-all
   &.edit-text
     cursor: text
-    border: 1px solid #000000
+    border: 1px solid $color-black
 </style>

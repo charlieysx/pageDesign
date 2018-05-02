@@ -1,15 +1,16 @@
 <template>
   <div id="text-list-wrap">
-    <ul class="normal-text-wrap">
+    <ul class="basic-text-wrap">
       <li
-        class="normal-text-item"
-        v-for="(item, index) in normalTextList"
+        class="basic-text-item"
+        v-for="(item, index) in basicTextList"
         :key="index"
         :style="{
-          'font-size': item.size / 2 + 'px',
-          'font-weight': item.weight
-        }">
-        {{ item.name }}
+          fontSize: item.fontSize / 2 + 'px',
+          fontWeight: item.fontWeight
+        }"
+        @click="selectBasicText(item)">
+        {{ item.text }}
       </li>
     </ul>
     <div class="other-text-wrap">
@@ -23,37 +24,56 @@
 // 文本组件列表
 const NAME = 'text-list-wrap'
 
+import wText from 'COMMON/pageDesign/widgets/wText'
+
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
+
 export default {
   name: NAME,
   data () {
     return {
-      normalTextList: [
+      basicTextList: [
         {
-          name: '大标题',
-          size: 96,
-          weight: 'bold'
+          text: '大标题',
+          fontSize: 96,
+          fontWeight: 'bold'
         },
         {
-          name: '标题',
-          size: 60,
-          weight: 'bold'
+          text: '标题',
+          fontSize: 60,
+          fontWeight: 'bold'
         },
         {
-          name: '副标题',
-          size: 40,
-          weight: 'normal'
+          text: '副标题',
+          fontSize: 40,
+          fontWeight: 'normal'
         },
         {
-          name: '小标题',
-          size: 36,
-          weight: 'normal'
+          text: '小标题',
+          fontSize: 36,
+          fontWeight: 'normal'
         },
         {
-          name: '正文内容',
-          size: 28,
-          weight: 'normal'
+          text: '正文内容',
+          fontSize: 28,
+          fontWeight: 'normal'
         }
       ]
+    }
+  },
+  methods: {
+    ...mapActions([
+      'addWidget'
+    ]),
+    selectBasicText (item) {
+      let setting = JSON.parse(JSON.stringify(wText.setting))
+      setting.text = item.text
+      setting.fontSize = item.fontSize
+      setting.fontWeight = item.fontWeight
+      this.addWidget(setting)
     }
   }
 }
@@ -66,11 +86,11 @@ export default {
   height: 100%
   display: flex
   flex-direction: column
-  .normal-text-wrap
+  .basic-text-wrap
     width: 100%
     border-bottom: 1px solid #092625
     padding: 10px 0
-    .normal-text-item
+    .basic-text-item
       width: 100%
       text-align: center
       padding: 5px 0

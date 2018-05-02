@@ -1,3 +1,5 @@
+const generate = require('nanoid/generate')
+
 const state = {
   dTop: 0, // 添加组件的初始纵坐标
   dZoom: 100, // 画布缩放百分比
@@ -31,7 +33,11 @@ const state = {
     backgroundImage: '' // 画布背景图片
   },
   dWidgets: [], // 已使用的组件
-  history: [] // 记录历史操作（直接保存整个画布的json数据）
+  dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
+  dHistoryParams: {
+    index: -1,
+    length: 0
+  }
 }
 
 const getters = {
@@ -73,10 +79,54 @@ const getters = {
   },
   dWidgets (state) {
     return state.dWidgets
+  },
+  dHistoryParams (state) {
+    return state.dHistoryParams
   }
 }
 
 const actions = {
+  pushHistory (store) {
+    let history = store.state.dHistory
+    let historyParams = store.state.dHistoryParams
+    if (historyParams.index !== -1 && historyParams.index < history.length - 1) {
+      history.splice(historyParams.index + 1, history.length - 1 - historyParams.index)
+      historyParams.length = history.length
+    }
+    history.push(JSON.stringify(store.state.dWidgets))
+    if (history.length > 10) {
+      history.splice(0, 1)
+    }
+    historyParams.index = history.length - 1
+    historyParams.length = history.length
+  },
+  handleHistory (store, action) {
+    let history = store.state.dHistory
+    let historyParams = store.state.dHistoryParams
+
+    if (action === 'undo') {
+      historyParams.index -= 1
+      if (historyParams.index >= 0) {
+        store.state.dWidgets = JSON.parse(history[historyParams.index])
+      } else if (historyParams.length < 10) {
+        historyParams.index = -1
+        store.state.dWidgets = []
+      } else {
+        historyParams.index = -1
+      }
+      return
+    }
+
+    if (action === 'redo') {
+      historyParams.index += 1
+      if (historyParams.index < historyParams.length) {
+        store.state.dWidgets = JSON.parse(history[historyParams.index])
+      } else {
+        historyParams.index = historyParams.length - 1
+        store.state.dWidgets = JSON.parse(history[historyParams.index])
+      }
+    }
+  },
   updateTop (store, top) {
     store.state.dTop = top
   },
@@ -92,10 +142,17 @@ const actions = {
     store.state.gridSize.height = height
   },
   updateWidgetData (store, {dUuid, key, value}) {
-    let widget = store.state.dWidgets.find(item => item.dUuid === dUuid)
-    if (widget) {
+    let widget = store.state.dWidgets.find(item => item.uuid === dUuid)
+    if (widget && widget[key] !== value) {
       widget[key] = value
+      store.dispatch('pushHistory')
     }
+  },
+  addWidget (store, setting) {
+    setting.uuid = generate('1234567890abcdef', 12)
+    store.state.dWidgets.push(setting)
+
+    store.dispatch('pushHistory')
   }
 }
 
