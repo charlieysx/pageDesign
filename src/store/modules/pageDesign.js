@@ -4,8 +4,7 @@ const state = {
   dTop: 0, // 添加组件的初始纵坐标
   dZoom: 100, // 画布缩放百分比
   dType: 'page', // 选中元素类型
-  dIndex: -1, // 选中元素索引
-  dUuid: null, // 选中元素uuid
+  dUuid: -1, // 选中元素uuid
   dScreen: {
     width: 0, // 记录编辑界面的宽度
     height: 0 // 记录编辑界面的高度
@@ -52,9 +51,6 @@ const getters = {
   },
   dType (state) {
     return state.dType
-  },
-  dIndex (state) {
-    return state.dIndex
   },
   dUuid (state) {
     return state.dUuid
@@ -157,11 +153,42 @@ const actions = {
 
     store.dispatch('pushHistory')
   },
+  deleteWidget (store) {
+    let type = store.state.dType
+    if (type === 'page') {
+      return
+    }
+
+    let widgets = store.state.dWidgets
+    let uuid = store.state.dActiveElement.uuid
+    let index = widgets.findIndex(item => {
+      return item.uuid === uuid
+    })
+
+    // 先删除组件
+    widgets.splice(index, 1)
+
+    // 如果删除的是容器，须将内部组件一并删除
+    if (store.state.dActiveElement.isContainer) {
+      for (let i = 0; i < widgets.length; ++i) {
+        if (widgets[i].belong === uuid) {
+          widgets.splice(i, 1)
+        }
+      }
+    }
+
+    // 重置 activeElement
+    store.state.dActiveElement = store.state.dPage
+    store.state.type = 'page'
+    store.state.uuid = -1
+
+    store.dispatch('pushHistory')
+  },
   // 选中元件与取消选中
   selectWidget (store, { uuid }) {
     store.state.dUuid = uuid
     if (uuid === -1) {
-      store.state.dActiveElement = store.state.page
+      store.state.dActiveElement = store.state.dPage
       store.state.dType = 'page'
     } else {
       let widget = store.state.dWidgets.find(item => item.uuid === uuid)

@@ -86,16 +86,17 @@ export default {
       uuid: -1
     })
     // 采用事件代理的方式监听元件的选中操作
-    document
-      .getElementById('out-page')
-      .addEventListener('mousedown', this.handleSelection, false)
+    let viewport = document.getElementById('out-page')
+    viewport.addEventListener('mousedown', this.handleSelection, false)
+    document.addEventListener('keydown', this.handleKeydowm, false)
   },
   beforeDestroy () {
   },
   methods: {
     ...mapActions([
       'updateScreen',
-      'selectWidget'
+      'selectWidget',
+      'deleteWidget'
     ]),
     getScreen () {
       let screen = this.$refs['page-design']
@@ -122,6 +123,17 @@ export default {
         this.selectWidget({
           uuid: -1
         })
+      }
+    },
+    handleKeydowm (e) {
+      e.stopPropagation()
+      console.log(e.keyCode)
+      if (this.dUuid === -1) {
+        return
+      }
+      console.log(e.keyCode)
+      if (e.keyCode === 46 || e.keyCode === 8) {
+        this.deleteWidget()
       }
     },
     getlayers () {
