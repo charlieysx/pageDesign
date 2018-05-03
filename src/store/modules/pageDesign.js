@@ -27,10 +27,13 @@ const state = {
 
   dActiveElement: {}, // 选中对象，组件或页面
   dPage: {
+    uuid: -1,
     width: 750, // 画布宽度
     height: 1334, // 画布高度
     backgroundColor: '#fff', // 画布背景颜色
-    backgroundImage: '' // 画布背景图片
+    backgroundImage: '', // 画布背景图片
+    opacity: 1,
+    tag: 0
   },
   dWidgets: [], // 已使用的组件
   dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
@@ -153,6 +156,52 @@ const actions = {
     store.state.dWidgets.push(setting)
 
     store.dispatch('pushHistory')
+  },
+  // 选中元件与取消选中
+  selectWidget (store, { uuid }) {
+    store.state.dUuid = uuid
+    if (uuid === -1) {
+      store.state.dActiveElement = store.state.page
+      store.state.dType = 'page'
+    } else {
+      let widget = store.state.dWidgets.find(item => item.uuid === uuid)
+      store.state.dActiveElement = widget
+      store.state.dType = widget.type
+    }
+  },
+  // 设置 mousemove 操作的初始值
+  initDMove (store, payload) {
+    let mouseXY = store.state.dMouseXY
+    let widgetXY = store.state.dActiveWidgetXY
+    mouseXY.x = payload.startX
+    mouseXY.y = payload.startY
+    widgetXY.x = payload.originX
+    widgetXY.y = payload.originY
+  },
+  // 元件移动结束
+  stopDMove (store) {
+    if (store.state.dMoving) {
+      store.dispatch('pushHistory')
+    }
+    store.state.dMoving = false
+  },
+  // 移动元件
+  dMove (store, payload) {
+    store.state.dMoving = true
+    let target = store.state.dActiveElement
+    let mouseXY = store.state.dMouseXY
+    let widgetXY = store.state.dActiveWidgetXY
+
+    let dx = payload.x - mouseXY.x
+    let dy = payload.y - mouseXY.y
+    let left = widgetXY.x + Math.floor(dx * 100 / store.state.dZoom)
+    let top = widgetXY.y + Math.floor(dy * 100 / store.state.dZoom)
+
+    target.left = Math.max(left, 0)
+    target.top = Math.max(top, 0)
+
+    let tag = store.state.dPage.tag
+    store.state.dPage.tag = tag === 0 ? 0.01 : 0
   }
 }
 

@@ -5,13 +5,16 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App'
 import router from './router'
-import './ElementUI'
+// import './ElementUI'
 import store from './store/index'
 import { sync } from 'vuex-router-sync'
 import validator from 'UTIL/validator'
 import 'UTIL/filters'
 import toast from 'COMMON/toast/toast.js'
 // import 'COMMON/index'
+if (process.env.NODE_ENV === 'development') {
+  require('./ElementUI')
+}
 
 Vue.config.productionTip = false
 

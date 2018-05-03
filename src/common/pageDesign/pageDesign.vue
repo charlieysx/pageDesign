@@ -3,9 +3,11 @@
     ref="page-design">
     <div
       class="out-page"
+      id="out-page"
       :style="{
         width: dPage.width * dZoom / 100 + 80 + 'px',
-        height: dPage.height * dZoom / 100 + 80 + 'px'
+        height: dPage.height * dZoom / 100 + 80 + 'px',
+        opacity: 1 - (dZoom < 100 ? dPage.tag : 0)
       }">
       <div 
         class="design-canvas"
@@ -14,16 +16,32 @@
           height: dPage.height + 'px',
           transform: 'scale(' + dZoom / 100 + ')',
           transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
-          backgroundColor: dPage.backgroundColor
+          backgroundColor: dPage.backgroundColor,
+          opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0)
         }">
+
         <component
-          :is="widget.type"
-          :data-title="widget.type"
-          v-for="widget in dWidgets"
-          :key="widget.uuid"
-          :params="widget"
-          :data-type="widget.type"
-          :data-uuid="widget.uuid" />
+          :is="layer.type"
+          class="layer"
+          :class="{'layer-active' : dUuid === layer.uuid}"
+          :data-title="layer.type"
+          v-for="layer in getlayers()"
+          :key="layer.uuid"
+          :params="layer"
+          :data-type="layer.type"
+          :data-uuid="layer.uuid">
+          <component
+            v-if="layer.isContainer"
+            :is="widget.type"
+            class="layer"
+            :class="{'layer-active' : dUuid === widget.uuid}"
+            :data-title="widget.type"
+            v-for="widget in getChilds(layer.uuid)"
+            :key="widget.uuid"
+            :params="widget"
+            :data-type="widget.type"
+            :data-uuid="widget.uuid" />
+        </component>
 
         <grid-size />
       </div>
@@ -33,7 +51,7 @@
 
 <script>
 import gridSize from 'COMMON/pageDesign/gridSize'
-import wText from 'COMMON/pageDesign/widgets/wText'
+import wText from 'COMMON/pageDesign/widgets/wText/index'
 
 import {
   mapGetters,
@@ -42,6 +60,8 @@ import {
 
 // 页面设计组件
 const NAME = 'page-design'
+
+import { move } from 'MIXINS/move'
 
 export default {
   name: NAME,
@@ -54,17 +74,28 @@ export default {
       'dPage',
       'dZoom',
       'dScreen',
-      'dWidgets'
+      'dWidgets',
+      'dUuid'
     ])
   },
+  mixins: [move],
   mounted () {
     this.getScreen()
+    // 初始化激活的控件为page
+    this.selectWidget({
+      uuid: -1
+    })
+    // 采用事件代理的方式监听元件的选中操作
+    document
+      .getElementById('out-page')
+      .addEventListener('mousedown', this.handleSelection, false)
   },
   beforeDestroy () {
   },
   methods: {
     ...mapActions([
-      'updateScreen'
+      'updateScreen',
+      'selectWidget'
     ]),
     getScreen () {
       let screen = this.$refs['page-design']
@@ -72,6 +103,36 @@ export default {
         width: screen.offsetWidth,
         height: screen.offsetHeight
       })
+    },
+    handleSelection (e) {
+      let target = e.target
+      let type = target.getAttribute('data-type')
+
+      if (type) {
+        let uuid = target.getAttribute('data-uuid')
+
+        // 设置选中元素
+        this.selectWidget({
+          uuid: uuid || -1
+        })
+
+        this.initmovement(e) // 参见 mixins
+      } else {
+        // 取消选中元素
+        this.selectWidget({
+          uuid: -1
+        })
+      }
+    },
+    getlayers () {
+      return this.dWidgets.filter(
+        item => item.parent === 'page'
+      )
+    },
+    getChilds (uuid) {
+      return this.dWidgets.filter(
+        item => item.parent === uuid
+      )
     }
   }
 }

@@ -21,6 +21,7 @@
       fontWeight: params.fontWeight,
       fontStyle: params.fontStyle,
       textDecoration: params.textDecoration,
+      opacity: params.opacity,
       zIndex: params.zIndex
     }">
   </div>
@@ -53,6 +54,7 @@ export default {
     color: '#000000',
     textAlign: 'left',
     text: '文本',
+    opacity: 1,
     parent: 'page'
   },
   props: ['params'],
@@ -103,5 +105,5 @@ export default {
   word-break: break-all
   &.edit-text
     cursor: text
-    border: 1px solid $color-black
+    outline: 1px solid $color-black !important
 </style>
