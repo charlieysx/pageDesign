@@ -44,7 +44,8 @@ module.exports = {
       'API': resolve('src/api'),
       'UTIL': resolve('src/util'),
       'STORE': resolve('src/store'),
-      'DATA': resolve('src/data')
+      'DATA': resolve('src/data'),
+      'MIXINS': resolve('src/mixins')
     }
   },
   module: {

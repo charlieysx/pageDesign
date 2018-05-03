@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 // import store from 'STORE/index'
 
 import home from './modules/home'
+import pageDesign from './modules/pageDesign'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -17,7 +18,8 @@ NProgress.configure({ easing: 'ease', speed: 500, showSpinner: false })
 Vue.use(VueRouter)
 
 const routes = [
-  ...home
+  ...home,
+  ...pageDesign
 ]
 
 const router = new VueRouter({

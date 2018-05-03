@@ -1,11 +1,15 @@
 <template>
   <div id="home">
     <img src="~IMAGES/avatar.jpg">
-    <el-button type="primary" @click="good">点我试试test<i class="iconfont icon-eye"></i></el-button>
+    <el-button type="primary" @click="good">test</el-button>
   </div>
 </template>
 
 <script>
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 
 export default {
   name: 'home',
@@ -14,11 +18,23 @@ export default {
       name: 'Good Lucky~'
     }
   },
+  computed: {
+    ...mapGetters([
+      'dWidgets'
+    ])
+  },
+  watch: {
+    dWidgets (value) {
+      console.log(value)
+    }
+  },
   methods: {
+    ...mapActions([
+      'test'
+    ]),
     good () {
-      this.$message({
-        message: this.name,
-        type: 'success'
+      this.$router.push({
+        name: 'pageDesign'
       })
     }
   }

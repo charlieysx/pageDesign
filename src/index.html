@@ -1,12 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang='zh-CN'>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>一个vue项目的基础框架</title>
+    <title>艺卡设计后台管理系统</title>
   </head>
   <body>
+    <noscript>本站大量使用 JavaScript 技术，请确保您的浏览器打开了 JavaScript 支持，谢谢。</noscript>
+    <!--[if lt IE 9]>
+       <style>
+        html{overflow:hidden}
+        body{height:100%;overflow:auto}
+        #browser-happy{position:fixed;height:100%;width:100%;top:0;left:0;bottom:0;right:0;z-index:9999;background:#fff;padding-top:130px;text-align:center}
+        #browser-happy img{width:818px;}
+      </style>
+      <div id="browser-happy"><img src="require('IMAGES/upgrade.png')" alt="升级浏览器"></div>
+    <![endif]-->
+
     <div id="app"></div>
     <!-- built files will be auto injected -->
+
+    <% if (htmlWebpackPlugin.options.prod) { %>
+      <!-- 如果是开发环境就不需要引入cdn了，直接用本地的，不然没网都开发不了 -->
+
+      <!-- vue -->
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+      <!-- vue-router -->
+      <script src="https://cdn.bootcss.com/vue-router/3.0.1/vue-router.min.js"></script>
+      <!-- element-ui 引入样式 -->
+      <link rel="stylesheet" href="https://unpkg.com/element-ui@2.3.4/lib/theme-chalk/index.css">
+      <!-- element-ui 组件库 -->
+      <script src="https://unpkg.com/element-ui@2.3.4/lib/index.js"></script>
+      <!-- monent日期库 -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+    <% } %>
   </body>
 </html>
