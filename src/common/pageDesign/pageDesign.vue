@@ -5,8 +5,8 @@
       class="out-page"
       id="out-page"
       :style="{
-        width: dPage.width * dZoom / 100 + 80 + 'px',
-        height: dPage.height * dZoom / 100 + 80 + 'px',
+        width: dPage.width * dZoom / 100 + 120 + 'px',
+        height: dPage.height * dZoom / 100 + 120 + 'px',
         opacity: 1 - (dZoom < 100 ? dPage.tag : 0)
       }">
       <div 
@@ -23,7 +23,7 @@
         <component
           :is="layer.type"
           class="layer"
-          :class="{'layer-active' : dUuid === layer.uuid}"
+          :class="{'layer-active' : dActiveElement.uuid === layer.uuid}"
           :data-title="layer.type"
           v-for="layer in getlayers()"
           :key="layer.uuid"
@@ -34,7 +34,7 @@
             v-if="layer.isContainer"
             :is="widget.type"
             class="layer"
-            :class="{'layer-active' : dUuid === widget.uuid}"
+            :class="{'layer-active' : dActiveElement.uuid === widget.uuid}"
             :data-title="widget.type"
             v-for="widget in getChilds(layer.uuid)"
             :key="widget.uuid"
@@ -75,20 +75,16 @@ export default {
       'dZoom',
       'dScreen',
       'dWidgets',
-      'dUuid'
+      'dActiveElement'
     ])
   },
   mixins: [move],
   mounted () {
     this.getScreen()
-    // 初始化激活的控件为page
-    this.selectWidget({
-      uuid: -1
-    })
     // 采用事件代理的方式监听元件的选中操作
     let viewport = document.getElementById('out-page')
     viewport.addEventListener('mousedown', this.handleSelection, false)
-    document.addEventListener('keydown', this.handleKeydowm, false)
+    // document.addEventListener('keydown', this.handleKeydowm, false)
   },
   beforeDestroy () {
   },
@@ -114,31 +110,29 @@ export default {
 
         // 设置选中元素
         this.selectWidget({
-          uuid: uuid || -1
+          uuid: uuid || '-1'
         })
 
         this.initmovement(e) // 参见 mixins
       } else {
         // 取消选中元素
         this.selectWidget({
-          uuid: -1
+          uuid: '-1'
         })
       }
     },
     handleKeydowm (e) {
       e.stopPropagation()
-      console.log(e.keyCode)
-      if (this.dUuid === -1) {
+      if (this.dActiveElement.uuid === '-1') {
         return
       }
-      console.log(e.keyCode)
       if (e.keyCode === 46 || e.keyCode === 8) {
         this.deleteWidget()
       }
     },
     getlayers () {
       return this.dWidgets.filter(
-        item => item.parent === 'page'
+        item => item.parent === this.dPage.uuid
       )
     },
     getChilds (uuid) {
@@ -160,7 +154,7 @@ export default {
   .out-page
     position: relative
     margin: 0 auto
-    padding: 40px
+    padding: 60px
     .design-canvas
       position: relative
       margin: 0 auto

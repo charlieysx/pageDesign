@@ -55,7 +55,7 @@ export default {
     textAlign: 'left',
     text: '文本',
     opacity: 1,
-    parent: 'page'
+    parent: '-1'
   },
   props: ['params'],
   data () {
@@ -70,7 +70,7 @@ export default {
     updateText (e) {
       this.editable = false
       this.updateWidgetData({
-        dUuid: this.params.uuid,
+        uuid: this.params.uuid,
         key: 'text',
         value: e.target.innerText
       })

@@ -3,8 +3,6 @@ const generate = require('nanoid/generate')
 const state = {
   dTop: 0, // 添加组件的初始纵坐标
   dZoom: 100, // 画布缩放百分比
-  dType: 'page', // 选中元素类型
-  dUuid: -1, // 选中元素uuid
   dScreen: {
     width: 0, // 记录编辑界面的宽度
     height: 0 // 记录编辑界面的高度
@@ -24,15 +22,16 @@ const state = {
   },
   dMoving: false, // 是否正在移动组件
 
-  dActiveElement: {}, // 选中对象，组件或页面
+  dActiveElement: {}, // 选中的组件或页面
   dPage: {
-    uuid: -1,
+    type: 'page',
+    uuid: '-1',
     width: 750, // 画布宽度
     height: 1334, // 画布高度
     backgroundColor: '#fff', // 画布背景颜色
     backgroundImage: '', // 画布背景图片
-    opacity: 1,
-    tag: 0
+    opacity: 1, // 透明度
+    tag: 0 // 强制刷新用
   },
   dWidgets: [], // 已使用的组件
   dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
@@ -48,12 +47,6 @@ const getters = {
   },
   dZoom (state) {
     return state.dZoom
-  },
-  dType (state) {
-    return state.dType
-  },
-  dUuid (state) {
-    return state.dUuid
   },
   dScreen (state) {
     return state.dScreen
@@ -113,10 +106,7 @@ const actions = {
       } else {
         historyParams.index = -1
       }
-      return
-    }
-
-    if (action === 'redo') {
+    } else if (action === 'redo') {
       historyParams.index += 1
       if (historyParams.index < historyParams.length) {
         store.state.dWidgets = JSON.parse(history[historyParams.index])
@@ -125,6 +115,7 @@ const actions = {
         store.state.dWidgets = JSON.parse(history[historyParams.index])
       }
     }
+    store.state.dActiveElement = store.state.dPage
   },
   updateTop (store, top) {
     store.state.dTop = top
@@ -140,8 +131,8 @@ const actions = {
     store.state.gridSize.width = width
     store.state.gridSize.height = height
   },
-  updateWidgetData (store, {dUuid, key, value}) {
-    let widget = store.state.dWidgets.find(item => item.uuid === dUuid)
+  updateWidgetData (store, {uuid, key, value}) {
+    let widget = store.state.dWidgets.find(item => item.uuid === uuid)
     if (widget && widget[key] !== value) {
       widget[key] = value
       store.dispatch('pushHistory')
@@ -150,17 +141,19 @@ const actions = {
   addWidget (store, setting) {
     setting.uuid = generate('1234567890abcdef', 12)
     store.state.dWidgets.push(setting)
+    let len = store.state.dWidgets.length
+    store.state.dActiveElement = store.state.dWidgets[len - 1]
 
     store.dispatch('pushHistory')
   },
   deleteWidget (store) {
-    let type = store.state.dType
-    if (type === 'page') {
+    let activeElement = store.state.dActiveElement
+    if (activeElement.type === 'page') {
       return
     }
 
     let widgets = store.state.dWidgets
-    let uuid = store.state.dActiveElement.uuid
+    let uuid = activeElement.uuid
     let index = widgets.findIndex(item => {
       return item.uuid === uuid
     })
@@ -169,7 +162,7 @@ const actions = {
     widgets.splice(index, 1)
 
     // 如果删除的是容器，须将内部组件一并删除
-    if (store.state.dActiveElement.isContainer) {
+    if (activeElement.isContainer) {
       for (let i = 0; i < widgets.length; ++i) {
         if (widgets[i].belong === uuid) {
           widgets.splice(i, 1)
@@ -179,21 +172,44 @@ const actions = {
 
     // 重置 activeElement
     store.state.dActiveElement = store.state.dPage
-    store.state.type = 'page'
-    store.state.uuid = -1
+
+    store.dispatch('pushHistory')
+  },
+  copyWidget (store) {
+    let activeElement = JSON.parse(JSON.stringify(store.state.dActiveElement))
+    if (activeElement.type === 'page') {
+      return
+    }
+
+    let container = []
+    let uuid = activeElement.uuid
+    activeElement.uuid = generate('1234567890abcdef', 12)
+    activeElement.top += 50
+    activeElement.left += 50
+    container.push(activeElement)
+    let widgets = store.state.dWidgets
+    if (activeElement.isContainer) {
+      for (let i = 0; i < widgets.length; ++i) {
+        if (widgets[i].belong === uuid) {
+          let element = JSON.parse(JSON.stringify(widgets[i]))
+          element.uuid = generate('1234567890abcdef', 12)
+          container.push(element)
+        }
+      }
+    }
+    store.state.dWidgets = widgets.concat(container)
+    store.state.dActiveElement = activeElement
+    console.log(store.state.dWidgets)
 
     store.dispatch('pushHistory')
   },
   // 选中元件与取消选中
   selectWidget (store, { uuid }) {
-    store.state.dUuid = uuid
-    if (uuid === -1) {
+    if (uuid === '-1') {
       store.state.dActiveElement = store.state.dPage
-      store.state.dType = 'page'
     } else {
       let widget = store.state.dWidgets.find(item => item.uuid === uuid)
       store.state.dActiveElement = widget
-      store.state.dType = widget.type
     }
   },
   // 设置 mousemove 操作的初始值

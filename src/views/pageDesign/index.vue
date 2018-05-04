@@ -45,6 +45,22 @@
       <ul class="operation-wrap">
         <li 
           class="operation-item" 
+          :class="{'disable' : dActiveElement.uuid === '-1'}"
+          @click="dActiveElement.uuid !== '-1' ? handle('delete') : ''">
+          <i class="iconfont icon-delete"></i>
+          <p>删除</p>
+        </li>
+        <li 
+          class="operation-item" 
+          :class="{'disable' : dActiveElement.uuid === '-1'}"
+          @click="dActiveElement.uuid !== '-1' ? handle('copy') : ''">
+          <i class="iconfont icon-copy"></i>
+          <p>复制</p>
+        </li>
+      </ul>
+      <ul class="operation-wrap">
+        <li 
+          class="operation-item" 
           @click.stop="showGridSizeList = !showGridSizeList"
           :class="{'operation-item-active' : showGridSizeList}">
           <i class="iconfont icon-ref-grid"></i>
@@ -129,7 +145,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'dHistoryParams'
+      'dHistoryParams',
+      'dActiveElement'
     ]),
     undoable() {
       return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
@@ -139,6 +156,10 @@ export default {
     }
   },
   mounted () {
+    // 初始化激活的控件为page
+    this.selectWidget({
+      uuid: '-1'
+    })
     window.addEventListener('scroll', this.fixTopBarScroll)
     window.addEventListener('click', this.clickListener)
   },
@@ -157,7 +178,10 @@ export default {
   methods: {
     ...mapActions([
       'updateGridSize',
-      'handleHistory'
+      'handleHistory',
+      'selectWidget',
+      'deleteWidget',
+      'copyWidget'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -171,6 +195,12 @@ export default {
         case 'undo':
         case 'redo':
           this.handleHistory(action)
+          break
+        case 'delete':
+          this.deleteWidget()
+          break
+        case 'copy':
+          this.copyWidget()
           break
       }
     }
@@ -244,7 +274,7 @@ export default {
 .operation
   z-index: 1000
   width: 45px
-  position: fixed
+  position: absolute
   top: 200px
   right: 320px
   .operation-wrap
