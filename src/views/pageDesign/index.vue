@@ -84,10 +84,7 @@
 </template>
 
 <script>
-import pageDesign from 'COMMON/pageDesign/pageDesign'
-import widgetPanel from 'COMMON/pageDesign/panel/widgetPanel'
-import stylePanel from 'COMMON/pageDesign/panel/stylePanel'
-import zoomControl from 'COMMON/pageDesign/zoomControl'
+import 'COMMON/pageDesign/index'
 
 import {
   mapGetters,
@@ -96,12 +93,6 @@ import {
 
 export default {
   name: 'page-design-index',
-  components: {
-    pageDesign,
-    widgetPanel,
-    stylePanel,
-    zoomControl
-  },
   data () {
     return {
       style: {
@@ -207,6 +198,10 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus">
+@import '~STYLUS/page-design-element-ui.styl'
+</style>
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'

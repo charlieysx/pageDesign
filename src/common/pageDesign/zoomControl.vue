@@ -202,7 +202,7 @@ export default {
         let widthZoom = (this.dScreen.width - 122) * 100 / this.dPage.width
         let heightZoom = (this.dScreen.height - 122) * 100 / this.dPage.height
 
-        this.bestZoom = Math.round(Math.min(widthZoom, heightZoom))
+        this.bestZoom = Math.min(widthZoom, heightZoom)
       }
       return this.bestZoom
     }

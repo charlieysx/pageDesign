@@ -23,7 +23,9 @@ const state = {
   dMoving: false, // 是否正在移动组件
 
   dActiveElement: {}, // 选中的组件或页面
+  dHoverUuid: '-1', // 鼠标在这个图层上
   dPage: {
+    name: '背景页面',
     type: 'page',
     uuid: '-1',
     width: 750, // 画布宽度
@@ -35,10 +37,28 @@ const state = {
   },
   dWidgets: [], // 已使用的组件
   dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
+  dActiveUuidHistory: [], // 记录历史操作对应的激活的组件的uuid
+  dPageHistory: [], // 记录历史操作对应的page
   dHistoryParams: {
     index: -1,
     length: 0
-  }
+  },
+  dColorHistory: [
+    '#ff4500',
+    '#ff8c00',
+    '#ffd700',
+    '#90ee90',
+    '#00ced1',
+    '#1e90ff',
+    '#c71585',
+    'rgba(255, 69, 0, 0.68)',
+    'rgb(255, 120, 0)',
+    'hsv(51, 100, 98)',
+    'hsva(120, 40, 94, 0.5)',
+    'hsl(181, 100%, 37%)',
+    'hsla(209, 100%, 56%, 0.73)',
+    '#c7158577'
+  ] // 记录历史选择的颜色
 }
 
 const getters = {
@@ -74,48 +94,110 @@ const getters = {
   },
   dHistoryParams (state) {
     return state.dHistoryParams
+  },
+  dColorHistory (state) {
+    return state.dColorHistory
+  },
+  dHoverUuid (state) {
+    return state.dHoverUuid
   }
 }
 
 const actions = {
+  /**
+   * 保存操作历史，
+   * 修改数据、移动完成后都会自动保存
+   * 同时会保存当前激活的组件的uuid，方便撤回时自动激活
+   */
   pushHistory (store) {
+    // 历史记录列表
     let history = store.state.dHistory
+    // 历史激活组件记录列表
+    let uuidHistory = store.state.dActiveUuidHistory
+    // 历史page记录列表
+    let pageHistory = store.state.dPageHistory
+    // 历史记录列表参数（长度和下标）
     let historyParams = store.state.dHistoryParams
-    if (historyParams.index !== -1 && historyParams.index < history.length - 1) {
-      history.splice(historyParams.index + 1, history.length - 1 - historyParams.index)
+    // 下标不等于-1表示已经存在历史操作记录
+    // 下标小于历史列表长度-1，则说明不是在末尾添加记录，需要先删除掉下标之后的数据，否则会出现错乱
+    if (historyParams.index < history.length - 1) {
+      let index = historyParams.index + 1
+      let len = history.length - index
+      // 删除下标之后的所有历史记录
+      history.splice(index, len)
+      // 删除下标之后的所有uuid记录
+      uuidHistory.splice(index, len)
+      // 删除下标之后的所有page记录
+      pageHistory.splice(index + 1, len - 1)
       historyParams.length = history.length
     }
+    // 保存当前操作进历史记录
     history.push(JSON.stringify(store.state.dWidgets))
+    uuidHistory.push(store.state.dActiveElement.uuid)
+    pageHistory.push(JSON.stringify(store.state.dPage))
+    // 历史记录最多10条，如果超过则从头部开始删，因为每次都是一条一条加的，所以只需删一条就行
     if (history.length > 10) {
       history.splice(0, 1)
+      uuidHistory.splice(0, 1)
+      pageHistory.splice(0, 1)
+    }
+    if (pageHistory.length - 1 > history.length) {
+      pageHistory.splice(0, 1)
     }
     historyParams.index = history.length - 1
     historyParams.length = history.length
   },
+  /**
+   * 操作历史记录
+   * action为undo表示撤销
+   * action为redo表示重做
+   */
   handleHistory (store, action) {
     let history = store.state.dHistory
+    let uuidHistory = store.state.dActiveUuidHistory
+    let pageHistory = store.state.dPageHistory
     let historyParams = store.state.dHistoryParams
 
+    let uuid = '-1'
+
     if (action === 'undo') {
+      // 下标向前移1
       historyParams.index -= 1
+      // 如果下表大于等于0，直接取出历史记录
       if (historyParams.index >= 0) {
         store.state.dWidgets = JSON.parse(history[historyParams.index])
+        store.state.dPage = JSON.parse(pageHistory[historyParams.index + 1])
+        uuid = uuidHistory[historyParams.index]
       } else if (historyParams.length < 10) {
+        // 否则如果历史记录长度小于10，则设置组件为空
         historyParams.index = -1
         store.state.dWidgets = []
+        store.state.dPage = JSON.parse(pageHistory[0])
       } else {
         historyParams.index = -1
       }
     } else if (action === 'redo') {
+      // 下标向后移1
       historyParams.index += 1
+      // 如果下表小于历史记录列表长度，直接取出历史记录
       if (historyParams.index < historyParams.length) {
         store.state.dWidgets = JSON.parse(history[historyParams.index])
+        store.state.dPage = JSON.parse(pageHistory[historyParams.index + 1])
+        uuid = uuidHistory[historyParams.index]
       } else {
+        // 否则设置下表为列表最后一项
         historyParams.index = historyParams.length - 1
         store.state.dWidgets = JSON.parse(history[historyParams.index])
+        store.state.dPage = JSON.parse(pageHistory[historyParams.index + 1])
+        uuid = uuidHistory[historyParams.index]
       }
     }
-    store.state.dActiveElement = store.state.dPage
+    // 激活组件默认为page
+    let element = store.state.dPage
+    if (uuid !== '-1') {
+      element = store.state.dWidgets.find(item => item.uuid === uuid)
+    }
+    store.state.dActiveElement = element
   },
   updateTop (store, top) {
     store.state.dTop = top
@@ -131,11 +213,19 @@ const actions = {
     store.state.gridSize.width = width
     store.state.gridSize.height = height
   },
-  updateWidgetData (store, {uuid, key, value}) {
+  updatePageData (store, {key, value, pushHistory}) {
+    let page = store.state.dPage
+    if (page[key] !== value || pushHistory) {
+      page[key] = value
+      store.dispatch('pushHistory')
+    }
+  },
+  updateWidgetData (store, {uuid, key, value, pushHistory}) {
     let widget = store.state.dWidgets.find(item => item.uuid === uuid)
-    if (widget && widget[key] !== value) {
+    if (widget && (widget[key] !== value || pushHistory)) {
       widget[key] = value
       store.dispatch('pushHistory')
+      store.dispatch('reChangeCanvas')
     }
   },
   addWidget (store, setting) {
@@ -145,6 +235,7 @@ const actions = {
     store.state.dActiveElement = store.state.dWidgets[len - 1]
 
     store.dispatch('pushHistory')
+    store.dispatch('reChangeCanvas')
   },
   deleteWidget (store) {
     let activeElement = store.state.dActiveElement
@@ -174,6 +265,7 @@ const actions = {
     store.state.dActiveElement = store.state.dPage
 
     store.dispatch('pushHistory')
+    store.dispatch('reChangeCanvas')
   },
   copyWidget (store) {
     let activeElement = JSON.parse(JSON.stringify(store.state.dActiveElement))
@@ -199,14 +291,18 @@ const actions = {
     }
     store.state.dWidgets = widgets.concat(container)
     store.state.dActiveElement = activeElement
-    console.log(store.state.dWidgets)
 
     store.dispatch('pushHistory')
+    store.dispatch('reChangeCanvas')
   },
   // 选中元件与取消选中
   selectWidget (store, { uuid }) {
     if (uuid === '-1') {
       store.state.dActiveElement = store.state.dPage
+      let pageHistory = store.state.dPageHistory
+      if (pageHistory.length === 0) {
+        pageHistory.push(JSON.stringify(store.state.dPage))
+      }
     } else {
       let widget = store.state.dWidgets.find(item => item.uuid === uuid)
       store.state.dActiveElement = widget
@@ -243,8 +339,25 @@ const actions = {
     target.left = Math.max(left, 0)
     target.top = Math.max(top, 0)
 
+    store.dispatch('reChangeCanvas')
+  },
+  // 强制重绘画布
+  reChangeCanvas (store) {
     let tag = store.state.dPage.tag
     store.state.dPage.tag = tag === 0 ? 0.01 : 0
+  },
+  pushColorToHistory (store, color) {
+    // 最多保存20种颜色
+    let history = store.state.dColorHistory
+    if (history.length === 20) {
+      history.splice(history.length - 1, 1)
+    }
+    // 把最新的颜色放在头部
+    let head = [color]
+    store.state.dColorHistory = head.concat(history)
+  },
+  updateHoverUuid (store, uuid) {
+    store.state.dHoverUuid = uuid
   }
 }
 

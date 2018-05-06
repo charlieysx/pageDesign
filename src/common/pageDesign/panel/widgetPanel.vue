@@ -23,13 +23,8 @@
 // 组件面板
 const NAME = 'widget-panel'
 
-import textListWrap from 'COMMON/pageDesign/panel/textListWrap'
-
 export default {
   name: NAME,
-  components: {
-    textListWrap
-  },
   data () {
     return {
       widgetClassifyList: [

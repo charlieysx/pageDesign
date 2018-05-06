@@ -10,7 +10,7 @@
       position: 'absolute',
       left: params.left + 'px',
       top: params.top + 'px',
-      width: params.width === 0 ? '100%' : (params.width + 2 + 'px'),
+      width: Math.max(params.fontSize, params.width) + 'px',
       minWidth: params.fontSize + 'px',
       minHeight: params.fontSize * params.lineHeight + 'px',
       lineHeight: params.fontSize * params.lineHeight + 'px',
@@ -22,6 +22,7 @@
       fontStyle: params.fontStyle,
       textDecoration: params.textDecoration,
       opacity: params.opacity,
+      backgroundColor: params.backgroundColor,
       zIndex: params.zIndex
     }">
   </div>
@@ -38,10 +39,11 @@ import {
 export default {
   name: NAME,
   setting: {
+    name: '文本',
     type: NAME,
     uuid: -1,
     editable: true,
-    width: 0,
+    width: 600,
     left: 0,
     top: 0,
     zIndex: 0,
@@ -55,6 +57,7 @@ export default {
     textAlign: 'left',
     text: '文本',
     opacity: 1,
+    backgroundColor: '#ffffff00',
     parent: '-1'
   },
   props: ['params'],
@@ -68,30 +71,30 @@ export default {
       'updateWidgetData'
     ]),
     updateText (e) {
-      this.editable = false
-      this.updateWidgetData({
-        uuid: this.params.uuid,
-        key: 'text',
-        value: e.target.innerText
-      })
+      // this.editable = false
+      // this.updateWidgetData({
+      //   uuid: this.params.uuid,
+      //   key: 'text',
+      //   value: e.target.innerText
+      // })
     },
     dblclickText (e) {
-      this.editable = true
-      let text = document.getElementsByClassName(this.params.uuid)
-      if (text.length > 0) {
-        text = text[0]
-      }
-      if (document.body.createTextRange) {
-        var range = document.body.createTextRange()
-        range.moveToElementText(text)
-        range.select()
-      } else if (window.getSelection) {
-        var selection = window.getSelection()
-        var range = document.createRange()
-        range.selectNodeContents(text)
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }
+      // this.editable = true
+      // let text = document.getElementsByClassName(this.params.uuid)
+      // if (text.length > 0) {
+      //   text = text[0]
+      // }
+      // if (document.body.createTextRange) {
+      //   var range = document.body.createTextRange()
+      //   range.moveToElementText(text)
+      //   range.select()
+      // } else if (window.getSelection) {
+      //   var selection = window.getSelection()
+      //   var range = document.createRange()
+      //   range.selectNodeContents(text)
+      //   selection.removeAllRanges()
+      //   selection.addRange(range)
+      // }
     }
   }
 }

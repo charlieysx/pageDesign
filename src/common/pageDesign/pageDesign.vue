@@ -17,13 +17,17 @@
           transform: 'scale(' + dZoom / 100 + ')',
           transformOrigin: (dZoom >= 100 ? 'center' : 'left') + ' top',
           backgroundColor: dPage.backgroundColor,
+          backgroundImage: 'url(\'' + (dPage.backgroundImage ? dPage.backgroundImage : '') + '\')',
           opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0)
         }">
 
         <component
           :is="layer.type"
           class="layer"
-          :class="{'layer-active' : dActiveElement.uuid === layer.uuid}"
+          :class="{
+            'layer-active': layer.uuid === dActiveElement.uuid,
+            'layer-hover':layer.uuid === dHoverUuid
+          }"
           :data-title="layer.type"
           v-for="layer in getlayers()"
           :key="layer.uuid"
@@ -34,7 +38,10 @@
             v-if="layer.isContainer"
             :is="widget.type"
             class="layer"
-            :class="{'layer-active' : dActiveElement.uuid === widget.uuid}"
+            :class="{
+              'layer-active': layer.uuid === dActiveElement.uuid,
+              'layer-hover':layer.uuid === dHoverUuid
+            }"
             :data-title="widget.type"
             v-for="widget in getChilds(layer.uuid)"
             :key="widget.uuid"
@@ -50,9 +57,6 @@
 </template>
 
 <script>
-import gridSize from 'COMMON/pageDesign/gridSize'
-import wText from 'COMMON/pageDesign/widgets/wText/index'
-
 import {
   mapGetters,
   mapActions
@@ -65,25 +69,22 @@ import { move } from 'MIXINS/move'
 
 export default {
   name: NAME,
-  components: {
-    gridSize,
-    wText
-  },
   computed: {
     ...mapGetters([
       'dPage',
       'dZoom',
       'dScreen',
       'dWidgets',
-      'dActiveElement'
+      'dActiveElement',
+      'dHoverUuid'
     ])
   },
   mixins: [move],
   mounted () {
     this.getScreen()
     // 采用事件代理的方式监听元件的选中操作
-    let viewport = document.getElementById('out-page')
-    viewport.addEventListener('mousedown', this.handleSelection, false)
+    document.getElementById('out-page').addEventListener('mousedown', this.handleSelection, false)
+    document.getElementById('page-design').addEventListener('mousedown', this.handleSelection, false)
     // document.addEventListener('keydown', this.handleKeydowm, false)
   },
   beforeDestroy () {
@@ -158,6 +159,9 @@ export default {
     .design-canvas
       position: relative
       margin: 0 auto
+      background-repeat: no-repeat
+      background-position: center
+      background-size: cover
       box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, .1)
 </style>
 
