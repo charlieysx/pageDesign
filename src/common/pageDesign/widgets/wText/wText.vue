@@ -6,6 +6,7 @@
     @dblclick="(e) => dblclickText(e)"
     @blur="(e) => updateText(e)"
     :class="[{'edit-text': editable}, params.uuid]"
+    ref="widget"
     :style="{
       position: 'absolute',
       left: params.left + 'px',
@@ -33,6 +34,7 @@
 const NAME = 'w-text'
 
 import {
+  mapGetters,
   mapActions
 } from 'vuex'
 
@@ -78,8 +80,36 @@ export default {
       editable: false
     }
   },
+  updated () {
+    if (this.dActiveElement.uuid === this.params.uuid) {
+      this.updateActiveWH({
+        width: this.$refs.widget.offsetWidth,
+        height: this.$refs.widget.offsetHeight,
+        minWidth: this.params.fontSize,
+        minHeight: this.params.fontSize * this.params.lineHeight,
+        dir: 'horizontal'
+      })
+    }
+  },
+  mounted () {
+    if (this.dActiveElement.uuid === this.params.uuid) {
+      this.updateActiveWH({
+        width: this.$refs.widget.offsetWidth,
+        height: this.$refs.widget.offsetHeight,
+        minWidth: this.params.fontSize,
+        minHeight: this.params.fontSize * this.params.lineHeight,
+        dir: 'horizontal'
+      })
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'dActiveElement'
+    ])
+  },
   methods: {
     ...mapActions([
+      'updateActiveWH',
       'updateWidgetData'
     ]),
     updateText (e) {

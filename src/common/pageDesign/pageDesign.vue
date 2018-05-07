@@ -20,6 +20,7 @@
           backgroundImage: 'url(\'' + (dPage.backgroundImage ? dPage.backgroundImage : '') + '\')',
           opacity: dPage.opacity + (dZoom < 100 ? dPage.tag : 0)
         }">
+        <grid-size />
 
         <component
           :is="layer.type"
@@ -50,7 +51,7 @@
             :data-uuid="widget.uuid" />
         </component>
 
-        <grid-size />
+        <size-control v-show="dActiveElement.uuid !== '-1'" />
       </div>
     </div>
   </div>

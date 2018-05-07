@@ -21,7 +21,19 @@ const state = {
     y: 0 // 鼠标按下时的纵坐标
   },
   dMoving: false, // 是否正在移动组件
+  dResizeing: false, // 是否正在调整组件宽高
 
+  dActiveWH: { // 激活的组件的宽高
+    width: 0,
+    height: 0,
+    minWidth: 0,
+    minHeight: 0,
+    dir: 'all' // 可调整的方向 horizontal水平, vertical垂直, all水平垂直都可以
+  },
+  dResizeWH: { // 初始化调整大小时组件的宽高
+    width: 0,
+    height: 0
+  },
   dActiveElement: {}, // 选中的组件或页面
   dHoverUuid: '-1', // 鼠标在这个图层上
   dPage: {
@@ -107,6 +119,12 @@ const getters = {
   },
   dHoverUuid (state) {
     return state.dHoverUuid
+  },
+  dActiveWH (state) {
+    return state.dActiveWH
+  },
+  dResizeing (state) {
+    return state.dResizeing
   }
 }
 
@@ -324,14 +342,14 @@ const actions = {
     widgetXY.x = payload.originX
     widgetXY.y = payload.originY
   },
-  // 元件移动结束
+  // 组件移动结束
   stopDMove (store) {
     if (store.state.dMoving) {
       store.dispatch('pushHistory')
     }
     store.state.dMoving = false
   },
-  // 移动元件
+  // 移动组件
   dMove (store, payload) {
     store.state.dMoving = true
     let target = store.state.dActiveElement
@@ -347,6 +365,71 @@ const actions = {
     target.top = Math.max(top, 0)
 
     store.dispatch('reChangeCanvas')
+  },
+  // 设置 resize 操作的初始值
+  initDResize (store, payload) {
+    let mouseXY = store.state.dMouseXY
+    let widgetXY = store.state.dActiveWidgetXY
+    let resizeWH = store.state.dResizeWH
+    mouseXY.x = payload.startX
+    mouseXY.y = payload.startY
+    widgetXY.x = payload.originX
+    widgetXY.y = payload.originY
+    resizeWH.width = payload.width
+    resizeWH.height = payload.height
+  },
+  // 更新组件宽高
+  dResize (store, {x, y, dirs}) {
+    store.state.dResizeing = true
+
+    let target = store.state.dActiveElement
+    let mouseXY = store.state.dMouseXY
+    let widgetXY = store.state.dActiveWidgetXY
+    let resizeWH = store.state.dResizeWH
+
+    let dx = x - mouseXY.x
+    let dy = y - mouseXY.y
+
+    let left = 0
+    let top = 0
+
+    for (let i = 0; i < dirs.length; ++i) {
+      let dir = dirs[i]
+
+      switch (dir) {
+        case 'top':
+          top = Math.max(widgetXY.y + Math.floor(dy * 100 / store.state.dZoom), 0)
+          target.height += (top - target.top)
+          target.height = Math.max(target.height, store.state.dActiveWH.minHeight)
+          target.top = top
+          break
+        case 'bottom':
+          top = Math.floor(dy * 100 / store.state.dZoom)
+          target.height = resizeWH.height + top
+          target.height = Math.max(target.height, store.state.dActiveWH.minHeight)
+          break
+        case 'left':
+          left = Math.max(widgetXY.x + Math.floor(dx * 100 / store.state.dZoom), 0)
+          target.width += (target.left - left)
+          target.width = Math.max(target.width, store.state.dActiveWH.minWidth)
+          target.left = left
+          break
+        case 'right':
+          left = Math.floor(dx * 100 / store.state.dZoom)
+          target.width = resizeWH.width + left
+          target.width = Math.max(target.width, store.state.dActiveWH.minWidth)
+          break
+      }
+    }
+
+    store.dispatch('reChangeCanvas')
+  },
+  // 组件调整结束
+  stopDResize (store) {
+    if (store.state.dResizeing) {
+      store.dispatch('pushHistory')
+    }
+    store.state.dResizeing = false
   },
   // 强制重绘画布
   reChangeCanvas (store) {
@@ -365,6 +448,13 @@ const actions = {
   },
   updateHoverUuid (store, uuid) {
     store.state.dHoverUuid = uuid
+  },
+  updateActiveWH (store, {width, height, minWidth, minHeight, dir}) {
+    store.state.dActiveWH.width = width
+    store.state.dActiveWH.height = height
+    store.state.dActiveWH.minWidth = minWidth
+    store.state.dActiveWH.minHeight = minHeight
+    store.state.dActiveWH.dir = dir
   }
 }
 
