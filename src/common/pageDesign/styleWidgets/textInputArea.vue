@@ -1,16 +1,17 @@
 <template>
-  <div id="text-input">
+  <div id="text-input-area">
     <p 
       class="input-label" 
       v-if="label">
       {{ label }}
     </p>
     <div class="input-wrap" :class="{active: inputBorder}">
-      <input
+      <textarea
         class="real-input"
         :class="{disable : !editable}"
         type="text"
-        :value="value"
+        rows="5"
+        :value="dealValue"
         :readonly="editable ? false : 'readonly'"
         @input="updateValue($event.target.value)"
         @focus="focusInput"
@@ -20,8 +21,8 @@
 </template>
 
 <script>
-// 文本输入组件
-const NAME = 'text-input'
+// 文本域输入组件
+const NAME = 'text-input-area'
 
 export default {
   name: NAME,
@@ -43,10 +44,13 @@ export default {
     }
   },
   computed: {
+    dealValue () {
+      return this.value.replace(/<br\/>/g, '\r\n').replace(/&nbsp;/g, ' ')
+    }
   },
   methods: {
     updateValue (value) {
-      this.$emit('input', value)
+      this.$emit('input', this.getValue(value))
     },
     focusInput () {
       this.inputBorder = true
@@ -54,9 +58,13 @@ export default {
     },
     blurInput () {
       this.inputBorder = false
-      if (this.value !== this.tagText) {
-        this.$emit('finish', this.value)
+      let v = this.getValue(this.value)
+      if (v !== this.tagText) {
+        this.$emit('finish', v)
       }
+    },
+    getValue (value) {
+      return value.replace(/\n|\r\n/g,"<br/>").replace(/ /g, '&nbsp;')
     }
   }
 }
@@ -64,7 +72,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#text-input
+#text-input-area
   width: 100%
   font-size: 12px
   line-height: 12px
@@ -86,6 +94,7 @@ export default {
       width: 100%
       border: 0px
       outline: none
+      resize: none
       border-radius: 3px
       &.disable
         color: #666666

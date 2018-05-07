@@ -16,7 +16,7 @@
       lineHeight: params.fontSize * params.lineHeight + 'px',
       letterSpacing: params.fontSize * params.letterSpacing / 100 + 'px',
       fontSize: params.fontSize + 'px',
-      color: params.color,
+      color: params.textColor,
       textAlign: params.textAlign,
       fontWeight: params.fontWeight,
       fontStyle: params.fontStyle,
@@ -53,12 +53,24 @@ export default {
     fontWeight: 'normal',
     fontStyle: 'normal',
     textDecoration: 'none',
-    color: '#000000',
+    textColor: 'rgba(0, 0, 0, 1)',
     textAlign: 'left',
     text: '文本',
     opacity: 1,
-    backgroundColor: '#ffffff00',
-    parent: '-1'
+    backgroundColor: '',
+    parent: '-1',
+    setting: [
+      {
+        label: '文本内容',
+        parentKey: 'text',
+        value: true
+      },
+      {
+        label: '文本颜色',
+        parentKey: 'textColor',
+        value: false
+      }
+    ]
   },
   props: ['params'],
   data () {

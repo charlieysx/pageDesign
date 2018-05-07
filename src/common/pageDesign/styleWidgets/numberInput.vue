@@ -145,7 +145,7 @@ export default {
       border-left: 1px solid #e1e1e1
       .up
         position: relative
-        width: 14px
+        width: 13px
         flex: 1
         border-top-right-radius: 3px
         &:hover
@@ -159,7 +159,7 @@ export default {
           triangle(top, 4px, $color-dark-gray)
       .down
         position: relative
-        width: 14px
+        width: 13px
         flex: 1
         border-bottom-right-radius: 3px
         &:hover

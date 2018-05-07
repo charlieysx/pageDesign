@@ -10,14 +10,18 @@
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
-        <color-select class="select" label="背景颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
-        <bg-img-select :img="innerElement.backgroundImage"/>
+        <color-select class="select-none" label="背景颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
+        <!-- <bg-img-select :img="innerElement.backgroundImage"/> -->
       </el-collapse-item>
       <el-collapse-item title="其他设置" name="3">
         <text-input label="名称" v-model="innerElement.name" @finish="(value) => finish('name', value)" />
       </el-collapse-item>
-      <el-collapse-item title="客户端配置" name="4">
-        <div>设置哪些配置是否允许修改</div>
+      <el-collapse-item title="客户端配置(设置客户端是否允许修改)" name="4">
+        <setting-switch 
+          v-for="item in dActiveElement.setting" 
+          :key="item.key"
+          :label="item.label"
+          v-model="item.value" />
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -83,7 +87,7 @@ export default {
         return
       }
       for(let key in this.innerElement) {
-        if (this.innerElement[key] !== this.dActiveElement[key]) {
+        if (key !== 'setting' && this.innerElement[key] !== this.dActiveElement[key]) {
           if (this.ingoreKeys.indexOf(key) !== -1) {
             this.dActiveElement[key] = this.innerElement[key]
           } else {

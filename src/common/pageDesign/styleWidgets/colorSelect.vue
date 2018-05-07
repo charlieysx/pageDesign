@@ -70,7 +70,6 @@ export default {
 
 <style lang="stylus" scoped>
 #color-select
-  width: 100%
   display: flex
   align-items: center
   .label

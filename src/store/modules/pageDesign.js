@@ -33,7 +33,14 @@ const state = {
     backgroundColor: '#fff', // 画布背景颜色
     backgroundImage: '', // 画布背景图片
     opacity: 1, // 透明度
-    tag: 0 // 强制刷新用
+    tag: 0, // 强制刷新用
+    setting: [
+      {
+        label: '背景颜色',
+        parentKey: 'backgroundColor',
+        value: false
+      }
+    ]
   },
   dWidgets: [], // 已使用的组件
   dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
@@ -179,13 +186,13 @@ const actions = {
     } else if (action === 'redo') {
       // 下标向后移1
       historyParams.index += 1
-      // 如果下表小于历史记录列表长度，直接取出历史记录
+      // 如果下标小于历史记录列表长度，直接取出历史记录
       if (historyParams.index < historyParams.length) {
         store.state.dWidgets = JSON.parse(history[historyParams.index])
         store.state.dPage = JSON.parse(pageHistory[historyParams.index + 1])
         uuid = uuidHistory[historyParams.index]
       } else {
-        // 否则设置下表为列表最后一项
+        // 否则设置下标为列表最后一项
         historyParams.index = historyParams.length - 1
         store.state.dWidgets = JSON.parse(history[historyParams.index])
         store.state.dPage = JSON.parse(pageHistory[historyParams.index + 1])

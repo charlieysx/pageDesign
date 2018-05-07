@@ -65,12 +65,13 @@ export default {
   .label
     margin-right: 10px
   .img
-    max-width: 100px
-    max-height: 100px
+    max-width: 50px
+    max-height: 50px
     cursor: pointer
     .icon-add-img
-      font-size: 36px
+      line-height: 1
+      font-size: 40px
     img
-      max-width: 100px
-      max-height: 100px
+      max-width: 50px
+      max-height: 50px
 </style>
