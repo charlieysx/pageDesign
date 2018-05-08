@@ -77,6 +77,13 @@
             </li>
           </ul>
         </li>
+        <li 
+          class="operation-item" 
+          @click.stop="showRefLine(!dShowRefLine)"
+          :class="{'operation-item-active' : dShowRefLine}">
+          <i class="iconfont icon-ref-line"></i>
+          <p>吸附</p>
+        </li>
       </ul>
     </div>
     <zoom-control/>
@@ -137,7 +144,8 @@ export default {
   computed: {
     ...mapGetters([
       'dHistoryParams',
-      'dActiveElement'
+      'dActiveElement',
+      'dShowRefLine'
     ]),
     undoable() {
       return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
@@ -172,7 +180,8 @@ export default {
       'handleHistory',
       'selectWidget',
       'deleteWidget',
-      'copyWidget'
+      'copyWidget',
+      'showRefLine'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft

@@ -51,6 +51,7 @@
             :data-uuid="widget.uuid" />
         </component>
 
+        <ref-line />
         <size-control />
       </div>
     </div>

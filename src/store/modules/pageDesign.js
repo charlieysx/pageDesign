@@ -22,6 +22,7 @@ const state = {
   },
   dMoving: false, // 是否正在移动组件
   dResizeing: false, // 是否正在调整组件宽高
+  dShowRefLine: true, // 是否显示参考线
 
   dResizeWH: { // 初始化调整大小时组件的宽高
     width: 0,
@@ -116,6 +117,9 @@ const getters = {
   },
   dResizeing (state) {
     return state.dResizeing
+  },
+  dShowRefLine (state) {
+    return state.dShowRefLine
   }
 }
 
@@ -450,12 +454,8 @@ const actions = {
   updateHoverUuid (store, uuid) {
     store.state.dHoverUuid = uuid
   },
-  updateActiveWH (store, {width, height, minWidth, minHeight, dir}) {
-    store.state.dActiveWH.width = width
-    store.state.dActiveWH.height = height
-    store.state.dActiveWH.minWidth = minWidth
-    store.state.dActiveWH.minHeight = minHeight
-    store.state.dActiveWH.dir = dir
+  showRefLine (store, show) {
+    store.state.dShowRefLine = show
   }
 }
 
