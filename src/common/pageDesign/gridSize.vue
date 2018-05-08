@@ -73,12 +73,10 @@ export default {
   left: 0
   .vertical
     position: absolute
-    width: 1px
     height: 100%
     border-right: 1px dotted #d6d6d6
   .horizontal
     position: absolute
-    height: 1px
     width: 100%
     border-bottom: 1px dotted #d6d6d6
 </style>

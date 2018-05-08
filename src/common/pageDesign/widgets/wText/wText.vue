@@ -72,7 +72,14 @@ export default {
         parentKey: 'textColor',
         value: false
       }
-    ]
+    ],
+    record: {
+      width: 0,
+      height: 0,
+      minWidth: 0,
+      minHeight: 0,
+      dir: 'horizontal'
+    }
   },
   props: ['params'],
   data () {
@@ -81,26 +88,10 @@ export default {
     }
   },
   updated () {
-    if (this.dActiveElement.uuid === this.params.uuid) {
-      this.updateActiveWH({
-        width: this.$refs.widget.offsetWidth,
-        height: this.$refs.widget.offsetHeight,
-        minWidth: this.params.fontSize,
-        minHeight: this.params.fontSize * this.params.lineHeight,
-        dir: 'horizontal'
-      })
-    }
+    this.updateRecord()
   },
   mounted () {
-    if (this.dActiveElement.uuid === this.params.uuid) {
-      this.updateActiveWH({
-        width: this.$refs.widget.offsetWidth,
-        height: this.$refs.widget.offsetHeight,
-        minWidth: this.params.fontSize,
-        minHeight: this.params.fontSize * this.params.lineHeight,
-        dir: 'horizontal'
-      })
-    }
+    this.updateRecord()
   },
   computed: {
     ...mapGetters([
@@ -109,9 +100,17 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateActiveWH',
       'updateWidgetData'
     ]),
+    updateRecord () {
+      if (this.dActiveElement.uuid === this.params.uuid) {
+        let record = this.dActiveElement.record
+        record.width = this.$refs.widget.offsetWidth
+        record.height = this.$refs.widget.offsetHeight
+        record.minWidth = this.params.fontSize
+        record.minHeight = this.params.fontSize * this.params.lineHeight
+      }
+    },
     updateText (e) {
       // this.editable = false
       // this.updateWidgetData({

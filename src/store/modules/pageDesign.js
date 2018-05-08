@@ -23,13 +23,6 @@ const state = {
   dMoving: false, // 是否正在移动组件
   dResizeing: false, // 是否正在调整组件宽高
 
-  dActiveWH: { // 激活的组件的宽高
-    width: 0,
-    height: 0,
-    minWidth: 0,
-    minHeight: 0,
-    dir: 'all' // 可调整的方向 horizontal水平, vertical垂直, all水平垂直都可以
-  },
   dResizeWH: { // 初始化调整大小时组件的宽高
     width: 0,
     height: 0
@@ -52,7 +45,8 @@ const state = {
         parentKey: 'backgroundColor',
         value: false
       }
-    ]
+    ],
+    record: {}
   },
   dWidgets: [], // 已使用的组件
   dHistory: [], // 记录历史操作（直接保存整个画布的json数据）
@@ -119,9 +113,6 @@ const getters = {
   },
   dHoverUuid (state) {
     return state.dHoverUuid
-  },
-  dActiveWH (state) {
-    return state.dActiveWH
   },
   dResizeing (state) {
     return state.dResizeing
@@ -352,6 +343,8 @@ const actions = {
   // 移动组件
   dMove (store, payload) {
     store.state.dMoving = true
+
+    let page = store.state.dPage
     let target = store.state.dActiveElement
     let mouseXY = store.state.dMouseXY
     let widgetXY = store.state.dActiveWidgetXY
@@ -360,6 +353,9 @@ const actions = {
     let dy = payload.y - mouseXY.y
     let left = widgetXY.x + Math.floor(dx * 100 / store.state.dZoom)
     let top = widgetXY.y + Math.floor(dy * 100 / store.state.dZoom)
+
+    left = Math.min(left, page.width - target.record.width)
+    top = Math.min(top, page.height - target.record.height)
 
     target.left = Math.max(left, 0)
     target.top = Math.max(top, 0)
@@ -382,6 +378,7 @@ const actions = {
   dResize (store, {x, y, dirs}) {
     store.state.dResizeing = true
 
+    let page = store.state.dPage
     let target = store.state.dActiveElement
     let mouseXY = store.state.dMouseXY
     let widgetXY = store.state.dActiveWidgetXY
@@ -400,24 +397,28 @@ const actions = {
         case 'top':
           top = Math.max(widgetXY.y + Math.floor(dy * 100 / store.state.dZoom), 0)
           target.height += (top - target.top)
-          target.height = Math.max(target.height, store.state.dActiveWH.minHeight)
+          target.height = Math.max(target.height, target.record.minHeight)
+          top = Math.min(widgetXY.y + resizeWH.height - target.record.minHeight, top)
           target.top = top
           break
         case 'bottom':
           top = Math.floor(dy * 100 / store.state.dZoom)
           target.height = resizeWH.height + top
-          target.height = Math.max(target.height, store.state.dActiveWH.minHeight)
+          target.height = Math.max(target.height, target.record.minHeight)
+          target.height = Math.min(target.height, page.height - target.top)
           break
         case 'left':
           left = Math.max(widgetXY.x + Math.floor(dx * 100 / store.state.dZoom), 0)
           target.width += (target.left - left)
-          target.width = Math.max(target.width, store.state.dActiveWH.minWidth)
+          target.width = Math.max(target.width, target.record.minWidth)
+          left = Math.min(widgetXY.x + resizeWH.width - target.record.minWidth, left)
           target.left = left
           break
         case 'right':
           left = Math.floor(dx * 100 / store.state.dZoom)
           target.width = resizeWH.width + left
-          target.width = Math.max(target.width, store.state.dActiveWH.minWidth)
+          target.width = Math.max(target.width, target.record.minWidth)
+          target.width = Math.min(target.width, page.width - target.left)
           break
       }
     }

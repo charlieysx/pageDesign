@@ -51,7 +51,7 @@
             :data-uuid="widget.uuid" />
         </component>
 
-        <size-control v-show="dActiveElement.uuid !== '-1'" />
+        <size-control />
       </div>
     </div>
   </div>

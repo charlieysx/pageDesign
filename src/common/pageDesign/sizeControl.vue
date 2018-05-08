@@ -1,7 +1,7 @@
 <template>
-  <div id="size-control">
+  <div id="size-control" v-if="dActiveElement.record && dActiveElement.uuid !== '-1'">
     <!-- 上左 -->
-    <div class="square" v-if="dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'left-top')"
       :style="{
         left: left + 'px',
@@ -10,7 +10,7 @@
       }">
     </div>
     <!-- 上中 -->
-    <div class="square" v-if="dActiveWH.dir === 'vertical' || dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'vertical' || dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'top')"
       :style="{
         left: left + width / 2 + 'px',
@@ -19,7 +19,7 @@
       }">
     </div>
     <!-- 上右 -->
-    <div class="square" v-if="dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'right-top')"
       :style="{
         left: left + width + 'px',
@@ -28,7 +28,7 @@
       }">
     </div>
     <!-- 中左 -->
-    <div class="square" v-if="dActiveWH.dir === 'horizontal' || dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'horizontal' || dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'left')"
       :style="{
         left: left + 'px',
@@ -37,7 +37,7 @@
       }">
     </div>
     <!-- 中右 -->
-    <div class="square" v-if="dActiveWH.dir === 'horizontal' || dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'horizontal' || dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'right')"
       :style="{
         left: left + width + 'px',
@@ -46,7 +46,7 @@
       }">
     </div>
     <!-- 下左 -->
-    <div class="square" v-if="dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'left-bottom')"
       :style="{
         left: left + 'px',
@@ -55,7 +55,7 @@
       }">
     </div>
     <!-- 下中 -->
-    <div class="square" v-if="dActiveWH.dir === 'vertical' || dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'vertical' || dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'bottom')"
       :style="{
         left: left + width / 2 + 'px',
@@ -64,7 +64,7 @@
       }">
     </div>
     <!-- 下右 -->
-    <div class="square" v-if="dActiveWH.dir === 'all'"
+    <div class="square" v-if="dActiveElement.record.dir === 'all'"
 	  	@mousedown="handlemousedown($event, 'right-bottom')"
       :style="{
         left: left + width + 'px',
@@ -94,8 +94,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'dActiveElement',
-      'dActiveWH'
+      'dActiveElement'
     ]),
     left () {
       return parseInt(this.dActiveElement.left)
@@ -104,10 +103,10 @@ export default {
       return parseInt(this.dActiveElement.top)
     },
     width () {
-      return parseInt(this.dActiveWH.width)
+      return parseInt(this.dActiveElement.record.width)
     },
     height () {
-      return parseInt(this.dActiveWH.height)
+      return parseInt(this.dActiveElement.record.height)
     }
   },
   watch: {
