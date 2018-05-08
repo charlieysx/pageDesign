@@ -35,6 +35,7 @@
           <color-select label="背景颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
         </div>
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
+        <icon-item-select class="style-item" label="组件对齐" :data="alignIconList" @finish="alignAction"/>
         <icon-item-select class="style-item" label="文本样式" :data="styleIconList" @finish="textStyleAction"/>
         <text-input-area label="文本内容" v-model="innerElement.text" @finish="(value) => finish('text', value)" />
       </el-collapse-item>
@@ -160,24 +161,62 @@ export default {
         },
         {
           key: 'textAlign',
-          icon: 'icon-align-left',
-          tip: '左对齐',
+          icon: 'icon-align-left-inside',
+          tip: '左对齐文本',
           value: 'left',
           select: false
         },
         {
           key: 'textAlign',
-          icon: 'icon-align-center',
-          tip: '居中对齐',
+          icon: 'icon-align-center-inside',
+          tip: '居中对齐文本',
           value: 'center',
           select: false
         },
         {
           key: 'textAlign',
-          icon: 'icon-align-right',
-          tip: '右对齐',
+          icon: 'icon-align-right-inside',
+          tip: '右对齐文本',
           value: 'right',
           select: false
+        }
+      ],
+      alignIconList: [
+        {
+          key: 'align',
+          icon: 'icon-align-left',
+          tip: '左对齐',
+          value: 'left'
+        },
+        {
+          key: 'align',
+          icon: 'icon-align-center-verti',
+          tip: '居中对齐',
+          value: 'cv'
+        },
+        {
+          key: 'align',
+          icon: 'icon-align-right',
+          tip: '右对齐',
+          value: 'right'
+        },
+        {
+          key: 'align',
+          icon: 'icon-align-top',
+          tip: '上对齐',
+          value: 'top'
+        },
+        {
+          key: 'align',
+          icon: 'icon-align-center-horiz',
+          tip: '水平居中对齐',
+          value: 'ch'
+        },
+        {
+          key: 'align',
+          icon: 'icon-align-bottom',
+          tip: '下对齐',
+          value: 'bottom'
         }
       ]
     }
@@ -207,7 +246,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'updateWidgetData'
+      'updateWidgetData',
+      'updateAlign'
     ]),
     change () {
       this.tag = true
@@ -248,6 +288,12 @@ export default {
     textStyleAction (item) {
       let value = item.key === 'textAlign' ? item.value : item.value[item.select ? 1 : 0]
       this.innerElement[item.key] = value
+    },
+    alignAction (item) {
+      this.updateAlign({
+        align: item.value,
+        uuid: this.dActiveElement.uuid
+      })
     },
     changeStyleIconList () {
       for (let i = 0; i < this.styleIconList.length; ++i) {

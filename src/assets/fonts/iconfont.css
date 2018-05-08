@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 616166 */
-  src: url('//at.alicdn.com/t/font_616166_3tma5zf9owasjor.eot');
-  src: url('//at.alicdn.com/t/font_616166_3tma5zf9owasjor.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_616166_3tma5zf9owasjor.woff') format('woff'),
-  url('//at.alicdn.com/t/font_616166_3tma5zf9owasjor.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_616166_3tma5zf9owasjor.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.eot');
+  src: url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.woff') format('woff'),
+  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -31,6 +31,14 @@
 
 .icon-selected:before { content: "\e60d"; }
 
+.icon-align-center-verti:before { content: "\e654"; }
+
+.icon-align-center-horiz:before { content: "\e658"; }
+
+.icon-align-right:before { content: "\e65b"; }
+
+.icon-align-left:before { content: "\e65c"; }
+
 .icon-ref-grid:before { content: "\e642"; }
 
 .icon-delete:before { content: "\e619"; }
@@ -49,7 +57,11 @@
 
 .icon-copy:before { content: "\e668"; }
 
+.icon-align-top:before { content: "\e64a"; }
+
 .icon-text:before { content: "\e649"; }
+
+.icon-align-bottom:before { content: "\e64c"; }
 
 .icon-line:before { content: "\e64b"; }
 
@@ -59,12 +71,12 @@
 
 .icon-pic:before { content: "\e67b"; }
 
-.icon-align-right:before { content: "\e71d"; }
+.icon-align-right-inside:before { content: "\e71d"; }
 
-.icon-align-center:before { content: "\e71e"; }
+.icon-align-center-inside:before { content: "\e71e"; }
 
-.icon-align-left:before { content: "\e71f"; }
-
-.icon-layer-down:before { content: "\e720"; }
+.icon-align-left-inside:before { content: "\e71f"; }
 
 .icon-ref-line:before { content: "\e61b"; }
+
+.icon-layer-down:before { content: "\e720"; }

@@ -34,6 +34,8 @@ const state = {
     name: '背景页面',
     type: 'page',
     uuid: '-1',
+    left: 0,
+    top: 0,
     width: 750, // 画布宽度
     height: 1334, // 画布高度
     backgroundColor: '#fff', // 画布背景颜色
@@ -456,6 +458,54 @@ const actions = {
   },
   showRefLine (store, show) {
     store.state.dShowRefLine = show
+  },
+  updateAlign (store, {align, uuid}) {
+    let target = store.state.dActiveElement
+    let widgets = store.state.dWidgets
+    let parent = store.state.dPage
+
+    if (target.parent !== '-1') {
+      parent = widgets.find(item => item.uuid === target.parent)
+    }
+
+    let left = target.left
+    let top = target.top
+    let pw = parent.record.width
+    let ph = parent.record.height
+
+    if (parent.uuid === '-1') {
+      pw = parent.width
+      ph = parent.height
+    }
+
+    switch (align) {
+      case 'left':
+        left = parent.left
+        break
+      case 'cv':
+        left = parent.left + pw / 2 - target.record.width / 2
+        break
+      case 'right':
+        left = parent.left + pw - target.record.width
+        break
+      case 'top':
+        top = parent.top
+        break
+      case 'ch':
+        top = parent.top + ph / 2 - target.record.height / 2
+        break
+      case 'bottom':
+        top = parent.top + ph - target.record.height
+        break
+    }
+
+    if (target.left !== left || target.top !== top) {
+      target.left = left
+      target.top = top
+
+      store.dispatch('pushHistory')
+      store.dispatch('reChangeCanvas')
+    }
   }
 }
 
