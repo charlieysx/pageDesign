@@ -11,12 +11,25 @@
         left: item.left + 'px'
       }"
       @click.stop="selectImg(item.value, index)">
-      <img 
-        :src="item.value.url"
-        :style="{
-          width: boxWidth - 10 + 'px',
-          height: item.height - 10 + 'px'
-        }" />
+      <transition name="fade">
+        <img
+          v-if="item.imgWidth !== 0 && item.imgHeight !== 0"
+          :src="item.value.url"
+          :style="{
+            width: boxWidth - 10 + 'px',
+            height: item.height - 10 + 'px'
+          }" />
+      </transition>
+      <transition name="fade">
+        <div
+          v-if="item.imgWidth === 0 || item.imgHeight === 0"
+          :style="{
+            width: boxWidth - 10 + 'px',
+            height: item.height - 10 + 'px',
+            backgroundColor: '#ffffff'
+          }">
+        </div>
+      </transition>
       <div class="delete" v-if="item.value.canDel" @click.stop="deleteImg(item.value, index)">
         <div class="bg"></div>
         <i class="delete-icon iconfont icon-delete-x"></i>
@@ -32,15 +45,16 @@ const NAME = 'img-water-fall'
 export default {
   name: NAME,
   props: {
-    calc: {
-      default: false
-    },
     listData: {
       type: Array,
       required: true
     },
     sortBy: {
       default: ''
+    },
+    k: {
+      type: String,
+      required: true
     }
   },
   data () {
@@ -50,6 +64,7 @@ export default {
     }
   },
   mounted () {
+    this.parentWidth = this.$refs.imgWaterFall.clientWidth
     this.preLoadImg()
   },
   computed: {
@@ -60,19 +75,19 @@ export default {
   watch: {
     listData (value) {
       this.preLoadImg()
-    },
-    parentWidth (value) {
-      this.parentWidth = this.$refs.imgWaterFall.clientWidth
-      this.reCalc()
-    },
-    calc (value) {
-      if (value) {
-        this.parentWidth = this.$refs.imgWaterFall.clientWidth
-      }
     }
   },
   methods: {
     preLoadImg () {
+      this.listData.forEach((item, index) => {
+        this.innerListData.push({
+          width: this.boxWidth,
+          height: this.boxWidth,
+          imgWidth: 0,
+          imgHeight: 0,
+          value: item
+        })
+      })
       this.listData.forEach((item, index) => {
         let img = new Image()
         img.addEventListener('load', (e) => {
@@ -88,28 +103,11 @@ export default {
       })
     },
     loadFinish ({imgWidth, imgHeight, item}) {
-      if (this.parentWidth > 0) {
-        this.innerListData.push({
-          width: this.boxWidth,
-          height: this.boxWidth * imgHeight / imgWidth,
-          imgWidth: imgWidth,
-          imgHeight: imgHeight,
-          value: item
-        })
-        this.waterfall()
-      } else {
-        this.innerListData.push({
-          imgWidth: imgWidth,
-          imgHeight: imgHeight,
-          value: item
-        })
-      }
-    },
-    reCalc () {
-      this.innerListData.forEach((item, index) => {
-        item.width = this.boxWidth
-        item.height = this.boxWidth * item.imgHeight / item.imgWidth
-      })
+      let img = this.innerListData.find(v => v.value[this.k] === item[this.k])
+      img.width = this.boxWidth
+      img.height = this.boxWidth * imgHeight / imgWidth
+      img.imgWidth = imgWidth
+      img.imgHeight = imgHeight
       this.waterfall()
     },
     waterfall () {
@@ -143,12 +141,14 @@ export default {
 #img-water-fall
   position: relative
   width: 100%
+  flex: 1
+  overflow-y: auto
   .img-box
     position: absolute
     cursor: pointer
     padding: 5px
     &:hover
-      outline: 1px solid $color-main
+      outline: 1px solid $color-white
       .delete
         width: 40px
         height: 40px
@@ -168,5 +168,8 @@ export default {
         font-size: 12px
         color: $color-white
         display: none
-
+.fade-enter-active, .fade-leave-active
+  transition: opacity .2s
+.fade-enter, .fade-leave-to
+  opacity: 0
 </style>

@@ -14,8 +14,8 @@
       </ul>
     </div>
     <div class="widget-wrap">
-      <text-list-wrap v-show="activeWidgetClassify === 0" />
-      <img-list-wrap v-show="activeWidgetClassify === 3" />
+      <text-list-wrap v-if="widgetClassifyList[0].show" :style="getStyle(0)" />
+      <img-list-wrap v-if="widgetClassifyList[3].show" :style="getStyle(3)" />
     </div>
   </div>
 </template>
@@ -31,31 +31,51 @@ export default {
       widgetClassifyList: [
         {
           name: '文本',
-          icon: 'icon-text'
+          icon: 'icon-text',
+          show: false
         },
         {
           name: '形状',
-          icon: 'icon-shape'
+          icon: 'icon-shape',
+          show: false
         },
         {
           name: '线条',
-          icon: 'icon-line'
+          icon: 'icon-line',
+          show: false
         },
         {
           name: '图片',
-          icon: 'icon-pic'
+          icon: 'icon-pic',
+          show: false
         },
         {
           name: '素材',
-          icon: 'icon-material'
+          icon: 'icon-material',
+          show: false
         }
       ],
-      activeWidgetClassify: 0
+      activeWidgetClassify: -1
     }
+  },
+  watch: {
+    activeWidgetClassify (index) {
+      if (index >= 0 && index < this.widgetClassifyList.length) {
+        this.widgetClassifyList[index].show = true
+      }
+    }
+  },
+  mounted () {
+    this.activeWidgetClassify = 0
   },
   methods: {
     clickClassify (index) {
       this.activeWidgetClassify = index
+    },
+    getStyle (index) {
+      return {
+        display: (this.activeWidgetClassify === index ? '' : 'none')
+      }
     }
   }
 }

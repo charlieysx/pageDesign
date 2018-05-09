@@ -4,27 +4,27 @@
       <span class="tab" :class="{'active-tab' : activeTab === 0}" @click="activeTab = 0">我的</span>
       <span class="tab" :class="{'active-tab' : activeTab === 1}" @click="activeTab = 1">推荐</span>
     </div>
-    <div class="tab-content" v-show="activeTab === 0">
+    <div class="tab-content" v-if="hadShowMyImg" :style="getStyle(0)">
       <img-water-fall 
-        class="img-list" 
-        :calc="activeTab === 0"
-        :listData="recommendImgList" 
+        class="img-list"
+        :listData="myImgList" 
         sortBy="id"
+        k="id"
         @delete-img="deleteImg"
         @select-img="selectImg" />
       <div class="upload-btn-wrap">
-        <div class="upload-btn">
+        <div class="upload-btn" @click="uploadImg">
           <i class="iconfont icon-upload"></i>
           <span>上传图片</span>
         </div>
       </div>
     </div>
-    <div class="tab-content" v-show="activeTab === 1">
+    <div class="tab-content" v-if="hadShowRecommendImg" :style="getStyle(1)">
       <img-water-fall 
         class="img-list" 
-        :calc="activeTab === 1" 
         :listData="recommendImgList"
         sortBy="id"
+        k="id"
         @delete-img="deleteImg"
         @select-img="selectImg" />
     </div>
@@ -45,29 +45,24 @@ export default {
   name: NAME,
   data () {
     return {
-      activeTab: 0,
-      myImgList: [
-      ],
+      activeTab: -1,
+      myImgList: [],
       recommendImgList: [
         {
           id: 1,
-          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show',
-          canDel: true
+          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show'
         },
         {
           id: 2,
-          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show',
-          canDel: true
+          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show'
         },
         {
           id: 3,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show',
-          canDel: true
+          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
         },
         {
           id: 4,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg',
-          canDel: true
+          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
         },
         {
           id: 5,
@@ -181,13 +176,33 @@ export default {
           id: 33,
           url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
         }
-      ]
+      ],
+      hadShowMyImg: false,
+      hadShowRecommendImg: false,
+      pos: 0
+    }
+  },
+  mounted () {
+    this.activeTab = 0
+  },
+  watch: {
+    activeTab (value) {
+      if (value === 0) {
+        this.hadShowMyImg = true
+      } else if (value === 1) {
+        this.hadShowRecommendImg = true
+      }
     }
   },
   methods: {
     ...mapActions([
       'addWidget'
     ]),
+    getStyle (index) {
+      return {
+        display: (this.activeTab === index ? '' : 'none')
+      }
+    },
     selectBasicText (item) {
       // let setting = JSON.parse(JSON.stringify(wText.setting))
       // setting.text = item.text
@@ -200,6 +215,8 @@ export default {
     },
     deleteImg (item) {
       //
+    },
+    uploadImg () {
     }
   }
 }
@@ -234,7 +251,6 @@ export default {
     .img-list
       width: 100%
       flex: 1
-      overflow-y: auto
       .img-item
         width: 33.33%
         height: auto
