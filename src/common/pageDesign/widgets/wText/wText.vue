@@ -2,7 +2,7 @@
   <div 
     id="w-text"
     v-html="params.text"
-    :contenteditable="editable"
+    :contenteditable="editable ? 'plaintext-only' : false"
     @dblclick="(e) => dblclickText(e)"
     @blur="(e) => updateText(e)"
     :class="[{'edit-text': editable}, params.uuid]"
@@ -45,7 +45,7 @@ export default {
     type: NAME,
     uuid: -1,
     editable: true,
-    width: 600,
+    width: 300,
     left: 0,
     top: 0,
     zIndex: 0,
@@ -113,10 +113,11 @@ export default {
     },
     updateText (e) {
       // this.editable = false
+      // console.log(e.target.innerText.replace(/\n|\r\n/g,"<br/>").replace(/ /g, '&nbsp;'))
       // this.updateWidgetData({
       //   uuid: this.params.uuid,
       //   key: 'text',
-      //   value: e.target.innerText
+      //   value: e.target.innerText.replace(/\n|\r\n/g,"<br/>").replace(/ /g, '&nbsp;')
       // })
     },
     dblclickText (e) {
@@ -146,7 +147,7 @@ export default {
 #w-text
   outline: none
   cursor: pointer
-  word-break: break-all
+  word-break: break-word
   &.edit-text
     cursor: text
     outline: 1px solid $color-black !important

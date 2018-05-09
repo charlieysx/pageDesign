@@ -1,6 +1,6 @@
 import axios from 'axios'
-import Qs from 'qs'
-import store from 'STORE/index'
+// import Qs from 'qs'
+// import store from 'STORE/index'
 
 import {
   getAccessToken,
@@ -14,13 +14,14 @@ import {
 //   SHOW_TOKEN_ERROR
 // } from 'STORE/mutation-types'
 
-const API_ROOT = 'http://bearcarapi.codebear.cn/index.php'
+const API_ROOT = 'https://api.yijian.codebear.cn/index.php/'
 
 axios.defaults.baseURL = API_ROOT
 axios.defaults.headers.Accept = 'application/json'
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
+  config.headers['accessToken'] = 'U2FsdGVkX1+WnwvVCyoBbsyu4oQixnr611fhc9/nCxM='
   if (getAccessToken()) {
     config.headers['accessToken'] = getAccessToken()
   }
@@ -75,4 +76,7 @@ export default {
   //     }
   //   })
   // }
+  getQiniuToken () {
+    return axios.get('a/qiniu/token')
+  }
 }

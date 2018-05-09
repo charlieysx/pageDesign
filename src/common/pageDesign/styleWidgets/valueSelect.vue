@@ -108,8 +108,8 @@ export default {
 
 <style lang="stylus">
 .value-select-list
-  min-width: 10px
-  padding: 5px
+  min-width: 10px !important
+  padding: 5px !important
 </style>
 
 

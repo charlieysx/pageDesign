@@ -35,23 +35,31 @@ export default {
   methods: {
     ...mapActions([
       'updatePageData',
-      'updateWidgetData'
+      'updateWidgetData',
+      'getQiniuToken'
     ]),
     selectImg () {
-      let url = 'http://img.zcool.cn/community/010a245aedd801a801219b7f1400b8.jpg@1280w_1l_2o_100sh.jpg'
-      let uuid = this.dActiveElement.uuid
-      if (uuid === '-1') {
-        this.updatePageData({
-          key: 'backgroundImage',
-          value: url
+      // let url = 'http://img.zcool.cn/community/010a245aedd801a801219b7f1400b8.jpg@1280w_1l_2o_100sh.jpg'
+      // let uuid = this.dActiveElement.uuid
+      // if (uuid === '-1') {
+      //   this.updatePageData({
+      //     key: 'backgroundImage',
+      //     value: url
+      //   })
+      // } else {
+      //   this.updateWidgetData({
+      //     uuid: uuid,
+      //     key: 'backgroundImage',
+      //     value: url
+      //   })
+      // }
+      this.getQiniuToken()
+        .then((token) => {
+          console.log(token)
         })
-      } else {
-        this.updateWidgetData({
-          uuid: uuid,
-          key: 'backgroundImage',
-          value: url
+        .catch((err) => {
+          console.log(err)
         })
-      }
     }
   }
 }

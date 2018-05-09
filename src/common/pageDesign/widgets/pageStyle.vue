@@ -87,7 +87,7 @@ export default {
         return
       }
       for(let key in this.innerElement) {
-        if (key !== 'setting' && this.innerElement[key] !== this.dActiveElement[key]) {
+        if (key !== 'setting' && key !== 'record' && this.innerElement[key] !== this.dActiveElement[key]) {
           if (this.ingoreKeys.indexOf(key) !== -1) {
             this.dActiveElement[key] = this.innerElement[key]
           } else {

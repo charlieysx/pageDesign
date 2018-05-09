@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 616166 */
-  src: url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.eot');
-  src: url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.woff') format('woff'),
-  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_616166_ewbtisshzhb8olxr.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.eot');
+  src: url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -80,3 +80,7 @@
 .icon-ref-line:before { content: "\e61b"; }
 
 .icon-layer-down:before { content: "\e720"; }
+
+.icon-upload:before { content: "\e602"; }
+
+.icon-delete-x:before { content: "\e6f0"; }

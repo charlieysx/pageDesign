@@ -244,6 +244,9 @@ const actions = {
   },
   updateWidgetData (store, {uuid, key, value, pushHistory}) {
     let widget = store.state.dWidgets.find(item => item.uuid === uuid)
+    if (key === 'zIndex') {
+      value = Math.min(Math.max(value, 0), 998)
+    }
     if (widget && (widget[key] !== value || pushHistory)) {
       widget[key] = value
       store.dispatch('pushHistory')

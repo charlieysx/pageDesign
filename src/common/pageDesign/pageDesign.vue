@@ -68,9 +68,14 @@ import {
 const NAME = 'page-design'
 
 import { move } from 'MIXINS/move'
+import { shortcuts } from 'MIXINS/shortcuts'
 
 export default {
   name: NAME,
+  data () {
+    return {
+    }
+  },
   computed: {
     ...mapGetters([
       'dPage',
@@ -81,15 +86,16 @@ export default {
       'dHoverUuid'
     ])
   },
-  mixins: [move],
+  mixins: [move, shortcuts],
   mounted () {
     this.getScreen()
     // 采用事件代理的方式监听元件的选中操作
     document.getElementById('out-page').addEventListener('mousedown', this.handleSelection, false)
     document.getElementById('page-design').addEventListener('mousedown', this.handleSelection, false)
-    // document.addEventListener('keydown', this.handleKeydowm, false)
+    document.addEventListener('keydown', this.handleKeydowm, false)
   },
   beforeDestroy () {
+    document.removeEventListener('keydown', this.handleKeydowm, false)
   },
   methods: {
     ...mapActions([
@@ -108,6 +114,10 @@ export default {
       let target = e.target
       let type = target.getAttribute('data-type')
 
+      if (type === 'w-text' && e.target.contentEditable === 'true') {
+        return
+      }
+
       if (type) {
         let uuid = target.getAttribute('data-uuid')
 
@@ -122,15 +132,6 @@ export default {
         this.selectWidget({
           uuid: '-1'
         })
-      }
-    },
-    handleKeydowm (e) {
-      e.stopPropagation()
-      if (this.dActiveElement.uuid === '-1') {
-        return
-      }
-      if (e.keyCode === 46 || e.keyCode === 8) {
-        this.deleteWidget()
       }
     },
     getlayers () {

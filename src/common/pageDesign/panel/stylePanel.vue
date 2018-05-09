@@ -22,8 +22,13 @@
         </li>
         <li
           class="widget"
-          :class="{active : dActiveElement.uuid === widget.uuid}"
-          v-for="widget in dWidgets" 
+          :class="[
+            {
+              active : dActiveElement.uuid === widget.uuid
+            },
+            widget.parent === '-1' ? 'item-one' : 'item-two'
+          ]"
+          v-for="widget in getWidgets"
           :key="widget.uuid"
           @click="selectLayer(widget)"
           @mouseover="hoverLayer(widget.uuid)" 
@@ -56,7 +61,14 @@ export default {
       'dActiveElement',
       'dWidgets',
       'dPage'
-    ])
+    ]),
+    getWidgets () {
+      let widgets = JSON.parse(JSON.stringify(this.dWidgets))
+
+      widgets.sort((a, b) => a.zIndex <= b.zIndex)
+
+      return widgets
+    }
   },
   methods: {
     ...mapActions([
@@ -136,5 +148,9 @@ export default {
           flex: 1
           font-size: 14px
           single-text-ellipsis()
+      .item-one
+        padding-left: 25px
+      .item-two
+        padding-left: 40px
 
 </style>

@@ -14,7 +14,8 @@
       </ul>
     </div>
     <div class="widget-wrap">
-      <text-list-wrap v-if="activeWidgetClassify === 0" />
+      <text-list-wrap v-show="activeWidgetClassify === 0" />
+      <img-list-wrap v-show="activeWidgetClassify === 3" />
     </div>
   </div>
 </template>

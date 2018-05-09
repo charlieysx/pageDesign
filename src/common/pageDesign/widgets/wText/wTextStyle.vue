@@ -265,7 +265,7 @@ export default {
       for(let key in this.innerElement) {
         if (this.ingoreKeys.indexOf(key) !== -1) {
           this.dActiveElement[key] = this.innerElement[key]
-        } else if (key !== 'setting' && this.innerElement[key] !== this.dActiveElement[key]) {
+        } else if (key !== 'setting' && key !== 'record' && this.innerElement[key] !== this.dActiveElement[key]) {
           this.updateWidgetData({
             uuid: this.dActiveElement.uuid,
             key: key,
