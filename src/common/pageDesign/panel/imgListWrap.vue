@@ -52,155 +52,59 @@ export default {
       recommendImgList: [
         {
           id: 1,
-          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/7456f975fccea2d5cce19a82e08912ec3ilFkUx56xsHRcFttsqK2Q!gradual.show'
         },
         {
           id: 2,
-          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/be123aa0b72465ee503c7ba5c368863bXC6Yu6FwQMPiYF1yk3F2q!gradual.show'
         },
         {
           id: 3,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/ce6f9ec8a0d9f077930c15b91b82252b7j9z2sowAjxQQjNJ7eMJwO!gradual.show'
         },
         {
           id: 4,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
+          url: 'http://bearcarimg.codebear.cn/e8b71e7857b96c7b0c091b1f7592fea536hoikc99bOmERWGriRQDU!gradual.show'
         },
         {
           id: 5,
-          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/5de18d7dd61a4c9b055efdabb9f09c836WgCbYTpXrQq9eWgeTXU1s!gradual.show'
         },
         {
           id: 6,
-          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/ca6b942ea3f0d7e0ae7f107fe9779d287EeRHrnU6Gjhz639uv6PMY!gradual.show'
         },
         {
           id: 7,
-          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
+          url: 'http://bearcarimg.codebear.cn/8ead687106ad6d380394a39bebb8eef86wCsJmaJbG07HGEDU8H7S0!gradual.show'
         },
         {
           id: 8,
-          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
+          url: 'http://bearcarimg.codebear.cn/02596325952cb88e2e63fe9cf2c952bc1SwWxKfeNvZRulKQLgukpM!gradual.show'
         },
         {
           id: 9,
-          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/349f6dc27e66f787d93169cad6da732bH9TbSIQgtiC5PIhraGZ9k!gradual.show'
         },
         {
           id: 10,
-          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/a87c39432206952ade30d742da64fceb4D6uzMD5EeaKULYsZq7qVe!gradual.show'
         },
         {
           id: 11,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/8bdc77316c2f60c84cd84060c4c345af1Z27Iuz4RudcbNBa0Djehi!gradual.show'
         },
         {
           id: 12,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
+          url: 'http://bearcarimg.codebear.cn/d74e089543afe11a3945c6cd06130b463skAwou9VRH4DpDcMKfEuo!gradual.show'
         },
         {
           id: 13,
-          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/f67d9d38e280544cd9dbd3ee6c520b904MtiiViAgAH7HYywyZdNIG!gradual.show'
         },
         {
           id: 14,
-          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
-        },
-        {
-          id: 15,
-          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
-        },
-        {
-          id: 16,
-          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
-        },
-        {
-          id: 17,
-          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show'
-        },
-        {
-          id: 18,
-          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show'
-        },
-        {
-          id: 20,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
-        },
-        {
-          id: 21,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
-        },
-        {
-          id: 22,
-          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
-        },
-        {
-          id: 23,
-          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
-        },
-        {
-          id: 24,
-          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
-        },
-        {
-          id: 25,
-          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
-        },
-        {
-          id: 26,
-          url: 'http://bearcarimg.codebear.cn/4fc91086d687d5c7b184b03cd4d33c933U3NidLCAmir8INKUa4peY!gradual.show'
-        },
-        {
-          id: 27,
-          url: 'http://bearcarimg.codebear.cn/3d7f532f3d4b0d34d4e3caccc318aff37cEo7VT8yGt6esXWxSkGkU!gradual.show'
-        },
-        {
-          id: 28,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
-        },
-        {
-          id: 29,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
-        },
-        {
-          id: 30,
-          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
-        },
-        {
-          id: 31,
-          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
-        },
-        {
-          id: 32,
-          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
-        },
-        {
-          id: 33,
-          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
-        },
-        {
-          id: 34,
-          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
-        },
-        {
-          id: 35,
-          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
-        },
-        {
-          id: 36,
-          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
-        },
-        {
-          id: 37,
-          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
-        },
-        {
-          id: 38,
-          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
-        },
-        {
-          id: 39,
-          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
+          url: 'http://bearcarimg.codebear.cn/25ffb31f5adf7e837540f8da695bc28aHQuHhBZ93Nw7JAMYFJC4U!gradual.show'
         }
       ],
       hadShowMyImg: false,
