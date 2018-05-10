@@ -405,9 +405,9 @@ const actions = {
       switch (dir) {
         case 'top':
           top = Math.max(widgetXY.y + Math.floor(dy * 100 / store.state.dZoom), 0)
-          target.height += (top - target.top)
-          target.height = Math.max(target.height, target.record.minHeight)
           top = Math.min(widgetXY.y + resizeWH.height - target.record.minHeight, top)
+          target.height += (target.top - top)
+          target.height = Math.max(target.height, target.record.minHeight)
           target.top = top
           break
         case 'bottom':

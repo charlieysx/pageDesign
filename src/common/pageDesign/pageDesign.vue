@@ -114,9 +114,9 @@ export default {
       let target = e.target
       let type = target.getAttribute('data-type')
 
-      if (type === 'w-text' && e.target.contentEditable === 'true') {
-        return
-      }
+      // if (type === 'w-text' && e.target.contentEditable === 'true') {
+      //   return
+      // }
 
       if (type) {
         let uuid = target.getAttribute('data-uuid')

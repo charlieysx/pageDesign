@@ -36,6 +36,8 @@
 // 图片列表
 const NAME = 'img-list-wrap'
 
+import wImage from 'COMMON/pageDesign/widgets/wImage/wImage'
+
 import {
   mapGetters,
   mapActions
@@ -175,6 +177,30 @@ export default {
         {
           id: 33,
           url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
+        },
+        {
+          id: 34,
+          url: 'http://bearcarimg.codebear.cn/4829bad02d11fb109ba096558b3a2bbd2XBlyVo3Kl4qprWpACZIgQ!gradual.show'
+        },
+        {
+          id: 35,
+          url: 'http://img1.imgtn.bdimg.com/it/u=888901725,4248147476&fm=27&gp=0.jpg'
+        },
+        {
+          id: 36,
+          url: 'http://bearcarimg.codebear.cn/e794cee9463b2994407e05492f392bb6Hp7qDuUN532stcMf1tErE!gradual.show'
+        },
+        {
+          id: 37,
+          url: 'http://bearcarimg.codebear.cn/dd8abd44eb4c0bb4c2e1805399ff54971uii7AVO84F4OnYlMYYF8M!gradual.show'
+        },
+        {
+          id: 38,
+          url: 'http://img2.imgtn.bdimg.com/it/u=177128117,3397391403&fm=27&gp=0.jpg'
+        },
+        {
+          id: 39,
+          url: 'http://img3.imgtn.bdimg.com/it/u=1060387669,1498970204&fm=27&gp=0.jpg'
         }
       ],
       hadShowMyImg: false,
@@ -203,15 +229,12 @@ export default {
         display: (this.activeTab === index ? '' : 'none')
       }
     },
-    selectBasicText (item) {
-      // let setting = JSON.parse(JSON.stringify(wText.setting))
-      // setting.text = item.text
-      // setting.fontSize = item.fontSize
-      // setting.fontWeight = item.fontWeight
-      // this.addWidget(setting)
-    },
     selectImg (item) {
-      console.log(item.id)
+      let setting = JSON.parse(JSON.stringify(wImage.setting))
+      setting.width = parseInt(item.width)
+      setting.height = parseInt(item.height)
+      setting.imgUrl = item.value.url
+      this.addWidget(setting)
     },
     deleteImg (item) {
       //
