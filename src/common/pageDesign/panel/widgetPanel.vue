@@ -15,6 +15,8 @@
     </div>
     <div class="widget-wrap">
       <text-list-wrap v-if="widgetClassifyList[0].show" :style="getStyle(0)" />
+      <shape-list-wrap v-if="widgetClassifyList[1].show" :style="getStyle(1)" />
+      <line-list-wrap v-if="widgetClassifyList[2].show" :style="getStyle(2)" />
       <img-list-wrap v-if="widgetClassifyList[3].show" :style="getStyle(3)" />
     </div>
   </div>

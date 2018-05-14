@@ -1,5 +1,5 @@
 <template>
-  <div id="w-image-style">
+  <div id="w-circle-style">
     <el-collapse v-model="activeNames">
       <el-collapse-item title="位置" name="1">
         <div class="line-layout">
@@ -10,6 +10,9 @@
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
+        <number-input class="style-item" label="边框大小" v-model="innerElement.size" @finish="(value) => finish('size', value)" />
+        <color-select class="style-item" label="边框颜色" v-model="innerElement.color" @finish="(value) => finish('color', value)" />
+        <color-select class="style-item" label="背景颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
         <icon-item-select label="组件对齐" :data="alignIconList" @finish="alignAction"/>
       </el-collapse-item>
@@ -31,8 +34,8 @@
 </template>
 
 <script>
-// 图片组件样式
-const NAME = 'w-image-style'
+// 形状-圆形组件样式
+const NAME = 'w-circle-style'
 import {
   mapGetters,
   mapActions
@@ -50,7 +53,9 @@ export default {
         'top',
         'name',
         'width',
-        'height'
+        'height',
+        'color',
+        'backgroundColor'
       ],
       layerIconList: [
         {
@@ -181,7 +186,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#w-image-style
+#w-circle-style
   width: 100%
   height: 100%
 

@@ -29,6 +29,7 @@ const state = {
     height: 0
   },
   dActiveElement: {}, // 选中的组件或页面
+  dCopyElement: [], // 复制的组件（可能是单个也可能是数组）
   dHoverUuid: '-1', // 鼠标在这个图层上
   dPage: {
     name: '背景页面',
@@ -122,6 +123,9 @@ const getters = {
   },
   dShowRefLine (state) {
     return state.dShowRefLine
+  },
+  dCopyElement (state) {
+    return state.dCopyElement
   }
 }
 
@@ -300,22 +304,26 @@ const actions = {
 
     let container = []
     let uuid = activeElement.uuid
-    activeElement.uuid = generate('1234567890abcdef', 12)
-    activeElement.top += 50
-    activeElement.left += 50
     container.push(activeElement)
     let widgets = store.state.dWidgets
     if (activeElement.isContainer) {
       for (let i = 0; i < widgets.length; ++i) {
         if (widgets[i].belong === uuid) {
-          let element = JSON.parse(JSON.stringify(widgets[i]))
-          element.uuid = generate('1234567890abcdef', 12)
-          container.push(element)
+          container.push(widgets[i])
         }
       }
     }
-    store.state.dWidgets = widgets.concat(container)
-    store.state.dActiveElement = activeElement
+    store.state.dCopyElement = JSON.parse(JSON.stringify(container))
+  },
+  pasteWidget (store) {
+    let copyElement = JSON.parse(JSON.stringify(store.state.dCopyElement))
+    for (let i = 0; i < copyElement.length; ++i) {
+      copyElement[i].uuid = generate('1234567890abcdef', 12)
+    }
+    store.state.dWidgets = store.state.dWidgets.concat(copyElement)
+    store.state.dActiveElement = copyElement[0]
+    store.state.dActiveElement.top += 50
+    store.state.dActiveElement.left += 50
 
     store.dispatch('pushHistory')
     store.dispatch('reChangeCanvas')
@@ -509,6 +517,13 @@ const actions = {
       store.dispatch('pushHistory')
       store.dispatch('reChangeCanvas')
     }
+  },
+  getWidgetJsonData (store) {
+    let page = JSON.parse(JSON.stringify(store.state.dPage))
+    let widgets = JSON.parse(JSON.stringify(store.state.dWidgets))
+    page.widgets = widgets
+
+    return page
   }
 }
 

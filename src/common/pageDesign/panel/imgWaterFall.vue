@@ -9,27 +9,18 @@
         :key="index"
         :style="{
           width: boxWidth + 'px',
-          height: item.height + 'px',
+          height: boxWidth / item.ratio + 'px',
           top: item.top + 'px',
           left: item.left + 'px'
         }"
         @click.stop="selectImg(item, index)">
         <transition name="fade">
           <img
-            v-if="item.imgWidth !== 0 && item.imgHeight !== 0"
             :src="item.value.url"
             :style="{
               width: boxWidth - 10 + 'px',
-              height: item.height - 10 + 'px'
+              height: boxWidth / item.ratio - 10 + 'px'
             }" />
-          <div
-            v-if="item.imgWidth === 0 || item.imgHeight === 0"
-            :style="{
-              width: boxWidth - 10 + 'px',
-              height: item.height - 10 + 'px',
-              backgroundColor: '#ffffff'
-            }">
-          </div>
         </transition>
         <div class="delete" v-if="item.value.canDel" @click.stop="deleteImg(item, index)">
           <div class="bg"></div>
@@ -112,37 +103,13 @@ export default {
     preLoadImg () {
       this.listData.forEach((item, index) => {
         this.innerListData.push({
-          width: this.boxWidth,
-          height: this.boxWidth,
-          imgWidth: 0,
-          imgHeight: 0,
+          ratio: item.ratio,
           value: item
         })
-        let img = new Image()
-        img.addEventListener('load', (e) => {
-          if (e.type === 'load') {
-            this.loadFinish({
-              imgWidth: img.width,
-              imgHeight: img.height,
-              item: item
-            })
-          }
-        }, false)
-        img.src = item.url
       })
-    },
-    loadFinish ({imgWidth, imgHeight, item}) {
-      let img = this.innerListData.find(v => v.value[this.k] === item[this.k])
-      img.width = this.boxWidth
-      img.height = this.boxWidth * imgHeight / imgWidth
-      img.imgWidth = imgWidth
-      img.imgHeight = imgHeight
       this.waterfall()
     },
     waterfall () {
-      if (this.sortBy !== '') {
-        this.innerListData.sort((a, b) => a.value[this.sortBy] < b.value[this.sortBy] ? -1 : 1)
-      }
       let heightList = [1, 1, 1]
       let len = this.innerListData.length
       for (let index = 0; index < len; ++index) {
@@ -150,7 +117,7 @@ export default {
         let col = index % 3
         item.top = heightList[col]
         item.left = this.boxWidth * col + 1
-        heightList[col] += item.height
+        heightList[col] += this.boxWidth / item.ratio
       }
       this.listHeight = Math.max.apply(null, heightList)
     },

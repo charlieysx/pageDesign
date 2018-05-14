@@ -1,5 +1,5 @@
 <template>
-  <div id="page-design-index">
+  <div id="page-design-index" ref="pageDesignIndex">
     <div class="top-nav" :style="style">
       <div class="top-nav-wrap">
         <div class="top-back">
@@ -9,7 +9,7 @@
           艺笺卡片
         </div>
         <div class="top-icon-wrap">
-          <div class="top-icon">
+          <div class="top-icon" @click="save">
             <i class="iconfont icon-save"></i>
             保存
           </div>
@@ -46,16 +46,23 @@
         <li 
           class="operation-item" 
           :class="{'disable' : dActiveElement.uuid === '-1'}"
-          @click="dActiveElement.uuid !== '-1' ? handle('delete') : ''">
-          <i class="iconfont icon-delete"></i>
-          <p>删除</p>
+          @click="dActiveElement.uuid !== '-1' ? handle('copy') : ''">
+          <i class="iconfont icon-copy"></i>
+          <p>复制</p>
+        </li>
+        <li 
+          class="operation-item" 
+          :class="{'disable' : dCopyElement.length === 0}"
+          @click="dCopyElement.length !== 0 ? handle('paste') : ''">
+          <i class="iconfont icon-paste"></i>
+          <p>粘贴</p>
         </li>
         <li 
           class="operation-item" 
           :class="{'disable' : dActiveElement.uuid === '-1'}"
-          @click="dActiveElement.uuid !== '-1' ? handle('copy') : ''">
-          <i class="iconfont icon-copy"></i>
-          <p>复制</p>
+          @click="dActiveElement.uuid !== '-1' ? handle('delete') : ''">
+          <i class="iconfont icon-delete"></i>
+          <p>删除</p>
         </li>
       </ul>
       <ul class="operation-wrap">
@@ -87,11 +94,30 @@
       </ul>
     </div>
     <zoom-control/>
+    <div class="menu-bg" id="menu-bg" v-show="showMenuBg">
+      <ul 
+        class="menu-list"
+        ref="menuList"
+        :style="{
+          left: menuList.left + 'px',
+          top: menuList.top + 'px'
+        }">
+        <li
+          class="menu-item"
+          :class="{'disable-menu': dCopyElement.length === 0 && item.type === 'paste'}"
+          v-for="(item, index) in menuList.list"
+          :key="index"
+          @click="selectMenu(item.type)">
+          {{ item.text }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
 import 'COMMON/pageDesign/index'
+import { shortcuts } from 'MIXINS/shortcuts'
 
 import {
   mapGetters,
@@ -138,14 +164,51 @@ export default {
         }
       ],
       gridSizeIndex: 0,
-      showGridSizeList: false
+      showGridSizeList: false,
+      showMenuBg: false,
+      menuList: {
+        left: 0,
+        top: 0,
+        list: []
+      },
+      widgetMenu: [
+        {
+          type: 'copy',
+          text: '复制'
+        },
+        {
+          type: 'paste',
+          text: '粘贴'
+        },
+        {
+          type: 'index-up',
+          text: '上移一层'
+        },
+        {
+          type: 'index-down',
+          text: '下移一层'
+        },
+        {
+          type: 'del',
+          text: '删除'
+        }
+      ],
+      pageMenu: [
+        {
+          type: 'paste',
+          text: '粘贴'
+        }
+      ]
     }
   },
+  mixins: [shortcuts],
   computed: {
     ...mapGetters([
       'dHistoryParams',
       'dActiveElement',
-      'dShowRefLine'
+      'dShowRefLine',
+      'dCopyElement',
+      'dPage'
     ]),
     undoable() {
       return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
@@ -161,10 +224,16 @@ export default {
     })
     window.addEventListener('scroll', this.fixTopBarScroll)
     window.addEventListener('click', this.clickListener)
+    window.addEventListener('keydown', this.handleKeydowm, false)
+    window.addEventListener('keyup', this.handleKeyup, false)
+    document.oncontextmenu = this.mouseRightClick
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.fixTopBarScroll)
     window.removeEventListener('click', this.clickListener)
+    window.removeEventListener('keydown', this.handleKeydowm, false)
+    window.removeEventListener('keyup', this.handleKeyup, false)
+    document.oncontextmenu = null
   },
   watch: {
     gridSizeIndex (index) {
@@ -181,7 +250,10 @@ export default {
       'selectWidget',
       'deleteWidget',
       'copyWidget',
-      'showRefLine'
+      'showRefLine',
+      'pasteWidget',
+      'updateWidgetData',
+      'getWidgetJsonData'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -202,7 +274,81 @@ export default {
         case 'copy':
           this.copyWidget()
           break
+        case 'paste':
+          this.pasteWidget()
+          break
       }
+    },
+    mouseRightClick (e) {
+      e.stopPropagation()
+      e.preventDefault()
+      if (this.showMenuBg) {
+        this.showMenuBg = false
+        return
+      }
+      let target = e.target
+      let type = target.getAttribute('data-type')
+      if (type) {
+        let uuid = target.getAttribute('data-uuid')// 设置选中元素
+        this.selectWidget({
+          uuid: uuid || '-1'
+        })
+        this.showMenu(e)
+      }
+    },
+    showMenu (e) {
+      let isPage = this.dActiveElement.uuid === '-1'
+      this.menuList.list = isPage ? this.pageMenu : this.widgetMenu
+      this.showMenuBg = true
+      document.getElementById('menu-bg').addEventListener('click', this.closeMenu, false)
+      let mx = e.pageX
+      let my = e.pageY
+      let listHeight = (14 + 10) * this.menuList.list.length + 10
+      if (my + listHeight > window.innerHeight) {
+        my -= listHeight
+      }
+      this.menuList.left = mx
+      this.menuList.top = my
+    },
+    closeMenu () {
+      this.showMenuBg = false
+      document.getElementById('menu-bg').removeEventListener('click', this.closeMenu, false)
+    },
+    selectMenu (type) {
+      switch (type) {
+        case 'copy':
+          this.copyWidget()
+          break
+        case 'paste':
+          if (this.dCopyElement.length === 0) {
+            return
+          }
+          this.pasteWidget()
+          break
+        case 'index-up':
+          this.updateWidgetData({
+            uuid: this.dActiveElement.uuid,
+            key: 'zIndex',
+            value: this.dActiveElement.zIndex + 1
+          })
+          break
+        case 'index-down':
+          this.updateWidgetData({
+            uuid: this.dActiveElement.uuid,
+            key: 'zIndex',
+            value: this.dActiveElement.zIndex - 1
+          })
+          break
+        case 'del':
+          this.deleteWidget()
+          break
+      }
+    },
+    save () {
+      this.getWidgetJsonData()
+      .then((json) => {
+        console.log(JSON.stringify(json))
+      })
     }
   }
 }
@@ -223,6 +369,29 @@ export default {
   background-color: #efefef
   display: flex
   flex-direction: column
+  .menu-bg
+    position: absolute
+    width: 100%
+    height: 100%
+    z-index: 9999
+    .menu-list
+      position: absolute
+      width: 120px
+      background-color: $color-white
+      box-shadow: 1px 0px 10px 3px rgba(0, 0, 0, .1)
+      padding: 5px
+      .menu-item
+        width: 100%
+        padding: 5px 15px
+        cursor: pointer
+        font-size: 14px
+        line-height: 1
+        &:hover
+          background-color: #ececec
+        &.disable-menu
+          background-color: $color-white
+          cursor: not-allowed
+          color: #aaaaaa
   .top-nav
     position: relative
     width: 100%

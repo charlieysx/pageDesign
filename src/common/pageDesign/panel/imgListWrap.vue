@@ -52,59 +52,73 @@ export default {
       recommendImgList: [
         {
           id: 1,
-          url: 'http://bearcarimg.codebear.cn/7456f975fccea2d5cce19a82e08912ec3ilFkUx56xsHRcFttsqK2Q!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/7456f975fccea2d5cce19a82e08912ec3ilFkUx56xsHRcFttsqK2Q!gradual.show',
+          ratio: 98 / 131
         },
         {
           id: 2,
-          url: 'http://bearcarimg.codebear.cn/be123aa0b72465ee503c7ba5c368863bXC6Yu6FwQMPiYF1yk3F2q!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/be123aa0b72465ee503c7ba5c368863bXC6Yu6FwQMPiYF1yk3F2q!gradual.show',
+          ratio: 98 / 131
         },
         {
           id: 3,
-          url: 'http://bearcarimg.codebear.cn/ce6f9ec8a0d9f077930c15b91b82252b7j9z2sowAjxQQjNJ7eMJwO!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/ce6f9ec8a0d9f077930c15b91b82252b7j9z2sowAjxQQjNJ7eMJwO!gradual.show',
+          ratio: 98 / 55
         },
         {
           id: 4,
-          url: 'http://bearcarimg.codebear.cn/e8b71e7857b96c7b0c091b1f7592fea536hoikc99bOmERWGriRQDU!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/e8b71e7857b96c7b0c091b1f7592fea536hoikc99bOmERWGriRQDU!gradual.show',
+          ratio: 98 / 55
         },
         {
           id: 5,
-          url: 'http://bearcarimg.codebear.cn/5de18d7dd61a4c9b055efdabb9f09c836WgCbYTpXrQq9eWgeTXU1s!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/5de18d7dd61a4c9b055efdabb9f09c836WgCbYTpXrQq9eWgeTXU1s!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 6,
-          url: 'http://bearcarimg.codebear.cn/ca6b942ea3f0d7e0ae7f107fe9779d287EeRHrnU6Gjhz639uv6PMY!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/ca6b942ea3f0d7e0ae7f107fe9779d287EeRHrnU6Gjhz639uv6PMY!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 7,
-          url: 'http://bearcarimg.codebear.cn/8ead687106ad6d380394a39bebb8eef86wCsJmaJbG07HGEDU8H7S0!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/8ead687106ad6d380394a39bebb8eef86wCsJmaJbG07HGEDU8H7S0!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 8,
-          url: 'http://bearcarimg.codebear.cn/02596325952cb88e2e63fe9cf2c952bc1SwWxKfeNvZRulKQLgukpM!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/02596325952cb88e2e63fe9cf2c952bc1SwWxKfeNvZRulKQLgukpM!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 9,
-          url: 'http://bearcarimg.codebear.cn/349f6dc27e66f787d93169cad6da732bH9TbSIQgtiC5PIhraGZ9k!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/349f6dc27e66f787d93169cad6da732bH9TbSIQgtiC5PIhraGZ9k!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 10,
-          url: 'http://bearcarimg.codebear.cn/a87c39432206952ade30d742da64fceb4D6uzMD5EeaKULYsZq7qVe!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/a87c39432206952ade30d742da64fceb4D6uzMD5EeaKULYsZq7qVe!gradual.show',
+          ratio: 98 / 147
         },
         {
           id: 11,
-          url: 'http://bearcarimg.codebear.cn/8bdc77316c2f60c84cd84060c4c345af1Z27Iuz4RudcbNBa0Djehi!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/8bdc77316c2f60c84cd84060c4c345af1Z27Iuz4RudcbNBa0Djehi!gradual.show',
+          ratio: 98 / 100
         },
         {
           id: 12,
-          url: 'http://bearcarimg.codebear.cn/d74e089543afe11a3945c6cd06130b463skAwou9VRH4DpDcMKfEuo!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/d74e089543afe11a3945c6cd06130b463skAwou9VRH4DpDcMKfEuo!gradual.show',
+          ratio: 98 / 98
         },
         {
           id: 13,
-          url: 'http://bearcarimg.codebear.cn/f67d9d38e280544cd9dbd3ee6c520b904MtiiViAgAH7HYywyZdNIG!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/f67d9d38e280544cd9dbd3ee6c520b904MtiiViAgAH7HYywyZdNIG!gradual.show',
+          ratio: 98 / 73
         },
         {
           id: 14,
-          url: 'http://bearcarimg.codebear.cn/25ffb31f5adf7e837540f8da695bc28aHQuHhBZ93Nw7JAMYFJC4U!gradual.show'
+          url: 'http://bearcarimg.codebear.cn/25ffb31f5adf7e837540f8da695bc28aHQuHhBZ93Nw7JAMYFJC4U!gradual.show',
+          ratio: 98 / 65
         }
       ],
       hadShowMyImg: false,
@@ -135,8 +149,8 @@ export default {
     },
     selectImg (item) {
       let setting = JSON.parse(JSON.stringify(wImage.setting))
-      setting.width = parseInt(item.width)
-      setting.height = parseInt(item.height)
+      setting.width = 100
+      setting.height = parseInt(100 / item.value.ratio)
       setting.imgUrl = item.value.url
       this.addWidget(setting)
     },

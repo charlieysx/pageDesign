@@ -11,6 +11,8 @@
       }">
       <div 
         class="design-canvas"
+        :data-type="dPage.type"
+        :data-uuid="dPage.uuid"
         :style="{
           width: dPage.width + 'px',
           height: dPage.height + 'px',
@@ -68,7 +70,6 @@ import {
 const NAME = 'page-design'
 
 import { move } from 'MIXINS/move'
-import { shortcuts } from 'MIXINS/shortcuts'
 
 export default {
   name: NAME,
@@ -86,16 +87,13 @@ export default {
       'dHoverUuid'
     ])
   },
-  mixins: [move, shortcuts],
+  mixins: [move],
   mounted () {
     this.getScreen()
     // 采用事件代理的方式监听元件的选中操作
-    document.getElementById('out-page').addEventListener('mousedown', this.handleSelection, false)
     document.getElementById('page-design').addEventListener('mousedown', this.handleSelection, false)
-    document.addEventListener('keydown', this.handleKeydowm, false)
   },
   beforeDestroy () {
-    document.removeEventListener('keydown', this.handleKeydowm, false)
   },
   methods: {
     ...mapActions([
@@ -111,6 +109,9 @@ export default {
       })
     },
     handleSelection (e) {
+      if (e.which === 3) {
+        return
+      }
       let target = e.target
       let type = target.getAttribute('data-type')
 

@@ -1,5 +1,5 @@
 <template>
-  <div id="w-image-style">
+  <div id="w-line-style">
     <el-collapse v-model="activeNames">
       <el-collapse-item title="位置" name="1">
         <div class="line-layout">
@@ -10,6 +10,7 @@
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
+        <color-select class="style-item" label="线条颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
         <icon-item-select label="组件对齐" :data="alignIconList" @finish="alignAction"/>
       </el-collapse-item>
@@ -31,8 +32,8 @@
 </template>
 
 <script>
-// 图片组件样式
-const NAME = 'w-image-style'
+// 线条组件样式
+const NAME = 'w-line-style'
 import {
   mapGetters,
   mapActions
@@ -50,7 +51,8 @@ export default {
         'top',
         'name',
         'width',
-        'height'
+        'height',
+        'backgroundColor'
       ],
       layerIconList: [
         {
@@ -181,7 +183,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#w-image-style
+#w-line-style
   width: 100%
   height: 100%
 

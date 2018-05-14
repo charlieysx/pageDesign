@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 616166 */
-  src: url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.eot');
-  src: url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.woff') format('woff'),
-  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_616166_yk0i99u5kvmfgvi.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_616166_neupid27zqizr529.eot');
+  src: url('//at.alicdn.com/t/font_616166_neupid27zqizr529.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_616166_neupid27zqizr529.woff') format('woff'),
+  url('//at.alicdn.com/t/font_616166_neupid27zqizr529.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_616166_neupid27zqizr529.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -84,3 +84,5 @@
 .icon-upload:before { content: "\e602"; }
 
 .icon-delete-x:before { content: "\e6f0"; }
+
+.icon-paste:before { content: "\e603"; }
