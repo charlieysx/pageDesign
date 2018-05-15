@@ -10,6 +10,30 @@
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
+        <number-slider 
+          class="style-item" 
+          label="左上圆角" 
+          v-model="innerElement.radiusTopLeft" 
+          :maxValue="Math.min(innerElement.record.width, innerElement.record.height)" 
+          @finish="(value) => finish('radiusTopLeft', value)" />
+        <number-slider 
+          class="style-item" 
+          label="右上圆角" 
+          v-model="innerElement.radiusTopRight" 
+          :maxValue="Math.min(innerElement.record.width, innerElement.record.height)" 
+          @finish="(value) => finish('radiusTopRight', value)" />
+        <number-slider 
+          class="style-item" 
+          label="左下圆角" 
+          v-model="innerElement.radiusBottomLeft" 
+          :maxValue="Math.min(innerElement.record.width, innerElement.record.height)" 
+          @finish="(value) => finish('radiusBottomLeft', value)" />
+        <number-slider 
+          class="style-item" 
+          label="右上圆角" 
+          v-model="innerElement.radiusBottomRight" 
+          :maxValue="Math.min(innerElement.record.width, innerElement.record.height)" 
+          @finish="(value) => finish('radiusBottomRight', value)" />
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
         <icon-item-select label="组件对齐" :data="alignIconList" @finish="alignAction"/>
       </el-collapse-item>
@@ -50,7 +74,11 @@ export default {
         'top',
         'name',
         'width',
-        'height'
+        'height',
+        'radiusTopLeft',
+        'radiusTopRight',
+        'radiusBottomLeft',
+        'radiusBottomRight',
       ],
       layerIconList: [
         {

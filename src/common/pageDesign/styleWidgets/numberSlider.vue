@@ -71,18 +71,18 @@ export default {
 
 <style lang="stylus">
 .el-slider
-  width: 200px
+  width: 200px !important
   .show-input
-    margin-right: 90px
+    margin-right: 90px !important
   .el-slider__input
-    width: 80px
+    width: 80px !important
     .el-input-number__decrease
     .el-input-number__increase
-      width: 16px
+      width: 16px !important
     .el-input--mini
       .el-input__inner
-        padding-left: 10px
-        padding-right: 10px
+        padding-left: 10px !important
+        padding-right: 10px !important
 </style>
 
 

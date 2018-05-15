@@ -10,6 +10,10 @@
       width: params.width + 'px',
       height: params.height + 'px',
       opacity: params.opacity,
+      borderTopLeftRadius: params.radiusTopLeft + 'px',
+      borderTopRightRadius: params.radiusTopRight + 'px',
+      borderBottomLeftRadius: params.radiusBottomLeft + 'px',
+      borderBottomRightRadius: params.radiusBottomRight + 'px',
       zIndex: params.zIndex
     }"/>
 </template>
@@ -33,6 +37,10 @@ export default {
     height: 300,
     left: 0,
     top: 0,
+    radiusTopLeft: 0,
+    radiusTopRight: 0,
+    radiusBottomLeft: 0,
+    radiusBottomRight: 0,
     zIndex: 0,
     opacity: 1,
     parent: '-1',
