@@ -124,10 +124,12 @@ export default {
 
         // 设置选中元素
         this.selectWidget({
-          uuid: uuid || '-1'
+          uuid: uuid
         })
 
-        this.initmovement(e) // 参见 mixins
+        if (uuid !== '-1') {
+          this.initmovement(e) // 参见 mixins
+        }
       } else {
         // 取消选中元素
         this.selectWidget({

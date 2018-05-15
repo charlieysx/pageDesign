@@ -1,6 +1,6 @@
 <template>
   <div 
-    id="w-line"
+    id="w-rectangle"
     ref="widget"
     :style="{
       position: 'absolute',
@@ -8,7 +8,12 @@
       top: params.top + 'px',
       width: params.width + 'px',
       height: params.height + 'px',
+      border: params.size + 'px solid ' + params.color,
       backgroundColor: params.backgroundColor,
+      borderTopLeftRadius: params.radiusTopLeft + 'px',
+      borderTopRightRadius: params.radiusTopRight + 'px',
+      borderBottomLeftRadius: params.radiusBottomLeft + 'px',
+      borderBottomRightRadius: params.radiusBottomRight + 'px',
       opacity: params.opacity,
       zIndex: params.zIndex
     }">
@@ -16,8 +21,8 @@
 </template>
 
 <script>
-// 形状-线条组件
-const NAME = 'w-line'
+// 形状-矩形组件
+const NAME = 'w-rectangle'
 
 import {
   mapGetters,
@@ -27,17 +32,23 @@ import {
 export default {
   name: NAME,
   setting: {
-    name: '形状-线条',
+    name: '形状-矩形',
     type: NAME,
     uuid: -1,
-    width: 300,
-    height: 2,
-    left: 10,
-    top: 10,
+    width: 100,
+    height: 100,
+    left: 0,
+    top: 0,
     zIndex: 0,
     opacity: 1,
+    radiusTopLeft: 0,
+    radiusTopRight: 0,
+    radiusBottomLeft: 0,
+    radiusBottomRight: 0,
     parent: '-1',
-    backgroundColor: 'rgba(0, 0, 0, 1)',
+    color: 'rgba(0, 0, 0, 1)',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    size: 5,
     setting: [
     ],
     record: {
@@ -72,6 +83,8 @@ export default {
         let record = this.dActiveElement.record
         record.width = this.$refs.widget.offsetWidth
         record.height = this.$refs.widget.offsetHeight
+        record.minWidth = this.params.size * 2
+        record.minHeight = this.params.size * 2
       }
     }
   }
@@ -80,7 +93,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#w-line
+#w-rectangle
   outline: none
   cursor: pointer
 </style>

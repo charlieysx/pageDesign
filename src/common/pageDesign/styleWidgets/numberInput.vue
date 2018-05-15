@@ -90,6 +90,9 @@ export default {
           break
         }
       }
+      if (newValue === '') {
+        newValue = '0'
+      }
       this.updateValue(parseInt(newValue))
     },
     focusInput () {

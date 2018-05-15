@@ -252,6 +252,18 @@ const actions = {
       value = Math.min(Math.max(value, 0), 998)
     }
     if (widget && (widget[key] !== value || pushHistory)) {
+      switch (key) {
+        case 'width':
+          let minWidth = widget.record.minWidth
+          let maxWidth = store.state.dPage.width - widget.left
+          value = Math.max(minWidth, Math.min(maxWidth, value))
+          break
+        case 'height':
+          let minHeight = widget.record.minHeight
+          let maxHeight = store.state.dPage.height - widget.top
+          value = Math.max(minHeight, Math.min(maxHeight, value))
+          break
+      }
       widget[key] = value
       store.dispatch('pushHistory')
       store.dispatch('reChangeCanvas')
