@@ -224,15 +224,15 @@ export default {
     })
     window.addEventListener('scroll', this.fixTopBarScroll)
     window.addEventListener('click', this.clickListener)
-    window.addEventListener('keydown', this.handleKeydowm, false)
-    window.addEventListener('keyup', this.handleKeyup, false)
+    document.addEventListener('keydown', this.handleKeydowm, false)
+    document.addEventListener('keyup', this.handleKeyup, false)
     document.oncontextmenu = this.mouseRightClick
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.fixTopBarScroll)
     window.removeEventListener('click', this.clickListener)
-    window.removeEventListener('keydown', this.handleKeydowm, false)
-    window.removeEventListener('keyup', this.handleKeyup, false)
+    document.removeEventListener('keydown', this.handleKeydowm, false)
+    document.removeEventListener('keyup', this.handleKeyup, false)
     document.oncontextmenu = null
   },
   watch: {

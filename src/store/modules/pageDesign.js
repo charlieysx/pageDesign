@@ -1,7 +1,6 @@
 const generate = require('nanoid/generate')
 
 const state = {
-  dTop: 0, // 添加组件的初始纵坐标
   dZoom: 100, // 画布缩放百分比
   dScreen: {
     width: 0, // 记录编辑界面的宽度
@@ -79,9 +78,6 @@ const state = {
 }
 
 const getters = {
-  dTop (state) {
-    return state.dTop
-  },
   dZoom (state) {
     return state.dZoom
   },
@@ -225,9 +221,6 @@ const actions = {
     }
     store.state.dActiveElement = element
   },
-  updateTop (store, top) {
-    store.state.dTop = top
-  },
   updateZoom (store, zoom) {
     store.state.dZoom = zoom
   },
@@ -296,7 +289,7 @@ const actions = {
     // 如果删除的是容器，须将内部组件一并删除
     if (activeElement.isContainer) {
       for (let i = 0; i < widgets.length; ++i) {
-        if (widgets[i].belong === uuid) {
+        if (widgets[i].parent === uuid) {
           widgets.splice(i, 1)
         }
       }

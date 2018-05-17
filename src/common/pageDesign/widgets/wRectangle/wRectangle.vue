@@ -17,7 +17,7 @@
       opacity: params.opacity,
       zIndex: params.zIndex
     }">
-    </div>
+  </div>
 </template>
 
 <script>

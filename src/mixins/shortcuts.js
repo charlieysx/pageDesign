@@ -3,10 +3,18 @@ const ignoreNode = [
   'TEXTAREA'
 ]
 
-const ignoreKeyCode = [
+// 系统组合键
+const systemKeyCode = [
   {
+    // ctrl+r刷新
     key: ['ctrlKey', 'metaKey'],
-    keyCode: 82
+    code: 82
+  },
+  {
+    // ctrl+alt+i打开开发者
+    key: ['ctrlKey', 'metaKey'],
+    key2: ['altKey'],
+    code: 73
   }
 ]
 
@@ -15,51 +23,79 @@ let hadDown = false
 let shortcuts = {
   methods: {
     handleKeydowm (e) {
-      if (hadDown || this.showMenuBg) {
-        return
-      }
-      hadDown = true
-      let ctrl = e.metaKey || e.ctrlKey
-      if (ctrl) {
-        hadDown = false
-      }
       let nodeName = e.target.nodeName
       if (ignoreNode.indexOf(nodeName) !== -1 || (nodeName === 'DIV' && e.target.contentEditable === 'true')) {
         return
       }
-      let ele = ignoreKeyCode.find(item => {
+      if (hadDown || this.showMenuBg) {
+        e.stopPropagation()
+        e.preventDefault()
+        return
+      }
+      hadDown = true
+      let ctrl = e.key === 'Control' || e.key === 'Meta'
+      let alt = e.key === 'Alt'
+      let shift = e.key === 'Shift'
+      let dir = e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40
+      let specialKey = ctrl || alt || shift || dir
+      if (specialKey || e.metaKey) {
+        hadDown = false
+      }
+      let systemKey = systemKeyCode.find(item => {
         let f = false
+        let f2 = false
         for (let i = 0; i < item.key.length; ++i) {
           f = e[item.key[i]]
           if (f) {
             break
           }
         }
-        return f && e.keyCode === item.keyCode
+        if (item.key2) {
+          for (let i = 0; i < item.key2.length; ++i) {
+            f2 = e[item.key2[i]]
+            if (f2) {
+              break
+            }
+          }
+        }
+        return f && f2 && e.keyCode === item.code
       })
-      if (!ele) {
-        e.stopPropagation()
-        e.preventDefault()
+      if (systemKey) {
+        return
       }
-      if (ctrl) {
+      e.stopPropagation()
+      e.preventDefault()
+
+      let withCtrl = e.ctrlKey || e.metaKey
+      if (withCtrl && !specialKey) {
         this.dealCtrl(e)
+        return
+      }
+      let withAlt = e.altKey
+      if (withAlt && !specialKey) {
+        return
+      }
+      let withShift = e.shiftKey
+      if (withShift && !specialKey) {
         return
       }
       if (this.dActiveElement.uuid === '-1') {
         return
       }
+
+      let f = withShift ? 10 : 1
       switch (e.keyCode) {
         case 38:
-          this.udlr('top', -1)
+          this.udlr('top', -1 * f)
           break
         case 40:
-          this.udlr('top', 1)
+          this.udlr('top', 1 * f)
           break
         case 37:
-          this.udlr('left', -1)
+          this.udlr('left', -1 * f)
           break
         case 39:
-          this.udlr('left', 1)
+          this.udlr('left', 1 * f)
           break
         case 46:
         case 8:
@@ -68,6 +104,7 @@ let shortcuts = {
       }
     },
     handleKeyup (e) {
+      console.log(e)
       hadDown = false
     },
     /**
@@ -109,6 +146,9 @@ let shortcuts = {
           } else if (!(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))) {
             this.handleHistory('undo')
           }
+          break
+        case 83: // s
+          this.save()
           break
       }
     }
