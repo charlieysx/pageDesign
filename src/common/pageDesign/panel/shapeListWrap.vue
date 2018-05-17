@@ -96,7 +96,7 @@ export default {
       'addWidget'
     ]),
     selectShape (item) {
-      this.addWidget(item.value.setting)
+      this.addWidget(JSON.parse(JSON.stringify(item.value.setting)))
     }
   }
 }
