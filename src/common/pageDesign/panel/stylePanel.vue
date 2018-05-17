@@ -13,7 +13,7 @@
       <ul class="widget-list">
         <li
           class="widget"
-          :class="{active : dActiveElement.uuid === dPage.uuid}"
+          :class="{active : dActiveElement.uuid === dPage.uuid && dSelectWidgets.length === 0}"
           @click="selectLayer(dPage)"
           @mouseover="hoverLayer('-1')" 
           @mouseout="hoverLayer('-1')">
@@ -24,7 +24,7 @@
           class="widget"
           :class="[
             {
-              active : dActiveElement.uuid === widget.uuid
+              active : getIsActive(widget.uuid)
             },
             widget.parent === '-1' ? 'item-one' : 'item-two'
           ]"
@@ -60,7 +60,8 @@ export default {
     ...mapGetters([
       'dActiveElement',
       'dWidgets',
-      'dPage'
+      'dPage',
+      'dSelectWidgets'
     ]),
     getWidgets () {
       let widgets = JSON.parse(JSON.stringify(this.dWidgets))
@@ -82,6 +83,17 @@ export default {
     },
     hoverLayer (uuid) {
       this.updateHoverUuid(uuid)
+    },
+    getIsActive (uuid) {
+      if (this.dSelectWidgets.length > 0) {
+        let widget = this.dSelectWidgets.find(item => item.uuid === uuid)
+        if (widget) {
+          return true
+        }
+        return false
+      } else {
+        return uuid === this.dActiveElement.uuid
+      }
     }
   }
 }

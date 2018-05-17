@@ -60,21 +60,23 @@ const state = {
     length: 0
   },
   dColorHistory: [
-    '#ff4500',
-    '#ff8c00',
-    '#ffd700',
-    '#90ee90',
-    '#00ced1',
-    '#1e90ff',
-    '#c71585',
+    'rgba(255, 69, 0, 1)',
+    'rgba(255, 140, 0, 1)',
+    'rgba(255, 215, 0, 1)',
+    'rgba(144, 238, 144, 1)',
+    'rgba(0, 206, 209, 1)',
+    'rgba(30, 144, 255, 1)',
+    'rgba(199, 21, 133, 1)',
     'rgba(255, 69, 0, 0.68)',
-    'rgb(255, 120, 0)',
-    'hsv(51, 100, 98)',
-    'hsva(120, 40, 94, 0.5)',
-    'hsl(181, 100%, 37%)',
-    'hsla(209, 100%, 56%, 0.73)',
-    '#c7158577'
-  ] // 记录历史选择的颜色
+    'rgba(255, 120, 0, 1)',
+    'rgba(250, 212, 0, 1)',
+    'rgba(144, 240, 144, 0.5)',
+    'rgba(0, 186, 189, 1)',
+    'rgba(31, 147, 255, 0.73)',
+    'rgba(199, 21, 133, 0.46)'
+  ], // 记录历史选择的颜色
+  dAltDown: false, // 记录是否按下alt键
+  dSelectWidgets: [] // 记录多选的组件
 }
 
 const getters = {
@@ -122,6 +124,12 @@ const getters = {
   },
   dCopyElement (state) {
     return state.dCopyElement
+  },
+  dAltDown (state) {
+    return state.dAltDown
+  },
+  dSelectWidgets (state) {
+    return state.dSelectWidgets
   }
 }
 
@@ -272,25 +280,35 @@ const actions = {
     store.dispatch('reChangeCanvas')
   },
   deleteWidget (store) {
-    let activeElement = store.state.dActiveElement
-    if (activeElement.type === 'page') {
-      return
-    }
-
     let widgets = store.state.dWidgets
-    let uuid = activeElement.uuid
-    let index = widgets.findIndex(item => {
-      return item.uuid === uuid
-    })
+    let selectWidgets = store.state.dSelectWidgets
+    if (selectWidgets.length !== 0) {
+      for (let i = 0; i < selectWidgets.length; ++i) {
+        let uuid = selectWidgets[i].uuid
+        let index = widgets.findIndex(item => item.uuid === uuid)
+        widgets.splice(index, 1)
+      }
+      store.state.dSelectWidgets = []
+    } else {
+      let activeElement = store.state.dActiveElement
+      if (activeElement.type === 'page') {
+        return
+      }
 
-    // 先删除组件
-    widgets.splice(index, 1)
+      let uuid = activeElement.uuid
+      let index = widgets.findIndex(item => {
+        return item.uuid === uuid
+      })
 
-    // 如果删除的是容器，须将内部组件一并删除
-    if (activeElement.isContainer) {
-      for (let i = 0; i < widgets.length; ++i) {
-        if (widgets[i].parent === uuid) {
-          widgets.splice(i, 1)
+      // 先删除组件
+      widgets.splice(index, 1)
+
+      // 如果删除的是容器，须将内部组件一并删除
+      if (activeElement.isContainer) {
+        for (let i = widgets.length - 1; i >= 0; --i) {
+          if (widgets[i].parent === uuid) {
+            widgets.splice(i, 1)
+          }
         }
       }
     }
@@ -308,13 +326,29 @@ const actions = {
     }
 
     let container = []
-    let uuid = activeElement.uuid
-    container.push(activeElement)
-    let widgets = store.state.dWidgets
-    if (activeElement.isContainer) {
-      for (let i = 0; i < widgets.length; ++i) {
-        if (widgets[i].belong === uuid) {
-          container.push(widgets[i])
+    let selectWidgets = store.state.dSelectWidgets
+    if (selectWidgets.length === 0) {
+      let uuid = activeElement.uuid
+      container.push(activeElement)
+      if (activeElement.isContainer) {
+        let widgets = store.state.dWidgets
+        for (let i = 0; i < widgets.length; ++i) {
+          if (widgets[i].belong === uuid) {
+            container.push(widgets[i])
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < selectWidgets.length; ++i) {
+        let uuid = selectWidgets[i].uuid
+        container.push(selectWidgets[i])
+        if (selectWidgets[i].isContainer) {
+          let widgets = store.state.dWidgets
+          for (let i = 0; i < widgets.length; ++i) {
+            if (widgets[i].belong === uuid) {
+              container.push(widgets[i])
+            }
+          }
         }
       }
     }
@@ -324,17 +358,51 @@ const actions = {
     let copyElement = JSON.parse(JSON.stringify(store.state.dCopyElement))
     for (let i = 0; i < copyElement.length; ++i) {
       copyElement[i].uuid = generate('1234567890abcdef', 12)
+      if (copyElement[i].parent === '-1') {
+        copyElement[i].top += 50
+        copyElement[i].left += 50
+      }
     }
     store.state.dWidgets = store.state.dWidgets.concat(copyElement)
     store.state.dActiveElement = copyElement[0]
-    store.state.dActiveElement.top += 50
-    store.state.dActiveElement.left += 50
+    store.state.dSelectWidgets = []
+    store.state.dSelectWidgets = copyElement
 
     store.dispatch('pushHistory')
     store.dispatch('reChangeCanvas')
   },
   // 选中元件与取消选中
   selectWidget (store, { uuid }) {
+    let alt = store.state.dAltDown
+    let selectWidgets = store.state.dSelectWidgets
+    if (alt) {
+      if (uuid !== '-1') {
+        if (selectWidgets.length === 0) {
+          if (store.state.dActiveElement.uuid !== '-1') {
+            selectWidgets.push(store.state.dActiveElement)
+          }
+        }
+        let index = selectWidgets.findIndex(item => {
+          return item.uuid === uuid
+        })
+        // 如果已经存在则取消选择，否则加入选取
+        if (index !== -1) {
+          selectWidgets.splice(index, 1)
+          if (selectWidgets.length === 0) {
+            store.state.dActiveElement = store.state.dPage
+          }
+        } else {
+          let widget = store.state.dWidgets.find(item => item.uuid === uuid)
+          selectWidgets.push(widget)
+        }
+        if (selectWidgets.length === 1) {
+          store.state.dActiveElement = selectWidgets[0]
+          store.state.dSelectWidgets = []
+        }
+      }
+      return
+    }
+    store.state.dSelectWidgets = []
     if (uuid === '-1') {
       store.state.dActiveElement = store.state.dPage
       let pageHistory = store.state.dPageHistory
@@ -460,8 +528,13 @@ const actions = {
     store.state.dPage.tag = tag === 0 ? 0.01 : 0
   },
   pushColorToHistory (store, color) {
-    // 最多保存20种颜色
     let history = store.state.dColorHistory
+    // 如果已经存在就提到前面来，避免重复
+    let index = history.indexOf(color)
+    if (index !== -1) {
+      history.splice(index, 1)
+    }
+    // 最多保存20种颜色
     if (history.length === 20) {
       history.splice(history.length - 1, 1)
     }
@@ -529,6 +602,12 @@ const actions = {
     page.widgets = widgets
 
     return page
+  },
+  updateAltDown (store, value) {
+    store.state.dAltDown = value
+    if (!value) {
+      console.log(store.state.dSelectWidgets)
+    }
   }
 }
 

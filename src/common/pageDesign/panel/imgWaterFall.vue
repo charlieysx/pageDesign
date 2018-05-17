@@ -268,8 +268,6 @@ export default {
             top: 5px
             display: block
             position: absolute
-      img
-        background-color: $color-white
       .delete
         position: absolute
         left: 0

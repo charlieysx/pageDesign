@@ -41,6 +41,9 @@ let shortcuts = {
       if (specialKey || e.metaKey) {
         hadDown = false
       }
+      if (alt) {
+        this.$store.dispatch('updateAltDown', true)
+      }
       let systemKey = systemKeyCode.find(item => {
         let f = false
         let f2 = false
@@ -106,6 +109,9 @@ let shortcuts = {
     handleKeyup (e) {
       console.log(e)
       hadDown = false
+      if (e.key === 'Alt') {
+        this.$store.dispatch('updateAltDown', false)
+      }
     },
     /**
      * 键盘操作上下左右移动组件

@@ -28,8 +28,8 @@
           :is="layer.type"
           class="layer"
           :class="{
-            'layer-active': layer.uuid === dActiveElement.uuid,
-            'layer-hover':layer.uuid === dHoverUuid
+            'layer-active': getIsActive(layer.uuid),
+            'layer-hover': layer.uuid === dHoverUuid
           }"
           :data-title="layer.type"
           v-for="layer in getlayers()"
@@ -42,8 +42,8 @@
             :is="widget.type"
             class="layer"
             :class="{
-              'layer-active': layer.uuid === dActiveElement.uuid,
-              'layer-hover':layer.uuid === dHoverUuid
+              'layer-active': getIsActive(widget.uuid),
+              'layer-hover': widget.uuid === dHoverUuid
             }"
             :data-title="widget.type"
             v-for="widget in getChilds(layer.uuid)"
@@ -53,8 +53,8 @@
             :data-uuid="widget.uuid" />
         </component>
 
-        <ref-line />
-        <size-control />
+        <ref-line v-if="dSelectWidgets.length === 0" />
+        <size-control v-if="dSelectWidgets.length === 0" />
       </div>
     </div>
   </div>
@@ -84,7 +84,8 @@ export default {
       'dScreen',
       'dWidgets',
       'dActiveElement',
-      'dHoverUuid'
+      'dHoverUuid',
+      'dSelectWidgets'
     ])
   },
   mixins: [move],
@@ -146,6 +147,17 @@ export default {
       return this.dWidgets.filter(
         item => item.parent === uuid
       )
+    },
+    getIsActive (uuid) {
+      if (this.dSelectWidgets.length > 0) {
+        let widget = this.dSelectWidgets.find(item => item.uuid === uuid)
+        if (widget) {
+          return true
+        }
+        return false
+      } else {
+        return uuid === this.dActiveElement.uuid
+      }
     }
   }
 }
