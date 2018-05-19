@@ -259,7 +259,8 @@ export default {
       'updateWidgetData',
       'getWidgetJsonData',
       'initGroupJson',
-      'updateLayerIndex'
+      'updateLayerIndex',
+      'ungroup'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -367,6 +368,7 @@ export default {
           this.deleteWidget()
           break
         case 'ungroup':
+        this.ungroup(this.dActiveElement.uuid)
           break
       }
     },

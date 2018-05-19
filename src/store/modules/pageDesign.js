@@ -805,6 +805,17 @@ const actions = {
         widgets.splice(pos + 1, 0, group[i])
       }
     }
+  },
+  ungroup (store, uuid) {
+    let widgets = store.state.dWidgets
+    let index = widgets.findIndex(item => item.uuid === uuid)
+    widgets.splice(index, 1)
+    let len = widgets.length
+    for (let i = 0; i < len; ++i) {
+      let widget = widgets.find(item => item.parent === uuid)
+      widget.parent = '-1'
+    }
+    store.state.dActiveElement = store.state.dPage
   }
 }
 

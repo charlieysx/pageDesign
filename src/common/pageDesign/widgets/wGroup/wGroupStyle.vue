@@ -10,6 +10,7 @@
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
+        <div class="ungroup style-item" @click="ungroup(innerElement.uuid)">取消组合</div>
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
         <icon-item-select label="组件对齐" :data="alignIconList" @finish="alignAction"/>
       </el-collapse-item>
@@ -128,7 +129,8 @@ export default {
     ...mapActions([
       'updateWidgetData',
       'updateAlign',
-      'updateLayerIndex'
+      'updateLayerIndex',
+      'ungroup'
     ]),
     change () {
       this.tag = true
@@ -191,4 +193,13 @@ export default {
   justify-content: space-between
 .select
   margin-bottom: 10px
+.ungroup
+  text-align: center
+  background-color: $color-main
+  cursor: pointer
+  padding: 5px
+  color: $color-white
+  margin: 10px
+  &:hover
+    background-color: lighten($color-main, 10%)
 </style>
