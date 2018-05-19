@@ -1,6 +1,6 @@
 <template>
   <div 
-    id="w-rectangle"
+    id="w-group"
     ref="widget"
     :style="{
       position: 'absolute',
@@ -8,20 +8,15 @@
       top: (params.top - parent.top) + 'px',
       width: params.width + 'px',
       height: params.height + 'px',
-      border: params.size + 'px solid ' + params.color,
-      backgroundColor: params.backgroundColor,
-      borderTopLeftRadius: params.radiusTopLeft + 'px',
-      borderTopRightRadius: params.radiusTopRight + 'px',
-      borderBottomLeftRadius: params.radiusBottomLeft + 'px',
-      borderBottomRightRadius: params.radiusBottomRight + 'px',
       opacity: params.opacity
     }">
+    <slot></slot>
   </div>
 </template>
 
 <script>
-// 形状-矩形组件
-const NAME = 'w-rectangle'
+// 组合组件
+const NAME = 'w-group'
 
 import {
   mapGetters,
@@ -31,30 +26,24 @@ import {
 export default {
   name: NAME,
   setting: {
-    name: '形状-矩形',
+    name: '组合',
     type: NAME,
     uuid: -1,
-    width: 100,
-    height: 100,
+    width: 0,
+    height: 0,
     left: 0,
     top: 0,
     opacity: 1,
-    radiusTopLeft: 0,
-    radiusTopRight: 0,
-    radiusBottomLeft: 0,
-    radiusBottomRight: 0,
     parent: '-1',
-    color: 'rgba(0, 0, 0, 1)',
-    backgroundColor: '',
-    size: 5,
+    isContainer: true,
     setting: [
     ],
     record: {
       width: 0,
       height: 0,
-      minWidth: 1,
-      minHeight: 1,
-      dir: 'all'
+      minWidth: 0,
+      minHeight: 0,
+      dir: 'none'
     }
   },
   props: ['params', 'parent'],
@@ -81,8 +70,6 @@ export default {
         let record = this.dActiveElement.record
         record.width = this.$refs.widget.offsetWidth
         record.height = this.$refs.widget.offsetHeight
-        record.minWidth = this.params.size * 2
-        record.minHeight = this.params.size * 2
       }
     }
   }
@@ -91,7 +78,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#w-rectangle
+#w-group
   outline: none
   cursor: pointer
 </style>

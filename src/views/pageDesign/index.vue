@@ -117,6 +117,7 @@
 
 <script>
 import 'COMMON/pageDesign/index'
+import wGroup from 'COMMON/pageDesign/widgets/wGroup/wGroup'
 import { shortcuts } from 'MIXINS/shortcuts'
 
 import {
@@ -208,7 +209,9 @@ export default {
       'dActiveElement',
       'dShowRefLine',
       'dCopyElement',
-      'dPage'
+      'dPage',
+      'dAltDown',
+      'dWidgets'
     ]),
     undoable() {
       return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
@@ -222,6 +225,7 @@ export default {
     this.selectWidget({
       uuid: '-1'
     })
+    this.initGroupJson(JSON.stringify(wGroup.setting))
     window.addEventListener('scroll', this.fixTopBarScroll)
     window.addEventListener('click', this.clickListener)
     document.addEventListener('keydown', this.handleKeydowm, false)
@@ -253,7 +257,9 @@ export default {
       'showRefLine',
       'pasteWidget',
       'updateWidgetData',
-      'getWidgetJsonData'
+      'getWidgetJsonData',
+      'initGroupJson',
+      'updateLayerIndex'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -290,6 +296,13 @@ export default {
       let type = target.getAttribute('data-type')
       if (type) {
         let uuid = target.getAttribute('data-uuid')// 设置选中元素
+
+        if (uuid !== '-1' && !this.dAltDown) {
+          let widget = this.dWidgets.find(item => item.uuid === uuid)
+          if (widget.parent !== '-1' && widget.parent !== this.dActiveElement.uuid && widget.parent !== this.dActiveElement.parent) {
+            uuid = widget.parent
+          }
+        }
         this.selectWidget({
           uuid: uuid || '-1'
         })
@@ -299,10 +312,21 @@ export default {
     showMenu (e) {
       let isPage = this.dActiveElement.uuid === '-1'
       this.menuList.list = isPage ? this.pageMenu : this.widgetMenu
+      if (this.dActiveElement.isContainer) {
+        let ungroup = [{
+          type: 'ungroup',
+          text: '取消组合'
+        }]
+        this.menuList.list = ungroup.concat(this.menuList.list)
+      }
       this.showMenuBg = true
       document.getElementById('menu-bg').addEventListener('click', this.closeMenu, false)
       let mx = e.pageX
       let my = e.pageY
+      let listWidth = 120
+      if (mx + listWidth > window.innerWidth) {
+        mx -= listWidth
+      }
       let listHeight = (14 + 10) * this.menuList.list.length + 10
       if (my + listHeight > window.innerHeight) {
         my -= listHeight
@@ -326,21 +350,23 @@ export default {
           this.pasteWidget()
           break
         case 'index-up':
-          this.updateWidgetData({
+          this.updateLayerIndex({
             uuid: this.dActiveElement.uuid,
-            key: 'zIndex',
-            value: this.dActiveElement.zIndex + 1
+            value: 1,
+            isGroup: this.dActiveElement.isContainer
           })
           break
         case 'index-down':
-          this.updateWidgetData({
+          this.updateLayerIndex({
             uuid: this.dActiveElement.uuid,
-            key: 'zIndex',
-            value: this.dActiveElement.zIndex - 1
+            value: -1,
+            isGroup: this.dActiveElement.isContainer
           })
           break
         case 'del':
           this.deleteWidget()
+          break
+        case 'ungroup':
           break
       }
     },

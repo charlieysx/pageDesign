@@ -165,7 +165,8 @@ export default {
   methods: {
     ...mapActions([
       'updateWidgetData',
-      'updateAlign'
+      'updateAlign',
+      'updateLayerIndex'
     ]),
     change () {
       this.tag = true
@@ -200,7 +201,10 @@ export default {
       })
     },
     layerAction (item) {
-      this.innerElement[item.key] += item.value
+      this.updateLayerIndex({
+        uuid: this.dActiveElement.uuid,
+        value: item.value
+      })
     },
     alignAction (item) {
       this.updateAlign({

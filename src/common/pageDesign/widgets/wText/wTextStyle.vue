@@ -192,7 +192,7 @@ export default {
           key: 'align',
           icon: 'icon-align-center-verti',
           tip: '居中对齐',
-          value: 'cv'
+          value: 'ch'
         },
         {
           key: 'align',
@@ -209,8 +209,8 @@ export default {
         {
           key: 'align',
           icon: 'icon-align-center-horiz',
-          tip: '水平居中对齐',
-          value: 'ch'
+          tip: '垂直居中对齐',
+          value: 'cv'
         },
         {
           key: 'align',
@@ -247,7 +247,8 @@ export default {
   methods: {
     ...mapActions([
       'updateWidgetData',
-      'updateAlign'
+      'updateAlign',
+      'updateLayerIndex'
     ]),
     change () {
       this.tag = true
@@ -283,7 +284,10 @@ export default {
       })
     },
     layerAction (item) {
-      this.innerElement[item.key] += item.value
+      this.updateLayerIndex({
+        uuid: this.dActiveElement.uuid,
+        value: item.value
+      })
     },
     textStyleAction (item) {
       let value = item.key === 'textAlign' ? item.value : item.value[item.select ? 1 : 0]

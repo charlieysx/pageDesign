@@ -29,12 +29,13 @@
           class="layer"
           :class="{
             'layer-active': getIsActive(layer.uuid),
-            'layer-hover': layer.uuid === dHoverUuid
+            'layer-hover': layer.uuid === dHoverUuid || dActiveElement.parent === layer.uuid
           }"
           :data-title="layer.type"
           v-for="layer in getlayers()"
           :key="layer.uuid"
           :params="layer"
+          :parent="dPage"
           :data-type="layer.type"
           :data-uuid="layer.uuid">
           <component
@@ -43,12 +44,14 @@
             class="layer"
             :class="{
               'layer-active': getIsActive(widget.uuid),
+              'layer-no-hover': dActiveElement.uuid !== widget.parent && dActiveElement.parent !== widget.parent,
               'layer-hover': widget.uuid === dHoverUuid
             }"
             :data-title="widget.type"
             v-for="widget in getChilds(layer.uuid)"
             :key="widget.uuid"
             :params="widget"
+            :parent="layer"
             :data-type="widget.type"
             :data-uuid="widget.uuid" />
         </component>
@@ -85,7 +88,8 @@ export default {
       'dWidgets',
       'dActiveElement',
       'dHoverUuid',
-      'dSelectWidgets'
+      'dSelectWidgets',
+      'dAltDown'
     ])
   },
   mixins: [move],
@@ -122,6 +126,12 @@ export default {
 
       if (type) {
         let uuid = target.getAttribute('data-uuid')
+        if (uuid !== '-1' && !this.dAltDown) {
+          let widget = this.dWidgets.find(item => item.uuid === uuid)
+          if (widget.parent !== '-1' && widget.parent !== this.dActiveElement.uuid && widget.parent !== this.dActiveElement.parent) {
+            uuid = widget.parent
+          }
+        }
 
         // 设置选中元素
         this.selectWidget({

@@ -9,8 +9,8 @@
     ref="widget"
     :style="{
       position: 'absolute',
-      left: params.left + 'px',
-      top: params.top + 'px',
+      left: (params.left - parent.left) + 'px',
+      top: (params.top - parent.top) + 'px',
       width: Math.max(params.fontSize, params.width) + 'px',
       minWidth: params.fontSize + 'px',
       minHeight: params.fontSize * params.lineHeight + 'px',
@@ -23,8 +23,7 @@
       fontStyle: params.fontStyle,
       textDecoration: params.textDecoration,
       opacity: params.opacity,
-      backgroundColor: params.backgroundColor,
-      zIndex: params.zIndex
+      backgroundColor: params.backgroundColor
     }">
   </div>
 </template>
@@ -48,7 +47,6 @@ export default {
     width: 300,
     left: 0,
     top: 0,
-    zIndex: 0,
     lineHeight: 1.5,
     letterSpacing: 0,
     fontSize: 24,
@@ -81,7 +79,7 @@ export default {
       dir: 'horizontal'
     }
   },
-  props: ['params'],
+  props: ['params', 'parent'],
   data () {
     return {
       editable: false

@@ -76,7 +76,8 @@ const state = {
     'rgba(199, 21, 133, 0.46)'
   ], // 记录历史选择的颜色
   dAltDown: false, // 记录是否按下alt键
-  dSelectWidgets: [] // 记录多选的组件
+  dSelectWidgets: [], // 记录多选的组件
+  dGroupJson: {} // 组合的json数据
 }
 
 const getters = {
@@ -249,9 +250,6 @@ const actions = {
   },
   updateWidgetData (store, {uuid, key, value, pushHistory}) {
     let widget = store.state.dWidgets.find(item => item.uuid === uuid)
-    if (key === 'zIndex') {
-      value = Math.min(Math.max(value, 0), 998)
-    }
     if (widget && (widget[key] !== value || pushHistory)) {
       switch (key) {
         case 'width':
@@ -282,6 +280,8 @@ const actions = {
   deleteWidget (store) {
     let widgets = store.state.dWidgets
     let selectWidgets = store.state.dSelectWidgets
+    let activeElement = store.state.dActiveElement
+    let count = 0 // 记录容器里的组件数量
     if (selectWidgets.length !== 0) {
       for (let i = 0; i < selectWidgets.length; ++i) {
         let uuid = selectWidgets[i].uuid
@@ -290,15 +290,12 @@ const actions = {
       }
       store.state.dSelectWidgets = []
     } else {
-      let activeElement = store.state.dActiveElement
       if (activeElement.type === 'page') {
         return
       }
 
       let uuid = activeElement.uuid
-      let index = widgets.findIndex(item => {
-        return item.uuid === uuid
-      })
+      let index = widgets.findIndex(item => item.uuid === uuid)
 
       // 先删除组件
       widgets.splice(index, 1)
@@ -310,11 +307,37 @@ const actions = {
             widgets.splice(i, 1)
           }
         }
+      } else if (activeElement.parent !== '-1') {
+        for (let i = widgets.length - 1; i >= 0; --i) {
+          if (widgets[i].parent === activeElement.parent) {
+            count++
+            if (count > 1) {
+              break
+            }
+          }
+        }
+        if (count <= 1) {
+          let index = widgets.findIndex(item => item.uuid === activeElement.parent)
+          widgets.splice(index, 1)
+          if (count === 1) {
+            let widget = widgets.find(item => item.parent === activeElement.parent)
+            widget.parent = '-1'
+          }
+          count = 0
+        }
       }
     }
 
-    // 重置 activeElement
-    store.state.dActiveElement = store.state.dPage
+    if (count === 0) {
+      // 重置 activeElement
+      store.state.dActiveElement = store.state.dPage
+    } else {
+      store.state.dActiveElement = widgets.find(item => item.uuid === activeElement.parent)
+    }
+
+    if (store.state.dActiveElement.uuid !== '-1') {
+      store.dispatch('updateGroupSize', store.state.dActiveElement.uuid)
+    }
 
     store.dispatch('pushHistory')
     store.dispatch('reChangeCanvas')
@@ -333,7 +356,7 @@ const actions = {
       if (activeElement.isContainer) {
         let widgets = store.state.dWidgets
         for (let i = 0; i < widgets.length; ++i) {
-          if (widgets[i].belong === uuid) {
+          if (widgets[i].parent === uuid) {
             container.push(widgets[i])
           }
         }
@@ -345,7 +368,7 @@ const actions = {
         if (selectWidgets[i].isContainer) {
           let widgets = store.state.dWidgets
           for (let i = 0; i < widgets.length; ++i) {
-            if (widgets[i].belong === uuid) {
+            if (widgets[i].parent === uuid) {
               container.push(widgets[i])
             }
           }
@@ -356,17 +379,24 @@ const actions = {
   },
   pasteWidget (store) {
     let copyElement = JSON.parse(JSON.stringify(store.state.dCopyElement))
+    let container = copyElement.find(item => item.isContainer)
     for (let i = 0; i < copyElement.length; ++i) {
       copyElement[i].uuid = generate('1234567890abcdef', 12)
-      if (copyElement[i].parent === '-1') {
-        copyElement[i].top += 50
-        copyElement[i].left += 50
+      if (container && copyElement[i].uuid !== container.uuid) {
+        copyElement[i].parent = container.uuid
+      } else {
+        copyElement[i].parent = '-1'
       }
+      copyElement[i].top += 50
+      copyElement[i].left += 50
     }
     store.state.dWidgets = store.state.dWidgets.concat(copyElement)
     store.state.dActiveElement = copyElement[0]
-    store.state.dSelectWidgets = []
     store.state.dSelectWidgets = copyElement
+    if (container) {
+      store.state.dActiveElement = container
+      store.state.dSelectWidgets = []
+    }
 
     store.dispatch('pushHistory')
     store.dispatch('reChangeCanvas')
@@ -375,8 +405,9 @@ const actions = {
   selectWidget (store, { uuid }) {
     let alt = store.state.dAltDown
     let selectWidgets = store.state.dSelectWidgets
+    let widget = store.state.dWidgets.find(item => item.uuid === uuid)
     if (alt) {
-      if (uuid !== '-1') {
+      if (uuid !== '-1' && widget.parent === '-1' && !widget.isContainer) {
         if (selectWidgets.length === 0) {
           if (store.state.dActiveElement.uuid !== '-1') {
             selectWidgets.push(store.state.dActiveElement)
@@ -392,7 +423,6 @@ const actions = {
             store.state.dActiveElement = store.state.dPage
           }
         } else {
-          let widget = store.state.dWidgets.find(item => item.uuid === uuid)
           selectWidgets.push(widget)
         }
         if (selectWidgets.length === 1) {
@@ -410,7 +440,6 @@ const actions = {
         pageHistory.push(JSON.stringify(store.state.dPage))
       }
     } else {
-      let widget = store.state.dWidgets.find(item => item.uuid === uuid)
       store.state.dActiveElement = widget
     }
   },
@@ -438,17 +467,39 @@ const actions = {
     let target = store.state.dActiveElement
     let mouseXY = store.state.dMouseXY
     let widgetXY = store.state.dActiveWidgetXY
+    let parent = page
+
+    if (target.parent !== '-1') {
+      parent = store.state.dWidgets.find(item => item.uuid === target.parent)
+    }
 
     let dx = payload.x - mouseXY.x
     let dy = payload.y - mouseXY.y
     let left = widgetXY.x + Math.floor(dx * 100 / store.state.dZoom)
     let top = widgetXY.y + Math.floor(dy * 100 / store.state.dZoom)
 
-    left = Math.min(left, page.width - target.record.width)
-    top = Math.min(top, page.height - target.record.height)
+    left = Math.max(Math.min(left, page.width - target.record.width), 0)
+    top = Math.max(Math.min(top, page.height - target.record.height), 0)
 
-    target.left = Math.max(left, 0)
-    target.top = Math.max(top, 0)
+    if (target.isContainer) {
+      let dLeft = target.left - left
+      let dTop = target.top - top
+      let len = store.state.dWidgets.length
+      for (let i = 0; i < len; ++i) {
+        let widget = store.state.dWidgets[i]
+        if (widget.parent === target.uuid) {
+          widget.left -= dLeft
+          widget.top -= dTop
+        }
+      }
+    }
+
+    target.left = left
+    target.top = top
+
+    if (parent.uuid !== '-1') {
+      store.dispatch('updateGroupSize', parent.uuid)
+    }
 
     store.dispatch('reChangeCanvas')
   },
@@ -473,6 +524,11 @@ const actions = {
     let mouseXY = store.state.dMouseXY
     let widgetXY = store.state.dActiveWidgetXY
     let resizeWH = store.state.dResizeWH
+    let parent = page
+
+    if (target.parent !== '-1') {
+      parent = store.state.dWidgets.find(item => item.uuid === target.parent)
+    }
 
     let dx = x - mouseXY.x
     let dy = y - mouseXY.y
@@ -485,7 +541,8 @@ const actions = {
 
       switch (dir) {
         case 'top':
-          top = Math.max(widgetXY.y + Math.floor(dy * 100 / store.state.dZoom), 0)
+          let t = widgetXY.y + Math.floor(dy * 100 / store.state.dZoom)
+          top = Math.max(t, 0)
           top = Math.min(widgetXY.y + resizeWH.height - target.record.minHeight, top)
           target.height += (target.top - top)
           target.height = Math.max(target.height, target.record.minHeight)
@@ -498,7 +555,8 @@ const actions = {
           target.height = Math.min(target.height, page.height - target.top)
           break
         case 'left':
-          left = Math.max(widgetXY.x + Math.floor(dx * 100 / store.state.dZoom), 0)
+          let tLeft = widgetXY.x + Math.floor(dx * 100 / store.state.dZoom)
+          left = Math.max(tLeft, 0)
           target.width += (target.left - left)
           target.width = Math.max(target.width, target.record.minWidth)
           left = Math.min(widgetXY.x + resizeWH.width - target.record.minWidth, left)
@@ -511,6 +569,9 @@ const actions = {
           target.width = Math.min(target.width, page.width - target.left)
           break
       }
+    }
+    if (parent.uuid !== '-1') {
+      store.dispatch('updateGroupSize', parent.uuid)
     }
 
     store.dispatch('reChangeCanvas')
@@ -571,7 +632,7 @@ const actions = {
       case 'left':
         left = parent.left
         break
-      case 'cv':
+      case 'ch': // 水平居中
         left = parent.left + pw / 2 - target.record.width / 2
         break
       case 'right':
@@ -580,7 +641,7 @@ const actions = {
       case 'top':
         top = parent.top
         break
-      case 'ch':
+      case 'cv': // 垂直居中
         top = parent.top + ph / 2 - target.record.height / 2
         break
       case 'bottom':
@@ -589,6 +650,18 @@ const actions = {
     }
 
     if (target.left !== left || target.top !== top) {
+      if (target.isContainer) {
+        let dLeft = target.left - left
+        let dTop = target.top - top
+        let len = widgets.length
+        for (let i = 0; i < len; ++i) {
+          let widget = widgets[i]
+          if (widget.parent === target.uuid) {
+            widget.left -= dLeft
+            widget.top -= dTop
+          }
+        }
+      }
       target.left = left
       target.top = top
 
@@ -606,7 +679,131 @@ const actions = {
   updateAltDown (store, value) {
     store.state.dAltDown = value
     if (!value) {
-      console.log(store.state.dSelectWidgets)
+      let selectWidgets = store.state.dSelectWidgets
+      if (selectWidgets.length > 1) {
+        let widgets = store.state.dWidgets
+        let group = JSON.parse(store.state.dGroupJson)
+        group.uuid = generate('1234567890abcdef', 12)
+        widgets.push(group)
+        let left = store.state.dPage.width
+        let top = store.state.dPage.height
+        let right = 0
+        let bottom = 0
+        let sortWidgets = []
+        for (let i = 0; i < selectWidgets.length; ++i) {
+          let uuid = selectWidgets[i].uuid
+          let index = widgets.findIndex(item => item.uuid === uuid)
+          let widget = widgets[index]
+          widget.parent = group.uuid
+          sortWidgets.push({
+            index: index,
+            widget: widget
+          })
+          left = Math.min(left, widget.left)
+          top = Math.min(top, widget.top)
+          right = Math.max(right, widget.record.width + widget.left)
+          bottom = Math.max(bottom, widget.record.height + widget.top)
+        }
+        sortWidgets.sort((a, b) => a.index > b.index)
+        for (let i = 0; i < sortWidgets.length; ++i) {
+          let index = widgets.findIndex(item => item.uuid === sortWidgets[i].widget.uuid)
+          widgets.splice(index, 1)
+          widgets.push(sortWidgets[i].widget)
+        }
+        group.left = left
+        group.top = top
+        group.width = right - left
+        group.height = bottom - top
+
+        store.state.dActiveElement = group
+        store.state.dSelectWidgets = []
+
+        store.dispatch('pushHistory')
+        store.dispatch('reChangeCanvas')
+      }
+    }
+  },
+  initGroupJson (store, json) {
+    store.state.dGroupJson = json
+  },
+  updateGroupSize (store, uuid) {
+    let widgets = store.state.dWidgets
+    let group = widgets.find(item => item.uuid === uuid)
+    let left = store.state.dPage.width
+    let top = store.state.dPage.height
+    let right = 0
+    let bottom = 0
+    for (let i = 0; i < widgets.length; ++i) {
+      if (widgets[i].parent === group.uuid) {
+        left = Math.min(left, widgets[i].left)
+        top = Math.min(top, widgets[i].top)
+        right = Math.max(right, widgets[i].record.width + widgets[i].left)
+        bottom = Math.max(bottom, widgets[i].record.height + widgets[i].top)
+      }
+    }
+    group.width = right - left
+    group.height = bottom - top
+    group.left = left
+    group.top = top
+  },
+  updateLayerIndex (store, {uuid, value, isGroup}) {
+    let widgets = store.state.dWidgets
+    let widget = widgets.find(item => item.uuid === uuid)
+    let index = widgets.findIndex(item => item.uuid === uuid)
+    let group = []
+    if (isGroup) {
+      // 组合组件移动
+      group = widgets.filter(item => item.parent === uuid)
+      for (let i = 0; i < group.length; ++i) {
+        let pos = widgets.findIndex(item => item.uuid === group[i].uuid)
+        widgets.splice(pos, 1)
+      }
+    }
+
+    // 单个组件移动，组合的把容器内的组件取出来后也相当于是移动单个组件
+    let next = index + value
+    let move = false
+    let maxLen = widgets.length
+    let gCount = 1 // 记录跳过的组合数量
+    // 循环找出要目标位置并移动（因为存在组合，所以不能直接移动到下一个位置）
+    while (next >= 0 && next < maxLen) {
+      let nextWidget = widgets[next]
+      if (widget.parent !== '-1') {
+        // 如果是在容器里面，比较简单，只要目标组件的父容器一样就移动，不一样说明出了容器了就不移动
+        if (nextWidget.parent === widget.parent) {
+          widgets.splice(index, 1)
+          widgets.splice(next, 0, widget)
+          move = true
+        }
+        break
+        // 如果父容器一样并且（目标组件不是容器或者先上移动并且目标组件是容器），则是要移动的位置
+      } else if (nextWidget.parent === '-1') {
+        if ((gCount === 0 && nextWidget.isContainer) || !nextWidget.isContainer || (value < 0 && nextWidget.isContainer)) {
+          if (gCount === 0 && value > 0) {
+            next -= value
+          }
+          widgets.splice(index, 1)
+          widgets.splice(next, 0, widget)
+          move = true
+          break
+        } else if (nextWidget.isContainer) {
+          gCount = 0
+        }
+      }
+      next += value
+    }
+    next -= value
+    if (!move && next !== index) {
+      widgets.splice(index, 1)
+      widgets.splice(next, 0, widget)
+    }
+
+    // 如果是组合，要把里面的组件添加回去
+    if (isGroup) {
+      let pos = widgets.findIndex(item => item.uuid === uuid)
+      for (let i = group.length - 1; i >= 0; --i) {
+        widgets.splice(pos + 1, 0, group[i])
+      }
     }
   }
 }

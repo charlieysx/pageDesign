@@ -94,7 +94,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'dActiveElement'
+      'dActiveElement',
+      'dWidgets'
     ]),
     left () {
       return parseInt(this.dActiveElement.left)

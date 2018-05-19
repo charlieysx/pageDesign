@@ -19,6 +19,14 @@
           @mouseout="hoverLayer('-1')">
           <span class="widget-type"></span>
           <span class="widget-name">{{ dPage.name }}</span>
+          <div 
+            class="widget-out"
+            :data-type="dPage.type"
+            :data-uuid="dPage.uuid"
+            :style="{
+              marginLeft: '-10px'
+            }">
+          </div>
         </li>
         <li
           class="widget"
@@ -35,6 +43,14 @@
           @mouseout="hoverLayer('-1')">
           <span class="widget-type"></span>
           <span class="widget-name">{{ widget.name }}</span>
+          <div 
+            class="widget-out"
+            :data-type="widget.type"
+            :data-uuid="widget.uuid"
+            :style="{
+              marginLeft: widget.parent === '-1' ? '-25px' : '-40px'
+            }">
+          </div>
         </li>
       </ul>
     </div>
@@ -64,9 +80,24 @@ export default {
       'dSelectWidgets'
     ]),
     getWidgets () {
-      let widgets = JSON.parse(JSON.stringify(this.dWidgets))
-
-      widgets.sort((a, b) => a.zIndex <= b.zIndex)
+      let widgets = []
+      let len = this.dWidgets.length
+      let childs = []
+      for (let i = len - 1; i >= 0; --i) {
+        let widget = JSON.parse(JSON.stringify(this.dWidgets[i]))
+        if (widget.parent === '-1') {
+          widgets.push(widget)
+          if (widget.isContainer) {
+            widgets = widgets.concat(childs)
+            childs = []
+          }
+        } else {
+          childs.push(widget)
+        }
+      }
+      if (childs.length > 0) {
+        widgets = widgets.concat(childs)
+      }
 
       return widgets
     }
@@ -136,6 +167,7 @@ export default {
     .widget-list
       width: 100%
       .widget
+        position: relative
         width: 100%
         display: flex
         padding: 10px
@@ -160,6 +192,10 @@ export default {
           flex: 1
           font-size: 14px
           single-text-ellipsis()
+        .widget-out
+          position: absolute
+          width: 100%
+          height: 100%
       .item-one
         padding-left: 25px
       .item-two

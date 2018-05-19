@@ -5,16 +5,15 @@
     :src="params.imgUrl" 
     :style="{
       position: 'absolute',
-      left: params.left + 'px',
-      top: params.top + 'px',
+      left: (params.left - parent.left) + 'px',
+      top: (params.top - parent.top) + 'px',
       width: params.width + 'px',
       height: params.height + 'px',
       opacity: params.opacity,
       borderTopLeftRadius: params.radiusTopLeft + 'px',
       borderTopRightRadius: params.radiusTopRight + 'px',
       borderBottomLeftRadius: params.radiusBottomLeft + 'px',
-      borderBottomRightRadius: params.radiusBottomRight + 'px',
-      zIndex: params.zIndex
+      borderBottomRightRadius: params.radiusBottomRight + 'px'
     }"/>
 </template>
 
@@ -41,7 +40,6 @@ export default {
     radiusTopRight: 0,
     radiusBottomLeft: 0,
     radiusBottomRight: 0,
-    zIndex: 0,
     opacity: 1,
     parent: '-1',
     imgUrl: '',
@@ -60,7 +58,7 @@ export default {
       dir: 'all'
     }
   },
-  props: ['params'],
+  props: ['params', 'parent'],
   data () {
     return {
     }

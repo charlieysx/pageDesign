@@ -66,8 +66,6 @@ let shortcuts = {
       if (systemKey) {
         return
       }
-      e.stopPropagation()
-      e.preventDefault()
 
       let withCtrl = e.ctrlKey || e.metaKey
       if (withCtrl && !specialKey) {
@@ -85,6 +83,8 @@ let shortcuts = {
       if (this.dActiveElement.uuid === '-1') {
         return
       }
+      e.stopPropagation()
+      e.preventDefault()
 
       let f = withShift ? 10 : 1
       switch (e.keyCode) {

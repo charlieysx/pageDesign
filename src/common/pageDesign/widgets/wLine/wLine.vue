@@ -4,13 +4,12 @@
     ref="widget"
     :style="{
       position: 'absolute',
-      left: params.left + 'px',
-      top: params.top + 'px',
+      left: (params.left - parent.left) + 'px',
+      top: (params.top - parent.top) + 'px',
       width: params.width + 'px',
       height: params.height + 'px',
       backgroundColor: params.backgroundColor,
-      opacity: params.opacity,
-      zIndex: params.zIndex
+      opacity: params.opacity
     }">
     </div>
 </template>
@@ -34,7 +33,6 @@ export default {
     height: 2,
     left: 10,
     top: 10,
-    zIndex: 0,
     opacity: 1,
     parent: '-1',
     backgroundColor: 'rgba(0, 0, 0, 1)',
@@ -48,7 +46,7 @@ export default {
       dir: 'all'
     }
   },
-  props: ['params'],
+  props: ['params', 'parent'],
   data () {
     return {
     }

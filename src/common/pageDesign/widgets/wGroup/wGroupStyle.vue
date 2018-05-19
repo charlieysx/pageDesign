@@ -1,16 +1,15 @@
 <template>
-  <div id="w-line-style">
+  <div id="w-group-style">
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="位置" name="1">
-        <div class="line-layout">
+      <el-collapse-item title="位置大小" name="1">
+        <div class="position-size">
           <number-input label="X" v-model="innerElement.left" @finish="(value) => finish('left', value)" />
           <number-input label="Y" v-model="innerElement.top" @finish="(value) => finish('top', value)" />
-          <number-input label="宽" v-model="innerElement.width" @finish="(value) => finish('width', value)" />
-          <number-input label="高" v-model="innerElement.height" @finish="(value) => finish('height', value)" />
+          <number-input label="宽" v-model="defaultValue" :editable="false" />
+          <number-input label="高" v-model="defaultValue" :editable="false" />
         </div>
       </el-collapse-item>
       <el-collapse-item title="样式设置" name="2">
-        <color-select class="style-item" label="线条颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
         <icon-item-select class="style-item" label="图层层级" :data="layerIconList" @finish="layerAction"/>
         <icon-item-select label="组件对齐" :data="alignIconList" @finish="alignAction"/>
       </el-collapse-item>
@@ -18,22 +17,19 @@
         <text-input label="名称" v-model="innerElement.name" @finish="(value) => finish('name', value)" />
       </el-collapse-item>
       <el-collapse-item title="客户端配置(设置客户端是否允许修改)" name="4">
-        <div class="setting-list">
-          <setting-switch
-            class="style-item"
-            v-for="item in dActiveElement.setting" 
-            :key="item.key"
-            :label="item.label"
-            v-model="item.value" />
-        </div>
+        <setting-switch 
+          v-for="item in dActiveElement.setting" 
+          :key="item.key"
+          :label="item.label"
+          v-model="item.value" />
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 
 <script>
-// 线条组件样式
-const NAME = 'w-line-style'
+// 组合组件样式
+const NAME = 'w-group-style'
 import {
   mapGetters,
   mapActions
@@ -44,15 +40,13 @@ export default {
   data () {
     return {
       activeNames: ['1', '2', '3', '4'],
+      defaultValue: 0,
       innerElement: {},
       tag: false,
       ingoreKeys: [
-        'left',
-        'top',
         'name',
         'width',
-        'height',
-        'backgroundColor'
+        'height'
       ],
       layerIconList: [
         {
@@ -79,7 +73,7 @@ export default {
           key: 'align',
           icon: 'icon-align-center-verti',
           tip: '居中对齐',
-          value: 'cv'
+          value: 'ch'
         },
         {
           key: 'align',
@@ -96,8 +90,8 @@ export default {
         {
           key: 'align',
           icon: 'icon-align-center-horiz',
-          tip: '水平居中对齐',
-          value: 'ch'
+          tip: '垂直居中对齐',
+          value: 'cv'
         },
         {
           key: 'align',
@@ -110,9 +104,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'dActiveElement',
-      'dMoving'
+      'dActiveElement'
     ])
+  },
+  created () {
+    this.change()
   },
   watch: {
     dActiveElement: {
@@ -127,9 +123,6 @@ export default {
       },
       deep: true
     }
-  },
-  created () {
-    this.change()
   },
   methods: {
     ...mapActions([
@@ -172,7 +165,8 @@ export default {
     layerAction (item) {
       this.updateLayerIndex({
         uuid: this.dActiveElement.uuid,
-        value: item.value
+        value: item.value,
+        isGroup: true
       })
     },
     alignAction (item) {
@@ -187,22 +181,14 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
-#w-line-style
+#w-group-style
   width: 100%
   height: 100%
 
-.line-layout
+.position-size
   width: 100%
   display: flex
-  flex-direction: row
-  flex-wrap: wrap
   justify-content: space-between
-.style-item
+.select
   margin-bottom: 10px
-.setting-list
-  width: 100%
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  flex-wrap: wrap
 </style>
