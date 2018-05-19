@@ -262,6 +262,27 @@ const actions = {
           let maxHeight = store.state.dPage.height - widget.top
           value = Math.max(minHeight, Math.min(maxHeight, value))
           break
+        case 'left':
+        case 'top':
+          if (widget.isContainer) {
+            let dLeft = widget.left - value
+            let dTop = widget.top - value
+            if (key === 'left') {
+              dTop = 0
+            }
+            if (key === 'top') {
+              dLeft = 0
+            }
+            let len = store.state.dWidgets.length
+            for (let i = 0; i < len; ++i) {
+              let child = store.state.dWidgets[i]
+              if (child.parent === widget.uuid) {
+                child.left -= dLeft
+                child.top -= dTop
+              }
+            }
+          }
+          break
       }
       widget[key] = value
       store.dispatch('pushHistory')
