@@ -4,6 +4,9 @@ export default [
   {
     path: '/pageDesign',
     name: 'pageDesign',
-    component: pageDesign
+    component: pageDesign,
+    meta: {
+      requireAuth: true
+    }
   }
 ]

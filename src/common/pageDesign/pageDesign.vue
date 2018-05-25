@@ -95,7 +95,6 @@ export default {
   mixins: [move],
   mounted () {
     this.getScreen()
-    // 采用事件代理的方式监听元件的选中操作
     document.getElementById('page-design').addEventListener('mousedown', this.handleSelection, false)
   },
   beforeDestroy () {
