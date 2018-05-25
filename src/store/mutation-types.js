@@ -1,2 +1,7 @@
 // header
 export const SET_SHOW_HEADER = 'SET_SHOW_HEADER'
+
+export const SET_LOGIN_STATUS = 'SET_LOGIN_STATUS'
+export const SET_USER_INFO = 'SET_USER_INFO'
+export const SET_LOGIN_MASK_STATUS = 'SET_LOGIN_MASK_STATUS'
+export const SHOW_TOKEN_ERROR = 'SHOW_TOKEN_ERROR'

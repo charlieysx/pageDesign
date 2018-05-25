@@ -14,7 +14,9 @@
       </ul>
     </div>
     <div class="widget-wrap">
-      <text-list-wrap v-if="activeWidgetClassify === 0" />
+      <text-list-wrap v-if="widgetClassifyList[0].show" :style="getStyle(0)" />
+      <shape-list-wrap v-if="widgetClassifyList[1].show" :style="getStyle(1)" />
+      <img-list-wrap v-if="widgetClassifyList[2].show" :style="getStyle(2)" />
     </div>
   </div>
 </template>
@@ -23,43 +25,53 @@
 // 组件面板
 const NAME = 'widget-panel'
 
-import textListWrap from 'COMMON/pageDesign/panel/textListWrap'
-
 export default {
   name: NAME,
-  components: {
-    textListWrap
-  },
   data () {
     return {
       widgetClassifyList: [
         {
           name: '文本',
-          icon: 'icon-text'
+          icon: 'icon-text',
+          show: false
         },
         {
           name: '形状',
-          icon: 'icon-shape'
-        },
-        {
-          name: '线条',
-          icon: 'icon-line'
+          icon: 'icon-shape',
+          show: false
         },
         {
           name: '图片',
-          icon: 'icon-pic'
+          icon: 'icon-pic',
+          show: false
         },
         {
           name: '素材',
-          icon: 'icon-material'
+          icon: 'icon-material',
+          show: false
         }
       ],
-      activeWidgetClassify: 0
+      activeWidgetClassify: -1
     }
+  },
+  watch: {
+    activeWidgetClassify (index) {
+      if (index >= 0 && index < this.widgetClassifyList.length) {
+        this.widgetClassifyList[index].show = true
+      }
+    }
+  },
+  mounted () {
+    this.activeWidgetClassify = 0
   },
   methods: {
     clickClassify (index) {
       this.activeWidgetClassify = index
+    },
+    getStyle (index) {
+      return {
+        display: (this.activeWidgetClassify === index ? '' : 'none')
+      }
     }
   }
 }

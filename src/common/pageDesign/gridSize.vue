@@ -24,7 +24,7 @@ import {
   mapActions
 } from 'vuex'
 
-// 组件大小控制器
+// 网格显示
 const NAME = 'grid-size'
 
 export default {
@@ -68,17 +68,15 @@ export default {
   width: 100%
   height: 100%
   position: fixed
-  z-index: 999
+  z-index: 0
   top: 0
   left: 0
   .vertical
     position: absolute
-    width: 1px
     height: 100%
     border-right: 1px dotted #d6d6d6
   .horizontal
     position: absolute
-    height: 1px
     width: 100%
     border-bottom: 1px dotted #d6d6d6
 </style>

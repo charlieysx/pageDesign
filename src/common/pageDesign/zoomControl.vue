@@ -78,7 +78,7 @@ export default {
         {
           text: '最佳尺寸',
           value: -1,
-          icon: 'icon-best-zoom'
+          icon: 'icon-best-size'
         }
       ],
       show: false,
@@ -199,10 +199,10 @@ export default {
     },
     calcZoom () {
       if (this.bestZoom == 0) {
-        let widthZoom = (this.dScreen.width - 94) * 100 / this.dPage.width
-        let heightZoom = (this.dScreen.height - 94) * 100 / this.dPage.height
+        let widthZoom = (this.dScreen.width - 122) * 100 / this.dPage.width
+        let heightZoom = (this.dScreen.height - 122) * 100 / this.dPage.height
 
-        this.bestZoom = Math.round(Math.min(widthZoom, heightZoom))
+        this.bestZoom = Math.min(widthZoom, heightZoom)
       }
       return this.bestZoom
     }
@@ -213,7 +213,7 @@ export default {
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
 #zoom-control
-  position: fixed
+  position: absolute
   bottom: 50px
   right: 320px
   z-index: 1000

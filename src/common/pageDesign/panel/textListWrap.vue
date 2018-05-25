@@ -24,7 +24,7 @@
 // 文本组件列表
 const NAME = 'text-list-wrap'
 
-import wText from 'COMMON/pageDesign/widgets/wText/index'
+import wText from 'COMMON/pageDesign/widgets/wText/wText'
 
 import {
   mapGetters,
