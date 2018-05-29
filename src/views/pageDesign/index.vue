@@ -9,11 +9,11 @@
           艺笺卡片
         </div>
         <div class="top-icon-wrap">
-          <div class="top-icon" @click="save">
+          <div class="top-icon" @click="save" v-if="false">
             <i class="iconfont icon-save"></i>
             保存
           </div>
-          <div class="top-icon">
+          <div class="top-icon" @click="save">
             <i class="iconfont icon-publish"></i>
             发布
           </div>
@@ -22,7 +22,7 @@
     </div>
     <div class="page-design-index-wrap">
       <widget-panel></widget-panel>
-      <page-design class="page-design-wrap"></page-design>
+      <page-design class="page-design-wrap" pageDesignCanvasId="page-design-canvas"></page-design>
       <style-panel></style-panel>
     </div>
     <div class="operation">
@@ -112,6 +112,30 @@
         </li>
       </ul>
     </div>
+    <div class="fill-info-wrap" v-if="fillInfoing">
+      <div class="fill-info-content" v-loading="publishing">
+        <el-steps :active="active[fillStep]" finish-status="success" align-center>
+          <el-step :title="message['1']"></el-step>
+          <el-step :title="message['2']"></el-step>
+          <el-step :title="message['3']"></el-step>
+        </el-steps>
+        <div class="fill-info-step" v-if="fillStep === 1" v-loading="true">
+        </div>
+        <div class="fill-info-step" v-show="fillStep === 2 || fillStep === 3">
+          <div id="cover-wrap">
+            <img id="cover" />
+          </div>
+          <text-input label="名称" v-model="title" />
+          <div class="publish-btn" @click="publish">
+            <span v-show="!publishing">确认发布</span>
+            <i class="el-icon-loading" v-show="publishing"></i>
+          </div>
+          <div class="close-publish" @click="closePublish">
+            关闭
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -119,6 +143,7 @@
 import 'COMMON/pageDesign/index'
 import wGroup from 'COMMON/pageDesign/widgets/wGroup/wGroup'
 import { shortcuts } from 'MIXINS/shortcuts'
+import html2canvas from 'html2canvas'
 
 import {
   mapGetters,
@@ -199,7 +224,22 @@ export default {
           type: 'paste',
           text: '粘贴'
         }
-      ]
+      ],
+      fillInfoing: false,
+      message: {
+        '1': '生成封面图',
+        '2': '填写模板信息',
+        '3': '发布模板'
+      },
+      active: {
+        '1': 0,
+        '2': 1,
+        '3': 2
+      },
+      fillStep: 1,
+      formParams: {},
+      title: '',
+      publishing: false
     }
   },
   mixins: [shortcuts],
@@ -211,7 +251,8 @@ export default {
       'dCopyElement',
       'dPage',
       'dAltDown',
-      'dWidgets'
+      'dWidgets',
+      'dZoom'
     ]),
     undoable() {
       return !(this.dHistoryParams.index === -1 || (this.dHistoryParams === 0 && this.dHistoryParams.length === 10))
@@ -260,7 +301,11 @@ export default {
       'getWidgetJsonData',
       'initGroupJson',
       'updateLayerIndex',
-      'ungroup'
+      'ungroup',
+      'updateZoom',
+      'getQiniuToken',
+      'uploadToQiniu',
+      'createDesignTemplate'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -373,9 +418,101 @@ export default {
       }
     },
     save () {
-      this.getWidgetJsonData()
-      .then((json) => {
-        console.log(JSON.stringify(json))
+      this.fillStep = 1
+      this.fillInfoing = true
+      let nowGrideSizeIndex = this.gridSizeIndex
+      let nowZoom = this.dZoom
+      // 取消选中元素
+      this.selectWidget({
+        uuid: '-1'
+      })
+      this.gridSizeIndex = 0
+      this.updateZoom(100)
+      this.getQiniuToken().then((data) => {
+        let opts = {
+          useCORS: true, // 跨域图片
+        }
+        html2canvas(document.getElementById('page-design-canvas'), opts).then((canvas) => {
+          canvas.toBlob((blob) => {
+            this.blobToImage(blob, data => {
+              document.getElementById('cover').src = data
+            })
+
+            this.fillStep = 2
+            this.gridSizeIndex = nowGrideSizeIndex
+            this.updateZoom(nowZoom)
+
+            this.formParams = new FormData()
+            this.formParams.append('token', data.token)
+            this.formParams.append('file', blob, 'canvas.png')
+          }, 'image/png')
+        })
+      }).catch(err => this.saveError(err.msg))
+    },
+    publish () {
+      if (this.publishing) {
+        return
+      }
+      if (!this.title) {
+        this.$message({
+          showClose: true,
+          message: '请输入名称',
+          type: 'error'
+        })
+        return
+      }
+      this.publishing = true
+      this.uploadToQiniu(this.formParams).then((qiniuData) => {
+        this.getWidgetJsonData().then((json) => {
+          let templateData = {
+            title: this.title,
+            template: JSON.stringify(json),
+            cover: qiniuData.imgUrl
+          }
+          this.fillStep = 3
+          this.createDesignTemplate(templateData).then(data => {
+            this.fillStep = 4
+            this.publishing = false
+            this.fillInfoing = false
+            this.$message({
+              showClose: true,
+              message: '发布完成',
+              type: 'success'
+            })
+          }).catch(err => {
+            this.publishing = false
+            if (!err.code === -2) {
+              this.saveError(err.msg)
+            }
+          })
+        })
+      }).catch(err => this.saveError(err.msg))
+    },
+    closePublish () {
+      this.publishing = false
+      this.fillInfoing = false
+      this.fillStep = 1
+    },
+    saveError (message) {
+      this.publishing = false
+      this.fillInfoing = false
+      this.fillStep = 1
+      this.$message({
+        showClose: true,
+        message: message,
+        type: 'error'
+      })
+    },
+    fileOrBlobToDataURL (obj, cb) {
+      let a = new FileReader()
+      a.readAsDataURL(obj)
+      a.onload = e => {
+        cb(e.target.result)
+      }
+    },
+    blobToImage(blob, cb){
+      this.fileOrBlobToDataURL(blob, dataurl => {
+        cb(dataurl)
       })
     }
   }
@@ -542,5 +679,60 @@ export default {
         color: #808080
         background-color: $color-light-gray
         cursor: not-allowed
+
+.fill-info-wrap
+  position: absolute
+  width: 100%
+  height: 100%
+  background-color: rgba(0, 0, 0, 0.8)
+  z-index: 2000
+  padding: 50px
+  .fill-info-content
+    border-radius: 10px
+    width: 600px
+    min-height: 600px
+    max-height: 861px
+    margin: 0 auto
+    padding: 20px
+    background-color: #fff
+    display: flex
+    flex-direction: column
+    .fill-info-step
+      width: 100%
+      flex: 1
+      #cover-wrap
+        margin: 20px auto
+        width: 400px
+        height: 400px
+        display: flex
+        justify-content: center
+        align-items: center
+        #cover
+          max-width: 400px
+          max-height: 400px
+          box-shadow: 1px 1px 10px 3px rgba(0, 0, 0, .1)
+      .publish-btn
+        margin: 20px auto
+        padding: 10px
+        text-align: center
+        border-radius: 5px
+        color: $color-white
+        background-color: $color-main
+        cursor: pointer
+        &:hover
+          background-color: lighten($color-main, 10%)
+      .close-publish
+        margin: 20px auto
+        margin-bottom: 0px
+        padding: 10px
+        text-align: center
+        border-radius: 5px
+        color: $color-main
+        background-color: $color-white
+        outline: 1px solid $color-main
+        cursor: pointer
+        &:hover
+          color: $color-white
+          background-color: lighten($color-main, 10%)
 
 </style>

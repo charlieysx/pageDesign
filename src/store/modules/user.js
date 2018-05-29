@@ -69,8 +69,7 @@ const actions = {
   login (store, params) {
     return api.login(params)
       .then((response) => {
-        // saveAccessToken(response.data.data.token.accessToken, response.data.data.token.exp)
-        saveAccessToken('U2FsdGVkX1+WnwvVCyoBbsyu4oQixnr611fhc9/nCxM=', 9999999)
+        saveAccessToken('1', 7200)
         // cachedUserInfo.save(response.data.data)
         store.commit(SET_LOGIN_STATUS, true)
         // store.commit(SET_USER_INFO, response.data.data)
@@ -78,8 +77,15 @@ const actions = {
         store.commit(SET_LOGIN_MASK_STATUS, false)
         return Promise.resolve(response)
       })
-      .catch((response) => {
-        return Promise.reject(response.data)
+      .catch((error) => {
+        if (!error.data || !error.data.msg) {
+          error = {
+            data: {
+              msg: '请求出错'
+            }
+          }
+        }
+        return Promise.reject(error.data)
       })
   }
 }

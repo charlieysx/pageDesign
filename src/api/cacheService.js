@@ -12,7 +12,7 @@ const KEYS = {
 }
 
 // 这里改为自己的nameSpace，比如项目名称
-const nameSpace = 'VUEBASE'
+const nameSpace = 'YIJIAN'
 
 for (let i in KEYS) {
   if (KEYS.hasOwnProperty(i)) {

@@ -3,7 +3,6 @@
     ref="page-design">
     <div
       class="out-page"
-      id="out-page"
       :style="{
         width: dPage.width * dZoom / 100 + 120 + 'px',
         height: dPage.height * dZoom / 100 + 120 + 'px',
@@ -13,6 +12,7 @@
         class="design-canvas"
         :data-type="dPage.type"
         :data-uuid="dPage.uuid"
+        :id="pageDesignCanvasId"
         :style="{
           width: dPage.width + 'px',
           height: dPage.height + 'px',
@@ -76,6 +76,7 @@ import { move } from 'MIXINS/move'
 
 export default {
   name: NAME,
+  props: ['pageDesignCanvasId'],
   data () {
     return {
     }

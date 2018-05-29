@@ -72,8 +72,8 @@ export default {
         },
         {
           key: 'align',
-          icon: 'icon-align-center-verti',
-          tip: '居中对齐',
+          icon: 'icon-align-center-horiz',
+          tip: '水平居中对齐',
           value: 'ch'
         },
         {
@@ -90,7 +90,7 @@ export default {
         },
         {
           key: 'align',
-          icon: 'icon-align-center-horiz',
+          icon: 'icon-align-center-verti',
           tip: '垂直居中对齐',
           value: 'cv'
         },

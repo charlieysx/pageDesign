@@ -154,7 +154,7 @@ let shortcuts = {
           }
           break
         case 83: // s
-          this.save()
+          // this.save()
           break
       }
     }

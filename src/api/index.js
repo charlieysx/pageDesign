@@ -1,30 +1,27 @@
 import axios from 'axios'
-// import Qs from 'qs'
-// import store from 'STORE/index'
+import Qs from 'qs'
+import store from 'STORE/index'
 
 import {
-  getAccessToken
-  // removeAccessToken,
+  // getAccessToken
+  removeAccessToken
   // cachedUserInfo
 } from 'API/cacheService'
 
-// import {
-//   SET_LOGIN_STATUS,
-//   SET_LOGIN_MASK_STATUS,
-//   SHOW_TOKEN_ERROR
-// } from 'STORE/mutation-types'
+import {
+  SET_LOGIN_STATUS,
+  SET_LOGIN_MASK_STATUS,
+  SHOW_TOKEN_ERROR
+} from 'STORE/mutation-types'
 
-const API_ROOT = 'https://api.yijian.codebear.cn/index.php/'
+const API_ROOT = 'http://api.xsxia.com/'
 
 axios.defaults.baseURL = API_ROOT
 axios.defaults.headers.Accept = 'application/json'
+axios.defaults.withCredentials = true
 
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
-  config.headers['accessToken'] = 'U2FsdGVkX1+WnwvVCyoBbsyu4oQixnr611fhc9/nCxM='
-  if (getAccessToken()) {
-    config.headers['accessToken'] = getAccessToken()
-  }
   return config
 }, function (error) {
   return Promise.reject(error)
@@ -33,20 +30,25 @@ axios.interceptors.request.use(function (config) {
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
   if (response.data.code < 0) {
+    if (response.data.code === -2) {
+      // 清空登录信息;
+      removeAccessToken()
+      // cachedUserInfo.delete()
+      store.commit(SET_LOGIN_STATUS, false)
+      // 弹出提示信息
+      store.commit(SHOW_TOKEN_ERROR, true)
+      // 弹出登录窗口
+      store.commit(SET_LOGIN_MASK_STATUS, { show: true, view: 'login' })
+    }
     return Promise.reject(response)
   }
   return response
-}, function (error) {
-  // if (error.response.status === 401) {
-  //   // 清空登录信息;
-  //   removeAccessToken()
-  //   cachedUserInfo.delete()
-  //   // store.commit(SET_LOGIN_STATUS, false)
-  //   // // 弹出提示信息
-  //   // store.commit(SHOW_TOKEN_ERROR, true)
-  //   // // 弹出登录窗口
-  //   // store.commit(SET_LOGIN_MASK_STATUS, { show: true, view: 'login' })
-  // }
+}, function () {
+  let error = {
+    data: {
+      msg: '请求出错'
+    }
+  }
   return Promise.reject(error)
 })
 
@@ -55,23 +57,8 @@ export default {
    * 用户登录
    */
   login (params) {
-    if (params.phone === '18814128167' && params.password === '000000') {
-      return Promise.resolve(params)
-    }
-    let error = {
-      data: {
-        msg: '登录失败'
-      }
-    }
-    return Promise.reject(error)
-    // return axios.post('u/login', Qs.stringify(params))
+    return axios.post('admin/login', Qs.stringify(params))
   },
-  // /**
-  // * 用户登录
-  // */
-  // register (params) {
-  //   return axios.post('u/register', Qs.stringify(params))
-  // },
   // /**
   //  * 获取按字母排序的城市
   //  */
@@ -89,6 +76,17 @@ export default {
   //   })
   // }
   getQiniuToken () {
-    return axios.get('a/qiniu/token')
+    return axios.post('api/getUpToken')
+  },
+  uploadToQiniu (params) {
+    return axios.post('http://up-z2.qiniu.com', params, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      },
+      withCredentials: false
+    })
+  },
+  createDesignTemplate (params) {
+    return axios.post('admin/template/create', Qs.stringify(params))
   }
 }

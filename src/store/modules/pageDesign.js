@@ -833,8 +833,9 @@ const actions = {
     widgets.splice(index, 1)
     let len = widgets.length
     for (let i = 0; i < len; ++i) {
-      let widget = widgets.find(item => item.parent === uuid)
-      widget.parent = '-1'
+      if (widgets[i].parent === uuid) {
+        widgets[i].parent = '-1'
+      }
     }
     store.state.dActiveElement = store.state.dPage
   }

@@ -5,24 +5,25 @@
       <el-form :model="loginForm"
                :rules="loginRules"
                ref="loginForm">
-        <el-form-item prop="phone">
+        <el-form-item prop="name">
           <el-input type="text"
                     :maxlength="11"
-                    placeholder="请输入你的手机号码"
-                    v-model="loginForm.phone">
+                    placeholder="请输入用户名"
+                    v-model="loginForm.name">
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password"
                     :maxlength="16"
-                    placeholder="请输入你的密码"
+                    placeholder="请输入密码"
                     v-model="loginForm.password">
         </el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      @click="submitForm('loginForm')"
-                     :disabled="btnDisabled">
+                     :disabled="btnDisabled"
+                     v-loading.fullscreen.lock="loading">
                      立即登录
           </el-button>
         </el-form-item>
@@ -41,29 +42,27 @@ export default {
   data () {
     return {
       loginForm: {
-        phone: '',
+        name: '',
         password: ''
       },
       loginRules: {
-        phone: [
-          { validator: this.$validator.checkPhone, trigger: 'blur' }
+        name: [
+          { required: true, message: '未填写用户名', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '未填写密码', trigger: 'blur' },
-          { min: 6, message: '密码不能少于6位', trigger: 'blur' }
+          { required: true, message: '未填写密码', trigger: 'blur' }
         ]
       },
-      message: ''
+      message: '',
+      loading: false
     }
   },
   computed: {
     ...mapGetters([
-      // 'phone'
     ]),
     btnDisabled () {
-      return this.loginForm.phone === '' ||
-            this.loginForm.password === '' ||
-            this.loginForm.password.length < 6
+      return this.loginForm.name === '' ||
+            this.loginForm.password === ''
     }
   },
   mounted () {
@@ -77,18 +76,22 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let loginFormParams = {
-            phone: this.loginForm.phone,
-            password: this.loginForm.password
+            name: this.loginForm.name,
+            pwd: this.loginForm.password
           }
           if (this.message) {
             this.message.close()
           }
+          this.loading = true
           this.login(loginFormParams)
             .then((info) => {
-              window.location.reload()
+              // if (this.loginAndReload) {
+              //   window.location.reload()
+              // }
+              this.loading = false
             })
             .catch((err) => {
-              console.log(err)
+              this.loading = false
               this.error(err.msg)
             })
         } else {

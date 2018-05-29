@@ -2,6 +2,7 @@
   <div id="home">
     <img src="~IMAGES/avatar.jpg">
     <el-button type="primary" @click="good">test</el-button>
+    <el-button type="primary" @click="login">登录</el-button>
   </div>
 </template>
 
@@ -30,12 +31,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      'test'
+      'test',
+      'setLoginMaskStatus'
     ]),
     good () {
       this.$router.push({
         name: 'pageDesign'
       })
+    },
+    login () {
+      this.setLoginMaskStatus({ show: true, view: 'login' })
     }
   }
 }
@@ -56,4 +61,5 @@ export default {
     width: 100px
     height: 100px
     margin: 50px
+
 </style>

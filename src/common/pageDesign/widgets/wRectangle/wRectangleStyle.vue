@@ -108,9 +108,9 @@ export default {
         },
         {
           key: 'align',
-          icon: 'icon-align-center-verti',
-          tip: '居中对齐',
-          value: 'cv'
+          icon: 'icon-align-center-horiz',
+          tip: '水平居中对齐',
+          value: 'ch'
         },
         {
           key: 'align',
@@ -126,9 +126,9 @@ export default {
         },
         {
           key: 'align',
-          icon: 'icon-align-center-horiz',
-          tip: '水平居中对齐',
-          value: 'ch'
+          icon: 'icon-align-center-verti',
+          tip: '垂直居中对齐',
+          value: 'cv'
         },
         {
           key: 'align',
