@@ -6,14 +6,14 @@
           <i class="iconfont icon-arrow-left"></i>
         </div>
         <div class="top-title">
-          艺笺卡片
+          pageDesign
         </div>
         <div class="top-icon-wrap">
-          <div class="top-icon" @click="save" v-if="false">
+          <div class="top-icon" @click="save">
             <i class="iconfont icon-save"></i>
             保存
           </div>
-          <div class="top-icon" @click="save">
+          <div class="top-icon" @click="save" v-if="false">
             <i class="iconfont icon-publish"></i>
             发布
           </div>
@@ -116,18 +116,30 @@
       <div class="fill-info-content" v-loading="publishing">
         <el-steps :active="active[fillStep]" finish-status="success" align-center>
           <el-step :title="message['1']"></el-step>
-          <el-step :title="message['2']"></el-step>
-          <el-step :title="message['3']"></el-step>
+          <!-- <el-step :title="message['2']"></el-step>
+          <el-step :title="message['3']"></el-step> -->
         </el-steps>
         <div class="fill-info-step" v-if="fillStep === 1" v-loading="true">
         </div>
-        <div class="fill-info-step" v-show="fillStep === 2 || fillStep === 3">
+        <!-- <div class="fill-info-step" v-show="fillStep === 2 || fillStep === 3">
           <div id="cover-wrap">
             <img id="cover" />
           </div>
           <text-input label="名称" v-model="title" />
           <div class="publish-btn" @click="publish">
             <span v-show="!publishing">确认发布</span>
+            <i class="el-icon-loading" v-show="publishing"></i>
+          </div>
+          <div class="close-publish" @click="closePublish">
+            关闭
+          </div>
+        </div> -->
+        <div class="fill-info-step" v-show="fillStep === 2 || fillStep === 3">
+          <div id="cover-wrap">
+            <img id="cover" />
+          </div>
+          <div class="publish-btn" @click="saveImg">
+            <span v-show="!publishing">保存图片</span>
             <i class="el-icon-loading" v-show="publishing"></i>
           </div>
           <div class="close-publish" @click="closePublish">
@@ -302,10 +314,7 @@ export default {
       'initGroupJson',
       'updateLayerIndex',
       'ungroup',
-      'updateZoom',
-      'getQiniuToken',
-      'uploadToQiniu',
-      'createDesignTemplate'
+      'updateZoom'
     ]),
     fixTopBarScroll () {
       const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft
@@ -417,38 +426,38 @@ export default {
           break
       }
     },
-    save () {
-      this.fillStep = 1
-      this.fillInfoing = true
-      let nowGrideSizeIndex = this.gridSizeIndex
-      let nowZoom = this.dZoom
-      // 取消选中元素
-      this.selectWidget({
-        uuid: '-1'
-      })
-      this.gridSizeIndex = 0
-      this.updateZoom(100)
-      this.getQiniuToken().then((data) => {
-        let opts = {
-          useCORS: true, // 跨域图片
-        }
-        html2canvas(document.getElementById('page-design-canvas'), opts).then((canvas) => {
-          canvas.toBlob((blob) => {
-            this.blobToImage(blob, data => {
-              document.getElementById('cover').src = data
-            })
+    // save () {
+    //   this.fillStep = 1
+    //   this.fillInfoing = true
+    //   let nowGrideSizeIndex = this.gridSizeIndex
+    //   let nowZoom = this.dZoom
+    //   // 取消选中元素
+    //   this.selectWidget({
+    //     uuid: '-1'
+    //   })
+    //   this.gridSizeIndex = 0
+    //   this.updateZoom(100)
+    //   this.getQiniuToken().then((data) => {
+    //     let opts = {
+    //       useCORS: true, // 跨域图片
+    //     }
+    //     html2canvas(document.getElementById('page-design-canvas'), opts).then((canvas) => {
+    //       canvas.toBlob((blob) => {
+    //         this.blobToImage(blob, data => {
+    //           document.getElementById('cover').src = data
+    //         })
 
-            this.fillStep = 2
-            this.gridSizeIndex = nowGrideSizeIndex
-            this.updateZoom(nowZoom)
+    //         this.fillStep = 2
+    //         this.gridSizeIndex = nowGrideSizeIndex
+    //         this.updateZoom(nowZoom)
 
-            this.formParams = new FormData()
-            this.formParams.append('token', data.token)
-            this.formParams.append('file', blob, 'canvas.png')
-          }, 'image/png')
-        })
-      }).catch(err => this.saveError(err.msg))
-    },
+    //         this.formParams = new FormData()
+    //         this.formParams.append('token', data.token)
+    //         this.formParams.append('file', blob, 'canvas.png')
+    //       }, 'image/png')
+    //     })
+    //   }).catch(err => this.saveError(err.msg))
+    // },
     publish () {
       if (this.publishing) {
         return
@@ -510,10 +519,71 @@ export default {
         cb(e.target.result)
       }
     },
-    blobToImage(blob, cb){
+    blobToImage (blob, cb){
       this.fileOrBlobToDataURL(blob, dataurl => {
         cb(dataurl)
       })
+    },
+    save () {
+      this.fillStep = 1
+      this.fillInfoing = true
+      let nowGrideSizeIndex = this.gridSizeIndex
+      let nowZoom = this.dZoom
+      // 取消选中元素
+      this.selectWidget({
+        uuid: '-1'
+      })
+      this.gridSizeIndex = 0
+      this.updateZoom(100)
+      let opts = {
+        useCORS: true, // 跨域图片
+      }
+      let _this = this
+      setTimeout(function() {
+        html2canvas(document.getElementById('page-design-canvas'), opts).then((canvas) => {
+          canvas.toBlob((blob) => {
+            _this.blobToImage(blob, data => {
+              document.getElementById('cover').src = data
+            })
+
+            _this.fillStep = 2
+            _this.gridSizeIndex = nowGrideSizeIndex
+            _this.updateZoom(nowZoom)
+
+          }, 'image/png')
+        })
+      }, 500)
+    },
+    saveImg () {
+      if (this.publishing) {
+        return
+      }
+      this.publishing = true
+      let image = new Image()
+      // 解决跨域 Canvas 污染问题
+      image.setAttribute('crossOrigin', 'anonymous')
+      image.onload = function () {
+          let canvas = document.createElement('canvas')
+          canvas.width = image.width
+          canvas.height = image.height
+
+          let context = canvas.getContext('2d')
+          context.drawImage(image, 0, 0, image.width, image.height)
+          let url = canvas.toDataURL('image/png')
+
+          let a = document.createElement('a')
+          let event = new MouseEvent('click')
+
+          // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+          a.download = name || 'pageDesign'
+          a.href = url
+
+          // 触发a的单击事件
+          a.dispatchEvent(event)
+      }
+
+      image.src = document.getElementById('cover').src
+      this.publishing = false
     }
   }
 }

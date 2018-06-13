@@ -1,6 +1,18 @@
-# yijian-web-admin
+# pageDesign
 
-> 艺笺卡片cms
+> 网页版海报排版设计
+
+## 界面
+
+![1](/readme-file/1.png)
+
+![2](/readme-file/1.png)
+
+## 在线预览地址
+
+<http://pagedesign.codebear.cn/>
+
+
 
 ## Build Setup
 

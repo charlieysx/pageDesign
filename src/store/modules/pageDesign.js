@@ -77,7 +77,8 @@ const state = {
   ], // 记录历史选择的颜色
   dAltDown: false, // 记录是否按下alt键
   dSelectWidgets: [], // 记录多选的组件
-  dGroupJson: {} // 组合的json数据
+  dGroupJson: {}, // 组合的json数据
+  loadPage: false // 打开该页面时比较慢，所以显示loading
 }
 
 const getters = {
@@ -131,6 +132,9 @@ const getters = {
   },
   dSelectWidgets (state) {
     return state.dSelectWidgets
+  },
+  loadPage (state) {
+    return state.loadPage
   }
 }
 

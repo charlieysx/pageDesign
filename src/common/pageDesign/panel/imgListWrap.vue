@@ -119,6 +119,36 @@ export default {
           id: 14,
           url: 'http://bearcarimg.codebear.cn/25ffb31f5adf7e837540f8da695bc28aHQuHhBZ93Nw7JAMYFJC4U!gradual.show',
           ratio: 98 / 65
+        },
+        {
+          id: 15,
+          url: 'http://bearcarimg.codebear.cn/8a61e2e098c59d13bc28b8a4eb667cce3sSvE6gBueFAqFrduNAxS4!gradual.show',
+          ratio: 850 / 563
+        },
+        {
+          id: 16,
+          url: 'http://bearcarimg.codebear.cn/95a06eee907b49c1e095211323df40f54dnhpdyuf7WLhl6MZxtaPE!gradual.show',
+          ratio: 8 / 12
+        },
+        {
+          id: 17,
+          url: 'http://bearcarimg.codebear.cn/e386feed6faea239d4e628ae334343c76TKhqAPxh84mKixcFD2jDg!gradual.show',
+          ratio: 1
+        },
+        {
+          id: 18,
+          url: 'http://bearcarimg.codebear.cn/d876071258082127cebb0de42f5270b9rxJbFGS4jObsgrikYBq9c!gradual.show',
+          ratio: 1
+        },
+        {
+          id: 19,
+          url: 'http://bearcarimg.codebear.cn/4bba98b9b2d3ebc7c41da23cba70f9eb5ZVz5X4NceKe3ioi54a8tu!gradual.show',
+          ratio: 108 / 192
+        },
+        {
+          id: 20,
+          url: 'http://bearcarimg.codebear.cn/b159e9d856d5bb82a73d92103674134817Ih6um8QgB3fmMUDdAtT4!gradual.show',
+          ratio: 2120 / 2661
         }
       ],
       hadShowMyImg: false,

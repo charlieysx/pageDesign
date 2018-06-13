@@ -1,7 +1,7 @@
 {
-  "name": "yk-web-admin",
+  "name": "pageDesign",
   "version": "1.0.0",
-  "description": "艺卡设计cms",
+  "description": "网页版海报排版设计",
   "author": "CodeBear <249900679@qq.com>",
   "private": true,
   "scripts": {

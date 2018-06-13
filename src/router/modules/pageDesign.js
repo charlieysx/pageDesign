@@ -2,11 +2,8 @@ const pageDesign = r => require.ensure([], () => r(require('VIEWS/pageDesign/ind
 
 export default [
   {
-    path: '/pageDesign',
+    path: '/',
     name: 'pageDesign',
-    component: pageDesign,
-    meta: {
-      requireAuth: true
-    }
+    component: pageDesign
   }
 ]

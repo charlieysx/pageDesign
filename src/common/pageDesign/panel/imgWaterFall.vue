@@ -115,7 +115,14 @@ export default {
       let len = this.innerListData.length
       for (let index = 0; index < len; ++index) {
         let item = this.innerListData[index]
-        let col = index % 3
+        let col = 0
+        let value = Math.min.apply(null, heightList)
+        for (let j = 0; j < 3; ++j) {
+          if (value === heightList[j]) {
+            col = j
+            break
+          }
+        }
         item.top = heightList[col]
         item.left = this.boxWidth * col + 1
         heightList[col] += this.boxWidth / item.ratio
