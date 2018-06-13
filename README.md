@@ -6,7 +6,7 @@
 
 ![1](/readme-file/1.png)
 
-![2](/readme-file/1.png)
+![2](/readme-file/2.png)
 
 ## 在线预览地址
 
