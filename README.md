@@ -8,6 +8,10 @@
 
 ![2](/readme-file/2.png)
 
+## 动图
+
+![3](/readme-file/3.gif)
+
 ## 在线预览地址
 
 <http://pagedesign.codebear.cn/>
@@ -29,16 +33,3 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
-
-## 使用
-
-* axios
-* flex.css
-* moment
-* normalize.css
-* nprogress
-* element-ui
-* qs
-* vuex
-* vuex-router-sync
-* web-storage-cache
