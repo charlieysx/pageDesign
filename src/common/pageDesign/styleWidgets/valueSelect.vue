@@ -108,8 +108,9 @@ export default {
   },
   methods: {
     selectItem (item) {
-      if (this.innerValue !== item) {
-        this.innerValue = item
+      let value = (typeof item === 'object' ? item.name : item)
+      if (this.innerValue !== value) {
+        this.innerValue = value
         this.$emit('finish', item)
       }
     }
