@@ -5,7 +5,7 @@
     :contenteditable="editable ? 'plaintext-only' : false"
     @dblclick="(e) => dblclickText(e)"
     @blur="(e) => updateText(e)"
-    :class="[{'edit-text': editable}, params.uuid]"
+    :class="[{'edit-text': editable}, params.uuid, params.fontClass.value]"
     ref="widget"
     :style="{
       position: 'absolute',
@@ -50,6 +50,10 @@ export default {
     lineHeight: 1.5,
     letterSpacing: 0,
     fontSize: 24,
+    fontClass: {
+      name: '默认字体',
+      value: ''
+    },
     fontWeight: 'normal',
     fontStyle: 'normal',
     textDecoration: 'none',
@@ -142,6 +146,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~STYLUS/page-design.styl'
+@import '~STYLUS/page-design-font.styl'
 #w-text
   outline: none
   cursor: pointer
