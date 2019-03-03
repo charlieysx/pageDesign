@@ -31,6 +31,16 @@
             @finish="(value) => finish('letterSpacing', value)" />
         </div>
         <div class="line-layout style-item">
+          <value-select 
+            label="字体"
+            :data="fontClassList"
+            :value="innerElement.fontClass"
+            inputWidth="280px"
+            textAlign="left"
+            :readonly="true"
+            @finish="(value) => finish('fontClass', value)" />
+        </div>
+        <div class="line-layout style-item">
           <color-select label="字体颜色" v-model="innerElement.textColor" @finish="(value) => finish('textColor', value)" />
           <color-select label="背景颜色" v-model="innerElement.backgroundColor" @finish="(value) => finish('backgroundColor', value)" />
         </div>
@@ -99,6 +109,16 @@ export default {
         '106',
         '120',
         '144'
+      ],
+      fontClassList: [
+        {
+          name: '默认字体',
+          value: ''
+        },
+        {
+          name: '站酷快乐体',
+          value: 'ZCOOL-Kuaile'
+        }
       ],
       lineHeightList: [
         '1',

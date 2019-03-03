@@ -45,7 +45,8 @@ module.exports = {
       'UTIL': resolve('src/util'),
       'STORE': resolve('src/store'),
       'DATA': resolve('src/data'),
-      'MIXINS': resolve('src/mixins')
+      'MIXINS': resolve('src/mixins'),
+      'FONTS': resolve('src/assets/fonts')
     }
   },
   module: {

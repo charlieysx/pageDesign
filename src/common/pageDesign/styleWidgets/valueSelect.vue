@@ -1,14 +1,16 @@
 <template>
-  <div id="value-select" ref="select">
+  <div id="value-select" ref="select" :style="{width: inputWidth}">
     <p 
       class="input-label" 
       v-if="label">
       {{ label }}
     </p>
-    <div class="input-wrap" :class="{active: inputBorder}">
+    <div class="input-wrap" :class="{active: inputBorder}" :style="{width: inputWidth}">
       <input 
         class="real-input"
+        :style="{textAlign: textAlign}"
         :class="{disable : !disable}"
+        :readonly="readonly ? 'readonly' : ''"
         type="text"
         :value="showValue"
         @input="innerValue = $event.target.value.replace(RegExp(suffix), '')"
@@ -28,10 +30,10 @@
       <ul class="list-ul" v-if="data">
         <li 
           v-for="listItem in data" 
-          :key="listItem" 
+          :key="(typeof listItem === 'object' ? listItem.name : listItem)" 
           :class="{'active': listItem == innerValue}"
           @click="selectItem(listItem)">
-          {{ listItem + suffix }}
+          {{ (typeof listItem === 'object' ? listItem.name : listItem) + suffix }}
         </li>
       </ul>
     </el-popover>
@@ -60,6 +62,15 @@ export default {
     },
     disable: {
       default: true
+    },
+    inputWidth: {
+      default: '80px'
+    },
+    textAlign: {
+      default: 'center'
+    },
+    readonly: {
+      default: false
     }
   },
   data () {
@@ -71,7 +82,7 @@ export default {
     }
   },
   created () {
-    this.innerValue = this.value
+    this.innerValue = typeof this.value === 'object' ? this.value.name : this.value
   },
   mounted () {
     this.width = this.$refs.select.offsetWidth
@@ -83,7 +94,7 @@ export default {
   },
   watch: {
     value (value) {
-      this.innerValue = value
+      this.innerValue = typeof this.value === 'object' ? this.value.name : this.value
     },
     inputBorder (value) {
       if (value) {
